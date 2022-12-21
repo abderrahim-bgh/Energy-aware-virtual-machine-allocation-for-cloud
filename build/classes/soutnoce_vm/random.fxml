@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="751.0" prefWidth="1291.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="soutnoce_vm.RandomController">
+<AnchorPane id="AnchorPane" prefHeight="751.0" prefWidth="1291.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="soutnoce_vm.RandomController">
    <children>
-      <TableView fx:id="vm_in_pm" layoutX="156.0" layoutY="136.0" prefHeight="550.0" prefWidth="1014.0">
+      <TableView fx:id="vm_in_pm" layoutX="392.0" layoutY="215.0" prefHeight="259.0" prefWidth="468.0">
         <columns>
-          <TableColumn fx:id="pm_N" prefWidth="75.0" text="PM" />
-          <TableColumn fx:id="vm_N" prefWidth="75.0" text="VM" />
+          <TableColumn fx:id="vm_N" prefWidth="75.0" text="vm" />
+          <TableColumn fx:id="vp_cpu" prefWidth="75.0" text="CPU" />
+            <TableColumn fx:id="vp_ram" prefWidth="75.0" text="RAM" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
+      <ListView fx:id="list_pm" layoutY="92.0" prefHeight="592.0" prefWidth="392.0" />
+      <Label fx:id="calcule_label" layoutX="392.0" layoutY="474.0" prefHeight="210.0" prefWidth="468.0" style="-fx-background-color: #ffffff;" text="Label" />
+      <Label fx:id="total_label" layoutX="392.0" layoutY="93.0" prefHeight="122.0" prefWidth="468.0" style="-fx-background-color: #ffffff;" text="Label" />
    </children>
 </AnchorPane>

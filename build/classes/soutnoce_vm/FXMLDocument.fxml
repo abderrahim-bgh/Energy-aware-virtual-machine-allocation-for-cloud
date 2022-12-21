@@ -16,17 +16,17 @@
          <top>
             <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="1107.0" style="-fx-background-color: #9DABE0;" BorderPane.alignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false" onAction="#add_pm" prefHeight="35.0" prefWidth="90.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" text="add Pm" textAlignment="CENTER" textFill="WHITE">
+                  <Button mnemonicParsing="false" onAction="#add_pm" prefHeight="35.0" prefWidth="90.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="add Pm" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font size="17.0" />
                      </font>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#add_vm" prefHeight="35.0" prefWidth="90.0" style="-fx-background-color: #9DABE0; -fx-border-width: #4F525E;" styleClass="menuItem" text="add VM" textAlignment="CENTER" textFill="WHITE">
+                  <Button mnemonicParsing="false" onAction="#add_vm" prefHeight="35.0" prefWidth="90.0" style="-fx-background-color: #9DABE0; -fx-border-width: #4F525E;" styleClass="menuItem" stylesheets="@style.css" text="add VM" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font size="17.0" />
                      </font>
                   </Button>
-                  <Button fx:id="random" mnemonicParsing="false" onAction="#random" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" text="Random" textAlignment="CENTER" textFill="WHITE">
+                  <Button fx:id="random" mnemonicParsing="false" onAction="#random" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="Random" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font size="17.0" />
                      </font>

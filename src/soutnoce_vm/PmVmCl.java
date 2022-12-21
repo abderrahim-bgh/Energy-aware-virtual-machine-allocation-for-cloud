@@ -9,21 +9,32 @@ package soutnoce_vm;
  * @author abderrahim
  */
 public class PmVmCl {
-     String pm,vm;
+     String cpu,vm,ram;
 
-    public PmVmCl(String pm, String vm) {
-        this.pm = pm;
-        this.vm = vm;
+    public String getRam() {
+        return ram;
+    }
+
+    public void setRam(String ram) {
+        this.ram = ram;
+    }
+     
+
+    public PmVmCl(String vm,String cpu, String ram) {
+          this.vm = vm;
+        this.cpu = cpu;
+        this.ram=ram;
+      
     }
 
   
 
-    public String getPm() {
-        return pm;
+    public String getCpu() {
+        return cpu;
     }
 
-    public void setPm(String pm) {
-        this.pm = pm;
+    public void setCpu(String cpu) {
+        this.cpu = cpu;
     }
 
     public String getVm() {

@@ -10,6 +10,9 @@ import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -69,14 +72,15 @@ public class FXMLDocumentController implements Initializable {
     @FXML
    // private TableView<PmVmCl> vm_in_pm;
     
-   
-    String vmm[][] = new String[5][100];
-        String pmm[][] = new String[6][100];
+    int vv=290;
+    int pp = 100;
+    String vmm[][] = new String[5][vv];
+        String pmm[][] = new String[6][pp];
         int nb_vm=0;
         int nb_pm=0;
         
-                String allVm[][] = new String[5][100];
-                 String allPm[][] = new String[6][100];
+                String allVm[][] = new String[5][vv];
+                 String allPm[][] = new String[6][pp];
 
    
     
@@ -124,11 +128,9 @@ FileChooser fileChooser = new FileChooser();
         }
         
          int vi=1;
-         for(int i=0;i<100;i++){
+         for(int i=0;i<pp;i++){
              if(pmm[2][i]!=null){
-             int r = Integer.parseInt(pmm[1][i]);
-
-            for(int j=0;j<r;j++){
+           
                
               //  for(int z=0;z< Integer.parseInt(vmm[1][i]);z++){
                 pmCl ipm = new pmCl("pm"+vi,pmm[2][i],pmm[3][i],pmm[4][i],pmm[5][i]);
@@ -141,7 +143,7 @@ FileChooser fileChooser = new FileChooser();
                        allPm[4][i]=pmm[5][i];
                         vi++;
                  
-            }
+            
             }
         }
         
@@ -195,7 +197,7 @@ FileChooser fileChooser = new FileChooser();
             } 
         }        
          int vi=1;
-         for(int i=0;i<100;i++){
+         for(int i=0;i<vv;i++){
              if(vmm[1][i]!=null){
             
                
@@ -229,48 +231,42 @@ FileChooser fileChooser = new FileChooser();
     void random(ActionEvent event) throws IOException {
            
                 
-                // vm_in_pm.setVisible(true);
-                for(int i=0;i<nb_pm;i++){
-                for(int j=0;j<nb_vm;j++){
-                // int elemnt= ;
-                set.add(rd.nextInt(nb_vm));
+             
+                List<String> vmList = Arrays.asList(allVm[0]);
+
+		Collections.shuffle(vmList);
+
+		vmList.toArray(allVm[0]);
                 
-                
-                }
-                }
-                System.out.println(set);
-                Integer[] array = new Integer[set.size()];
-                int k = 0;
-                for (Integer i: set) {
-                array[k++] = i;
-                }
-                // System.out.print(elemnt[1]+elemnt[2]+elemnt[5]);
+                System.out.println(allVm[0]);
+              
                 
                 int z=0;
                 int  N_vm_cpu=0; int  N_vm_ram=0;
                 
                 for(int i=0;i<nb_vm;i++){
-                System.out.println(nb_vm +" "+ allVm[0][i]);
+                System.out.println(nb_vm +" "+ allVm[0][i]+" "+allVm[0].length);
                 }
-                String Vm1[]=new String[nb_vm];
-                String Pm1[]= new String[nb_vm];
+                String Vm1[][]=new String[4][nb_vm];
+                String Pm1[][]= new String[3][nb_pm];
                 for(int i=0;i<nb_vm;i++){
-                int xv=array[i];
-                if(z<nb_pm && !allVm[1][xv].isEmpty()){
+                int xv=Integer.parseInt(allVm[0][i]);
+                if(z<nb_pm && !allVm[1][xv-1].isEmpty()){
                 
-                N_vm_cpu= N_vm_cpu+ Integer.parseInt(allVm[1][xv]);
+                N_vm_cpu= N_vm_cpu+ Integer.parseInt(allVm[1][xv-1]);
+                N_vm_ram=N_vm_ram+Integer.parseInt(allVm[2][xv-1]);
                 // System.out.println(N_vm_cpu +" "+Integer.parseInt( allPm[1][i]));
                 int p= Integer.parseInt( allPm[1][z]);
-                if(N_vm_cpu <=p && nb_vm>0){
-                    
-                        Vm1[i]="vm"+(array[i]+1);
-                        Pm1[i]="pm"+(z+1);
-                PmVmCl pv= new PmVmCl("pm"+(z+1),"vm"+(array[i]+1));
-               
+                int p2= Integer.parseInt( allPm[2][z])*1024;
+                if(N_vm_cpu <=p&& N_vm_ram<p2 && nb_vm>0){
+                        Vm1[3][i]=String.valueOf(z+1);
+                        Vm1[0][i]="vm"+allVm[0][i];
+                        Vm1[1][i]=allVm[1][xv-1];
+                        Vm1[2][i]=allVm[2][xv-1];
+                        Pm1[0][z]=String.valueOf(z+1);
+                         Pm1[1][z]=allPm[1][z];
+                          Pm1[2][z]=allPm[2][z];
                 
-            
-              
-              //  vm_in_pm.getItems().add(pv);
                 }
                 else{
                 N_vm_cpu=0;
@@ -291,7 +287,7 @@ FileChooser fileChooser = new FileChooser();
                  RandomController randomController = loader.
                        getController();
                
-                randomController.get_data(Pm1, Vm1);
+                randomController.get_data(Pm1[0], Vm1[0],Vm1[1], Vm1[2],Pm1[1],Pm1[2],Vm1[3]);
                    
                    Stage stage =new Stage();
                    stage.setTitle("random");
