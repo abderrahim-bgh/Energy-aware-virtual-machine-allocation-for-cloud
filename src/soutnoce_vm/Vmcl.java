@@ -13,13 +13,22 @@ public class Vmcl {
     String cpu;
     String ram;
     String state; String energy;
+    String vm_storage;
 
-    public Vmcl(String vm, String cpu, String ram, String state, String energy) {
+    public Vmcl(String vm, String cpu, String ram,String vm_storage, String energy) {
         this.vm = vm;
         this.cpu = cpu;
         this.ram = ram;
         this.state = state;
         this.energy = energy;
+        this.vm_storage=vm_storage;
+    }
+    public String getVm_storage() {
+        return vm_storage;
+    }
+
+    public void setVm_storage(String vm_storage) {
+        this.vm_storage = vm_storage;
     }
 
     public String getVm() {

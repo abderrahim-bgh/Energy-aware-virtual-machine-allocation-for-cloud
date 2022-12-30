@@ -10,13 +10,24 @@ public class pmCl {
     String cpu;
     String ram;
     String state; String energy;
+    String pm_storage;
 
-    public pmCl(String pm, String cpu, String ram, String state, String energy) {
+    public String getPm_storage() {
+        return pm_storage;
+    }
+
+    public void setPm_storage(String pm_storage) {
+        this.pm_storage = pm_storage;
+    }
+    
+
+    public pmCl(String pm, String cpu, String ram, String state,String pm_storage, String energy) {
         this.pm = pm;
         this.cpu = cpu;
         this.ram = ram;
         this.state = state;
         this.energy = energy;
+        this.pm_storage=pm_storage;
     }
 
     public String getPm() {

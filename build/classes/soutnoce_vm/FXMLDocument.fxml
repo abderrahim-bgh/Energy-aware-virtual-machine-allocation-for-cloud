@@ -31,6 +31,11 @@
                         <Font size="17.0" />
                      </font>
                   </Button>
+                  <Button fx:id="firstfit" mnemonicParsing="false" onAction="#firstfit" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="first-fit" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Button>
                </children>
                <cursor>
                   <Cursor fx:constant="DEFAULT" />
@@ -45,6 +50,7 @@
           <TableColumn fx:id="pm_cpu" minWidth="5.0" prefWidth="64.0" text="CPU" />
             <TableColumn fx:id="pm_ram" minWidth="5.0" prefWidth="64.0" text="RAM" />
             <TableColumn fx:id="pm_state" minWidth="5.0" prefWidth="64.0" text="State" />
+            <TableColumn fx:id="pm_storage" minWidth="5.0" prefWidth="64.0" text="Storage" />
             <TableColumn fx:id="pm_eng" minWidth="5.0" prefWidth="64.0" text="T.Energy" />
         </columns>
          <columnResizePolicy>
@@ -54,9 +60,10 @@
       <TableView fx:id="idvm" layoutX="736.0" layoutY="145.0" prefHeight="550.0" prefWidth="500.0" AnchorPane.rightAnchor="60.0">
          <columns>
             <TableColumn fx:id="vm" prefWidth="86.0" text="VM" />
-            <TableColumn fx:id="vm_cpu" minWidth="5.0" prefWidth="64.0" text="CPU2" />
-            <TableColumn fx:id="vm_ram" minWidth="5.0" prefWidth="64.0" text="RAM2" />
-            <TableColumn fx:id="vm_eng" minWidth="5.0" prefWidth="64.0" text="T.Energy2" />
+            <TableColumn fx:id="vm_cpu" minWidth="5.0" prefWidth="64.0" text="CPU" />
+            <TableColumn fx:id="vm_ram" minWidth="5.0" prefWidth="64.0" text="RAM" />
+            <TableColumn fx:id="vm_storage" minWidth="5.0" prefWidth="64.0" text="Storage" />
+            <TableColumn fx:id="vm_eng" minWidth="5.0" prefWidth="64.0" text="T.Energy" />
          </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

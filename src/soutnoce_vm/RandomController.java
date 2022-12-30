@@ -22,6 +22,12 @@ import javafx.scene.input.MouseEvent;
  * @author abderrahim
  */
 public class RandomController implements Initializable {
+    
+    @FXML
+    private Label lb1;
+
+    @FXML
+    private Label lb2;
 
    
     @FXML
@@ -42,10 +48,12 @@ public class RandomController implements Initializable {
     @FXML
     private ListView<String> list_pm;
     
-    public void get_data(String[] pm1,String[] vm1,String [] cpu_vm, String[] ram_vm,String [] cpu_pm, String[] ram_pm,String[]vm_place){
+    public void get_data(String[] pm1,String[] vm1,String [] cpu_vm, String[] ram_vm,String [] cpu_pm, String[] ram_pm,String[]vm_place
+                         ,String[]storage_vm, String[] storage_pm){
         String p=pm1[0];
 
-        for(int i=0;i<pm1.length;i++){list_pm.getItems().add("PM"+pm1[i]);
+        for(int i=0;i<pm1.length;i++){
+            list_pm.getItems().add("PM"+pm1[i]);
            }
                   int nb_vm=0;
        for(int i=0;i<vm1.length;i++){
@@ -55,13 +63,15 @@ public class RandomController implements Initializable {
        list_pm.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
-           
+          lb1.setVisible(true);                        
+          lb2.setVisible(true);
           vm_in_pm.setVisible(true);
           String click = list_pm.getSelectionModel().getSelectedItem();
           vm_in_pm.getItems().clear();
           int cpu=0;
           int ram=0;
           int vm_p=0;
+          int storage=0;
           String clk=click.substring(2,click.length());
           for(int i=0;i<vm_place.length;i++){
               if( vm_place[i]!=null)
@@ -71,6 +81,7 @@ public class RandomController implements Initializable {
               vm_in_pm.getItems().add(pv1);
               cpu=cpu+Integer.parseInt(cpu_vm[i]);
               ram=ram+Integer.parseInt(ram_vm[i]);
+              storage=storage+Integer.parseInt(storage_vm[i]);
           }
               }
           int num=0;
@@ -86,7 +97,8 @@ public class RandomController implements Initializable {
           calcule_label.setText(" - CPU utilization of "+click+" is: "+cpu+"Mips /"+cpu_pm[Integer.parseInt(clk)-1]+
                   "Mips \n - RAM utilisation :"+ram+"MB /"+num+"MB"
                           + "\n - Total of vm placed in this "+click+" is: "+vm_p
-                           +"\n - Energy: "+Energy);
+                           + "\n - Total storage in "+click+"is :"+storage+" G / "+storage_pm[Integer.parseInt(clk)-1]+" G"
+                            + "\n - Energy: "+Energy);
         }
     });
       
@@ -98,7 +110,8 @@ public class RandomController implements Initializable {
                                 
         calcule_label.setVisible(false);                        
         vm_in_pm.setVisible(false);
-
+        lb1.setVisible(false);                        
+        lb2.setVisible(false);
          vm_N.setCellValueFactory(new PropertyValueFactory<PmVmCl,String>("vm"));
          vp_cpu.setCellValueFactory(new PropertyValueFactory<PmVmCl,String>("cpu"));
          vp_ram.setCellValueFactory(new PropertyValueFactory<PmVmCl,String>("ram"));
