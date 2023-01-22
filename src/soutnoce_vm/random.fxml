@@ -5,26 +5,16 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" prefHeight="751.0" prefWidth="1291.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="soutnoce_vm.RandomController">
    <children>
-      <BorderPane prefHeight="751.0" prefWidth="1298.0">
-         <top>
-            <HBox prefHeight="67.0" prefWidth="1305.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="66.0" prefWidth="1304.0" style="-fx-background-color: #9DABE0;" text="Random Classification" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
-                     <font>
-                        <Font name="DejaVuMathTeXGyre-Regular" size="44.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-         </top>
-      </BorderPane>
-      <TableView fx:id="vm_in_pm" layoutX="468.0" layoutY="190.0" prefHeight="259.0" prefWidth="468.0">
+      <Label fx:id="titel_classification" alignment="CENTER" contentDisplay="CENTER" prefHeight="72.0" prefWidth="1323.0" style="-fx-background-color: #9DABE0;" text="Random Classification" textFill="WHITE" textOverrun="CENTER_ELLIPSIS" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <font>
+            <Font name="DejaVuMathTeXGyre-Regular" size="44.0" />
+         </font>
+      </Label>
+      <TableView fx:id="vm_in_pm" layoutX="468.0" layoutY="190.0" prefHeight="259.0" prefWidth="468.0" AnchorPane.bottomAnchor="302.0" AnchorPane.leftAnchor="468.0" AnchorPane.rightAnchor="355.0" AnchorPane.topAnchor="190.0">
         <columns>
           <TableColumn fx:id="vm_N" prefWidth="75.0" text="vm" />
           <TableColumn fx:id="vp_cpu" prefWidth="75.0" text="CPU" />
@@ -34,23 +24,23 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <ListView fx:id="list_pm" layoutX="10.0" layoutY="131.0" prefHeight="592.0" prefWidth="392.0" />
-      <Label layoutX="17.0" layoutY="74.0" text="Physical machins" textFill="#173dc3">
+      <ListView fx:id="list_pm" layoutX="10.0" layoutY="131.0" prefHeight="592.0" prefWidth="392.0" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="121.0" />
+      <Label layoutX="17.0" layoutY="74.0" text="Physical machins" textFill="#173dc3" AnchorPane.leftAnchor="17.0">
          <font>
             <Font name="System Bold Italic" size="40.0" />
          </font>
       </Label>
-      <Label fx:id="calcule_label" layoutX="468.0" layoutY="513.0" prefHeight="210.0" prefWidth="468.0" style="-fx-background-color: #ffffff;" text="Label" />
-      <Label fx:id="total_label" layoutX="413.0" layoutY="70.0" prefHeight="59.0" prefWidth="468.0" text="Label">
+      <Label fx:id="calcule_label" layoutX="468.0" layoutY="513.0" prefHeight="210.0" prefWidth="468.0" style="-fx-background-color: #ffffff;" text="Label" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="468.0" AnchorPane.rightAnchor="355.0" />
+      <Label fx:id="total_label" layoutX="947.0" layoutY="190.0" prefHeight="265.0" prefWidth="309.0" style="-fx-background-color: #ffffff; -fx-alignment: center;" text="Label" AnchorPane.bottomAnchor="306.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="190.0">
          <font>
             <Font size="24.0" />
          </font></Label>
-      <Label fx:id="lb1" layoutX="464.0" layoutY="143.0" text="Virtual Machines Placement" textFill="#173dc3">
+      <Label fx:id="lb1" layoutX="464.0" layoutY="143.0" prefHeight="36.0" prefWidth="481.0" text="Virtual Machines Placement" textFill="#173dc3" AnchorPane.leftAnchor="468.0" AnchorPane.rightAnchor="342.0">
          <font>
             <Font name="System Bold Italic" size="30.0" />
          </font>
       </Label>
-      <Label fx:id="lb2" layoutX="524.0" layoutY="456.0" text="Energy and info of PM" textFill="#173dc3">
+      <Label fx:id="lb2" layoutX="524.0" layoutY="456.0" text="Energy and info of PM" textFill="#173dc3" AnchorPane.bottomAnchor="259.0" AnchorPane.leftAnchor="468.0" AnchorPane.rightAnchor="355.0">
          <font>
             <Font name="System Bold Italic" size="30.0" />
          </font>

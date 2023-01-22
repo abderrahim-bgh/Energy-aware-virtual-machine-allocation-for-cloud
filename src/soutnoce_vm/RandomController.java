@@ -47,9 +47,15 @@ public class RandomController implements Initializable {
     private Label calcule_label;
     @FXML
     private ListView<String> list_pm;
+    @FXML
+    public Label titel_classification;
     
-    public void get_data(String[] pm1,String[] vm1,String [] cpu_vm, String[] ram_vm,String [] cpu_pm, String[] ram_pm,String[]vm_place
+    public void get_data(String[] pm1,String[] vm1,String[] vm2,String [] cpu_vm, String[] ram_vm,String [] cpu_pm, String[] ram_pm,String[]vm_place
                          ,String[]storage_vm, String[] storage_pm){
+        
+        double energy_total=0;
+      
+        
         String p=pm1[0];
 
         for(int i=0;i<pm1.length;i++){
@@ -59,7 +65,36 @@ public class RandomController implements Initializable {
        for(int i=0;i<vm1.length;i++){
                 if(vm1[i]!=null) nb_vm++;
        }
-            total_label.setText("Total of vm placed is "+nb_vm+"/"+vm1.length);          
+       
+       
+       
+       
+         for(int j=0;j<pm1.length;j++){
+             int cpu=0;
+             int ram=0;
+             int z= Integer.parseInt(pm1[j]);
+           for(int i=0;i<vm_place.length;i++){
+             if(vm_place[i]!=null)
+             if(vm_place[i].equals(String.valueOf(z))){
+                 cpu=cpu+Integer.parseInt(cpu_vm[i]);
+                 ram=ram+Integer.parseInt(ram_vm[i]);
+                }  
+            }
+            int num=0;
+          num= Integer.parseInt(ram_pm[Integer.parseInt(pm1[j])-1])*1024 ;
+          double c1=Integer.parseInt(cpu_pm[Integer.parseInt(pm1[j])-1]);
+          double c=cpu/c1;
+          double k =0.7;
+        double  k1=0.3;
+          double e2=k1*250;
+          double Energy = (k*250) + (e2*c); 
+          energy_total=energy_total+Energy;
+        }
+         
+         
+            total_label.setText("Total of vm placed "
+                    + "\n is: "+nb_vm+"/"+vm1.length
+                            + "\n energy total:"+energy_total);          
        list_pm.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
@@ -107,6 +142,7 @@ public class RandomController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
                                 
         calcule_label.setVisible(false);                        
         vm_in_pm.setVisible(false);

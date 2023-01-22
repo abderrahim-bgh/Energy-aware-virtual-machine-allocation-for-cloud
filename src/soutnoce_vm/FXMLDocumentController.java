@@ -20,7 +20,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -75,6 +78,18 @@ public class FXMLDocumentController implements Initializable {
       
     @FXML
     private TableColumn<PmVmCl, String> pm_N;
+    @FXML
+    private Spinner<String> spnr_pourcentage;
+     @FXML
+    private Label label_pm;
+
+    @FXML
+    private Label label_vm;
+    @FXML
+    private Label lebel_spnr;
+
+    @FXML
+    private ChoiceBox<String> choice_vmp;
    
     //number of VMs
     int vv=290;
@@ -97,6 +112,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     void add_pm(ActionEvent event) {
         // change visibylity of table view of pm
+         label_pm.setVisible(true);
          idpm.setVisible(true);
          //for get file of pm
 FileChooser fileChooser = new FileChooser();
@@ -170,8 +186,12 @@ FileChooser fileChooser = new FileChooser();
 
     @FXML
     void add_vm(ActionEvent event) {
+        
         // visibility of table view
         idvm.setVisible(true);
+        label_vm.setVisible(true);
+        choice_vmp.setVisible(true);
+        lebel_spnr.setVisible(true);
         // open file 
  FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters()
@@ -243,6 +263,14 @@ FileChooser fileChooser = new FileChooser();
     
        @FXML
     void random(ActionEvent event) throws IOException {
+              // get % of VM p
+              String prce= choice_vmp.getValue();
+              // empl: 50% = 50
+              String val_p=prce.substring(0,2);
+                // copy all vms
+               String []T_vm_return= new String[allVm[0].length];
+               List<String> vmLs = Arrays.asList(allVm[0]);
+               vmLs.toArray(T_vm_return);
               // add line of number vm in list 
                 List<String> vmList = Arrays.asList(allVm[0]);
                // shuffle the Vms number in the list
@@ -258,9 +286,9 @@ FileChooser fileChooser = new FileChooser();
                 for(int i=0;i<nb_vm;i++){
                 System.out.println(nb_vm +" "+ allVm[0][i]+" "+allVm[0].length);
                 }
-                String Vm1[][]=new String[5][nb_vm];
+                String Vm1[][]=new String[6][nb_vm];
                 String Pm1[][]= new String[4][nb_pm];
-               
+               int num_max=(nb_pm*Integer.parseInt(val_p))/100;
                 for(int i=0;i<nb_vm;i++){
                    int xv=Integer.parseInt(allVm[0][i]);
                   if(z<nb_pm && !allVm[1][xv-1].isEmpty()){
@@ -280,7 +308,12 @@ FileChooser fileChooser = new FileChooser();
                             N_vm_ram=0;
                             Vm1[3][i]=String.valueOf(nbP+1);
                             System.out.println("nbP "+allPm[5][nbP]+" "+allPm[1][nbP]+" "+p);
+                            if(i<num_max){
                             Vm1[0][i]="vm"+allVm[0][i];
+                            }
+                            else{
+                                Vm1[5][i]="vm"+allVm[0][i];
+                            }
                             Vm1[1][i]=allVm[1][xv-1];
                             Vm1[2][i]=allVm[2][xv-1];
                             Vm1[4][i]=allVm[4][i];
@@ -311,13 +344,16 @@ FileChooser fileChooser = new FileChooser();
                  RandomController randomController = loader.
                        getController();
                
-                randomController.get_data(Pm1[0], Vm1[0],Vm1[1], Vm1[2],Pm1[1],Pm1[2],Vm1[3],Vm1[4],Pm1[3]);
-                   
+                randomController.get_data(Pm1[0], Vm1[0],Vm1[5],Vm1[1], Vm1[2],Pm1[1],Pm1[2],Vm1[3],Vm1[4],Pm1[3]);
+                   randomController.titel_classification.setText("Random Classification");
                    Stage stage =new Stage();
                    stage.setTitle("random");
+                  
                    stage.setScene(new Scene(root1));
                    stage.show();
-           
+                   // return vm no random
+            List<String> vmLs1 = Arrays.asList(T_vm_return);
+               vmLs1.toArray(allVm[0]);
 
     }
     
@@ -333,7 +369,7 @@ FileChooser fileChooser = new FileChooser();
                 for(int i=0;i<nb_vm;i++){
                 System.out.println(nb_vm +" "+ allVm[0][i]+" "+allVm[0].length);
                 }
-                String Vm1[][]=new String[5][nb_vm];
+                String Vm1[][]=new String[6][nb_vm];
                 String Pm1[][]= new String[4][nb_pm];
                 for(int i=0;i<nb_vm;i++){
                 int xv=Integer.parseInt(allVm[0][i]);
@@ -377,17 +413,26 @@ FileChooser fileChooser = new FileChooser();
                  RandomController randomController = loader.
                        getController();
                
-                randomController.get_data(Pm1[0], Vm1[0],Vm1[1], Vm1[2],Pm1[1],Pm1[2],Vm1[3],Vm1[4],Pm1[3]);
-                   
+                randomController.get_data(Pm1[0], Vm1[0],Vm1[5],Vm1[1], Vm1[2],Pm1[1],Pm1[2],Vm1[3],Vm1[4],Pm1[3]);
+                randomController.titel_classification.setText("first fit Classification");
                    Stage stage =new Stage();
                    stage.setTitle("random");
                    stage.setScene(new Scene(root1));
                    stage.show();
     }
+    
+    private String []percentage={"10%","20%","30%","40%","50%","100%"};
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        label_pm.setVisible(false);
+        label_vm.setVisible(false);
+        choice_vmp.setVisible(false);
+                lebel_spnr.setVisible(false);
+
+        choice_vmp.getItems().addAll(percentage);
+        
         idpm.setVisible(false);
         idvm.setVisible(false);
        // vm_N.setCellValueFactory(new PropertyValueFactory<PmVmCl,String>("vm"));
