@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableColumn?>
@@ -9,7 +10,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="751.0" prefWidth="1291.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="soutnoce_vm.RandomController">
    <children>
-      <Label fx:id="titel_classification" alignment="CENTER" contentDisplay="CENTER" prefHeight="72.0" prefWidth="1323.0" style="-fx-background-color: #9DABE0;" text="Random Classification" textFill="WHITE" textOverrun="CENTER_ELLIPSIS" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Label fx:id="titel_classification" alignment="CENTER_RIGHT" contentDisplay="CENTER" prefHeight="72.0" prefWidth="1323.0" style="-fx-background-color: #9DABE0;" text="Random Classification " textAlignment="CENTER" textFill="#4db976" textOverrun="CENTER_ELLIPSIS" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <font>
             <Font name="DejaVuMathTeXGyre-Regular" size="44.0" />
          </font>
@@ -35,9 +36,9 @@
          <font>
             <Font size="24.0" />
          </font></Label>
-      <Label fx:id="lb1" layoutX="464.0" layoutY="143.0" prefHeight="36.0" prefWidth="481.0" text="Virtual Machines Placement" textFill="#173dc3" AnchorPane.leftAnchor="468.0" AnchorPane.rightAnchor="342.0">
+      <Label fx:id="lb1" layoutX="467.0" layoutY="143.0" prefHeight="36.0" prefWidth="481.0" text="Virtual Machines Placement" textFill="#173dc3" AnchorPane.leftAnchor="467.0" AnchorPane.rightAnchor="343.0">
          <font>
-            <Font name="System Bold Italic" size="30.0" />
+            <Font name="System Bold Italic" size="28.0" />
          </font>
       </Label>
       <Label fx:id="lb2" layoutX="524.0" layoutY="456.0" text="Energy and info of PM" textFill="#173dc3" AnchorPane.bottomAnchor="259.0" AnchorPane.leftAnchor="468.0" AnchorPane.rightAnchor="355.0">
@@ -45,5 +46,20 @@
             <Font name="System Bold Italic" size="30.0" />
          </font>
       </Label>
+      <Button fx:id="place_vm" layoutX="17.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="First fit" textFill="WHITE" AnchorPane.rightAnchor="1152.0" AnchorPane.topAnchor="15.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Button>
+      <Label fx:id="alocation" layoutX="975.0" layoutY="149.0" text="The first a location" textAlignment="CENTER" textFill="#4db976" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="149.0">
+         <font>
+            <Font name="System Bold" size="25.0" />
+         </font>
+      </Label>
+      <Button fx:id="random" layoutX="150.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="Random" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

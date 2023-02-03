@@ -5,10 +5,16 @@
 package soutnoce_vm;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
@@ -29,6 +35,8 @@ public class RandomController implements Initializable {
     @FXML
     private Label lb2;
 
+   @FXML
+    private Label alocation;
    
     @FXML
     private Label total_label;
@@ -49,55 +57,17 @@ public class RandomController implements Initializable {
     private ListView<String> list_pm;
     @FXML
     public Label titel_classification;
+    @FXML
+    private Button place_vm;
+    @FXML
+    private Button random;
     
-    public void get_data(String[] pm1,String[] vm1,String[] vm2,String [] cpu_vm, String[] ram_vm,String [] cpu_pm, String[] ram_pm,String[]vm_place
-                         ,String[]storage_vm, String[] storage_pm){
-        
-        double energy_total=0;
-      
-        
-        String p=pm1[0];
-
-        for(int i=0;i<pm1.length;i++){
-            list_pm.getItems().add("PM"+pm1[i]);
-           }
-                  int nb_vm=0;
-       for(int i=0;i<vm1.length;i++){
-                if(vm1[i]!=null) nb_vm++;
-       }
-       
-       
-       
-       
-         for(int j=0;j<pm1.length;j++){
-             int cpu=0;
-             int ram=0;
-             int z= Integer.parseInt(pm1[j]);
-           for(int i=0;i<vm_place.length;i++){
-             if(vm_place[i]!=null)
-             if(vm_place[i].equals(String.valueOf(z))){
-                 cpu=cpu+Integer.parseInt(cpu_vm[i]);
-                 ram=ram+Integer.parseInt(ram_vm[i]);
-                }  
-            }
-            int num=0;
-          num= Integer.parseInt(ram_pm[Integer.parseInt(pm1[j])-1])*1024 ;
-          double c1=Integer.parseInt(cpu_pm[Integer.parseInt(pm1[j])-1]);
-          double c=cpu/c1;
-          double k =0.7;
-        double  k1=0.3;
-          double e2=k1*250;
-          double Energy = (k*250) + (e2*c); 
-          energy_total=energy_total+Energy;
-        }
-         
-         
-            total_label.setText("Total of vm placed "
-                    + "\n is: "+nb_vm+"/"+vm1.length
-                            + "\n energy total:"+energy_total);          
-       list_pm.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    public void pm_clik(String[][]classment_pm1,String[][]classment_vm1){
+    
+        list_pm.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
+            
           lb1.setVisible(true);                        
           lb2.setVisible(true);
           vm_in_pm.setVisible(true);
@@ -108,37 +78,306 @@ public class RandomController implements Initializable {
           int vm_p=0;
           int storage=0;
           String clk=click.substring(2,click.length());
-          for(int i=0;i<vm_place.length;i++){
-              if( vm_place[i]!=null)
-          if(vm_place[i].equals(clk)){
+          for(int i=0;i<classment_vm1[3].length;i++){
+              if( classment_vm1[3][i]!=null)
+          if(classment_vm1[3][i].equals(clk)){
               vm_p++;
-               PmVmCl pv1= new PmVmCl( vm1[i],cpu_vm[i],ram_vm[i] );
+               PmVmCl pv1= new PmVmCl( classment_vm1[0][i],classment_vm1[1][i],classment_vm1[2][i] );
               vm_in_pm.getItems().add(pv1);
-              cpu=cpu+Integer.parseInt(cpu_vm[i]);
-              ram=ram+Integer.parseInt(ram_vm[i]);
-              storage=storage+Integer.parseInt(storage_vm[i]);
+              cpu=cpu+Integer.parseInt(classment_vm1[1][i]);
+              ram=ram+Integer.parseInt(classment_vm1[2][i]);
+              storage=storage+Integer.parseInt(classment_vm1[4][i]);
           }
               }
           int num=0;
-          num= Integer.parseInt(ram_pm[Integer.parseInt(clk)-1])*1024 ;
-          double c1=Integer.parseInt(cpu_pm[Integer.parseInt(clk)-1]);
+          num= Integer.parseInt(classment_pm1[2][Integer.parseInt(clk)-1])*1024 ;
+          double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(clk)-1]);
+          double c=cpu/c1;
+          double k =0.7;
+          double  k1=0.3;
+          double e2=k1*250;
+          double Energy = (k*250) + (e2*c); 
+          calcule_label.setVisible(true);
+          calcule_label.setText(" - CPU utilization of "+click+" is: "+cpu+"Mips /"+classment_pm1[1][Integer.parseInt(clk)-1]+
+                  "Mips \n - RAM utilisation :"+ram+"MB /"+num+"MB"
+                          + "\n - Total of vm placed in this "+click+" is: "+vm_p
+                           + "\n - Total storage in "+click+"is :"+storage+" G / "+classment_pm1[4][Integer.parseInt(clk)-1]+" G"
+                            + "\n - Energy: "+Energy);
+        }
+    });
+    
+    
+    }
+    
+    public void get_data(String[][]classment_pm1,String[][]classment_vm1,String[][]vm2){
+        
+        double energy_total=0;
+      
+        
+        String p=classment_pm1[0][0];
+
+        for(int i=0;i<classment_pm1[0].length;i++){
+            list_pm.getItems().add("PM"+classment_pm1[0][i]);
+           }
+                  int nb_vm=0;
+       for(int i=0;i<classment_vm1[0].length;i++){
+                if(classment_vm1[0][i]!=null) nb_vm++;
+       }
+       
+       
+       
+       
+         for(int j=0;j<classment_pm1[0].length;j++){
+             int cpu=0;
+             int ram=0;
+             int z= Integer.parseInt(classment_pm1[0][j]);
+           for(int i=0;i<classment_vm1[4].length;i++){
+             if(classment_vm1[3][i]!=null)
+             if(classment_vm1[3][i].equals(String.valueOf(z))){
+                 cpu=cpu+Integer.parseInt(classment_vm1[1][i]);
+                 ram=ram+Integer.parseInt(classment_vm1[2][i]);
+                }  
+            }
+            int num=0;
+          num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
+          double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
           double c=cpu/c1;
           double k =0.7;
         double  k1=0.3;
           double e2=k1*250;
           double Energy = (k*250) + (e2*c); 
-           System.out.println(c+" "+c1+" "+cpu+" "+e2+" "+Energy);
-          calcule_label.setVisible(true);
-          calcule_label.setText(" - CPU utilization of "+click+" is: "+cpu+"Mips /"+cpu_pm[Integer.parseInt(clk)-1]+
-                  "Mips \n - RAM utilisation :"+ram+"MB /"+num+"MB"
-                          + "\n - Total of vm placed in this "+click+" is: "+vm_p
-                           + "\n - Total storage in "+click+"is :"+storage+" G / "+storage_pm[Integer.parseInt(clk)-1]+" G"
-                            + "\n - Energy: "+Energy);
+          energy_total=energy_total+Energy;
         }
-    });
+         
+         
+            total_label.setText("Total of vm placed "
+                    + "\n is: "+nb_vm+"/"+(classment_vm1[0].length+vm2[0].length)
+                            + "\n energy total:"+energy_total);    
+            
+            pm_clik(classment_pm1,classment_vm1);
+   
       
     }
     
+    
+    
+    
+    
+      public void get_date2(String[][] classment_pm1,String[][]vm,String [][] vm2){ 
+     String[][] VmAll= new String[5][vm[0].length+vm2[0].length];
+      
+       VmAll[0]=Arrays.copyOf(vm[0], vm[0].length+vm2[0].length);
+      System.arraycopy(vm2[0],0,VmAll[0],vm[0].length,vm2[0].length);
+       VmAll[1]=Arrays.copyOf(vm[1], vm[1].length+vm2[1].length);
+      System.arraycopy(vm2[1],0,VmAll[1],vm[1].length,vm2[1].length);
+       VmAll[2]=Arrays.copyOf(vm[2], vm[2].length+vm2[2].length);
+      System.arraycopy(vm2[2],0,VmAll[2],vm[2].length,vm2[2].length);
+      
+       VmAll[4]=Arrays.copyOf(vm[4], vm[4].length+vm2[4].length);
+      System.arraycopy(vm2[4],0,VmAll[4],vm[4].length,vm2[4].length);
+      
+         String[][] VmAll2= new String[5][vm[0].length+vm2[0].length];
+      
+       VmAll2[0]=Arrays.copyOf(vm[0], vm[0].length+vm2[0].length);
+      System.arraycopy(vm2[0],0,VmAll2[0],vm[0].length,vm2[0].length);
+       VmAll2[1]=Arrays.copyOf(vm[1], vm[1].length+vm2[1].length);
+      System.arraycopy(vm2[1],0,VmAll2[1],vm[1].length,vm2[1].length);
+       VmAll2[2]=Arrays.copyOf(vm[2], vm[2].length+vm2[2].length);
+      System.arraycopy(vm2[2],0,VmAll2[2],vm[2].length,vm2[2].length);
+      
+       VmAll2[4]=Arrays.copyOf(vm[4], vm[4].length+vm2[4].length);
+      System.arraycopy(vm2[4],0,VmAll2[4],vm[4].length,vm2[4].length);
+      
+      
+       
+      place_vm.setOnMouseClicked(new EventHandler<MouseEvent>(){
+          @Override
+          public void handle(MouseEvent event) {
+              alocation.setText("the second a location");
+              double energy_total=0;
+                  int nb_vm=0;
+        String[] vm_p=new String[vm2[3].length];
+        vm_p=Arrays.copyOf(vm2[3], vm2[3].length);          
+        String[] cpu_pm=new String[classment_pm1[4].length];
+       cpu_pm=Arrays.copyOf(classment_pm1[4], classment_pm1[4].length);
+      String[] cpu_vm=new String[classment_pm1[4].length];
+       cpu_vm=Arrays.copyOf(classment_pm1[5], classment_pm1[4].length);
+       int total_cpu=0;
+       int total_ram=0;
+       int z=0;
+       
+       for(int i=0;i<vm2[0].length;i++){
+           
+           if(z<100){
+               
+             if(cpu_pm[z]==null)cpu_pm[z]="0";
+           total_cpu=Integer.parseInt(cpu_pm[z])+Integer.parseInt(vm2[1][i]);
+            if(cpu_vm[z]==null)cpu_vm[z]="0";
+           total_ram=Integer.parseInt(cpu_vm[z])+Integer.parseInt(vm2[2][i]);
+           
+           int p1=Integer.parseInt(classment_pm1[1][z]);
+           int p2=Integer.parseInt(classment_pm1[2][z])*1024;
+              
+           if(p1>=total_cpu && total_ram<=p2 ){
+               cpu_pm[z]=String.valueOf(total_cpu);
+               cpu_vm[z]=String.valueOf(total_ram);
+               
+               vm_p[i]=String.valueOf(z+1);
+               
+           }
+              else{
+           
+               
+               z++;
+               i--;
+           }
+           
+        
+        }
+              }
+            VmAll[3]=Arrays.copyOf(vm[3], vm[3].length+vm2[3].length);
+      System.arraycopy(vm_p,0,VmAll[3],vm[3].length,vm2[3].length);
+        for(int i=0;i<VmAll[0].length;i++){
+                if(VmAll[3][i]!=null) nb_vm++;
+       }
+        
+           for(int j=0;j<classment_pm1[0].length;j++){
+             int cpu=0;
+             int ram=0;
+             int zi= Integer.parseInt(classment_pm1[0][j]);
+           for(int i=0;i<VmAll[4].length;i++){
+             if(VmAll[3][i]!=null)
+             if(VmAll[3][i].equals(String.valueOf(zi))){
+                 cpu=cpu+Integer.parseInt(VmAll[1][i]);
+                 ram=ram+Integer.parseInt(VmAll[2][i]);
+                }  
+            }
+            int num=0;
+          num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
+          double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
+          double c=cpu/c1;
+          double k =0.7;
+        double  k1=0.3;
+          double e2=k1*250;
+          double Energy = (k*250) + (e2*c); 
+          energy_total=energy_total+Energy;
+        }
+         
+            total_label.setText("Total of vm placed "
+                    + "\n is: "+nb_vm+"/"+(VmAll[0].length)
+                            + "\n energy total:"+energy_total); 
+            
+            
+                        pm_clik(classment_pm1,VmAll);
+
+            
+          }
+      });
+      
+    
+      random.setOnMouseClicked(new EventHandler<MouseEvent>(){
+         @Override
+         public void handle(MouseEvent event) {
+             alocation.setText("the second a location");
+              double energy_total=0;
+                  int nb_vm=0;
+        String[] vm_p=new String[vm2[3].length];
+        vm_p=Arrays.copyOf(vm2[3], vm2[3].length);  
+        String[] cpu_pm=new String[classment_pm1[4].length];
+        cpu_pm=Arrays.copyOf(classment_pm1[4], classment_pm1[4].length);
+        String[] cpu_vm=new String[classment_pm1[4].length];
+        cpu_vm=Arrays.copyOf(classment_pm1[5], classment_pm1[4].length);
+       int total_cpu=0;
+       int total_ram=0;
+       
+       String vm_shuffle[]=new String[vm2[0].length];
+        List<String> vmList = Arrays.asList(vm2[0]);
+               // shuffle the Vms number in the list
+		Collections.shuffle(vmList);
+                // return the Vms number in the array
+		vmList.toArray(vm_shuffle);
+             
+                Random rd = new Random();
+               int z=0;
+       for(int i=0;i<vm2[0].length;i++){
+           
+            
+           if(z<classment_pm1[0].length){
+          
+            if(cpu_pm[z]==null)cpu_pm[z]="0";
+           total_cpu=Integer.parseInt(cpu_pm[z])+Integer.parseInt(vm2[1][i]);
+            if(cpu_vm[z]==null)cpu_vm[z]="0";
+           total_ram=Integer.parseInt(cpu_vm[z])+Integer.parseInt(vm2[2][i]);
+              
+                String vm_number=vm_shuffle[i];
+                int p1=Integer.parseInt(classment_pm1[1][z]);
+           int p2=Integer.parseInt(classment_pm1[2][z])*1024;
+                        String vi=vm2[0][i].substring(2,vm2[0][i].length());
+                   int xv=Integer.parseInt(vi)-vm[0].length;
+            
+                total_cpu=Integer.parseInt(cpu_pm[z])+Integer.parseInt(vm2[1][xv-1]);
+                total_ram=Integer.parseInt(cpu_vm[z])+Integer.parseInt(vm2[2][xv-1]);
+              
+               cpu_pm[z]=String.valueOf(total_cpu);
+               cpu_vm[z]=String.valueOf(total_ram);
+               
+           if(total_cpu<=p1 &&total_ram<=p2 ){
+                     vm_p[xv-1]=String.valueOf(z+1);
+            }
+              else{
+           
+               total_cpu=0;
+               total_ram=0;
+               z++;
+               i--;
+           }
+             
+           }
+              }
+       
+        VmAll2[3]=Arrays.copyOf(vm[3], vm[3].length+vm2[3].length);
+      System.arraycopy(vm_p,0,VmAll2[3],vm[3].length,vm2[3].length);
+        
+      for(int i=0;i<VmAll2[0].length;i++){
+                if(VmAll2[3][i]!=null) nb_vm++;
+       }
+       
+             for(int j=0;j<classment_pm1[0].length;j++){
+             int cpu=0;
+             int ram=0;
+             int zi= Integer.parseInt(classment_pm1[0][j]);
+           for(int i=0;i<VmAll2[4].length;i++){
+             if(VmAll2[3][i]!=null)
+             if(VmAll2[3][i].equals(String.valueOf(zi))){
+                 cpu=cpu+Integer.parseInt(VmAll2[1][i]);
+                 ram=ram+Integer.parseInt(VmAll2[2][i]);
+                }  
+            }
+            int num=0;
+          num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
+          double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
+          double c=cpu/c1;
+          double k =0.7;
+        double  k1=0.3;
+          double e2=k1*250;
+          double Energy = (k*250) + (e2*c); 
+          energy_total=energy_total+Energy;
+        }
+         
+            total_label.setText("Total of vm placed "
+                    + "\n is: "+nb_vm+"/"+(VmAll2[0].length)
+                            + "\n energy total:"+energy_total); 
+            
+            
+                        pm_clik(classment_pm1,VmAll2);
+
+            
+          }
+      });
+      
+      
+      }
+
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {

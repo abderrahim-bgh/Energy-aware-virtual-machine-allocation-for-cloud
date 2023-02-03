@@ -35,6 +35,11 @@
                   <Font size="17.0" />
                </font>
             </Button>
+            <Button fx:id="MBFD" mnemonicParsing="false" onAction="#MBFD_Fonc" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="MBFD" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Button>
          </children>
          <cursor>
             <Cursor fx:constant="DEFAULT" />
