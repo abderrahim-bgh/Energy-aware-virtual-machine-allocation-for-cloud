@@ -15,7 +15,7 @@
             <Font name="DejaVuMathTeXGyre-Regular" size="44.0" />
          </font>
       </Label>
-      <TableView fx:id="vm_in_pm" layoutX="468.0" layoutY="190.0" prefHeight="259.0" prefWidth="468.0" AnchorPane.bottomAnchor="302.0" AnchorPane.leftAnchor="468.0" AnchorPane.rightAnchor="355.0" AnchorPane.topAnchor="190.0">
+      <TableView fx:id="vm_in_pm" layoutX="432.0" layoutY="190.0" prefHeight="259.0" prefWidth="454.0" AnchorPane.bottomAnchor="302.0" AnchorPane.leftAnchor="432.0" AnchorPane.rightAnchor="405.0" AnchorPane.topAnchor="190.0">
         <columns>
           <TableColumn fx:id="vm_N" prefWidth="75.0" text="vm" />
           <TableColumn fx:id="vp_cpu" prefWidth="75.0" text="CPU" />
@@ -31,32 +31,37 @@
             <Font name="System Bold Italic" size="40.0" />
          </font>
       </Label>
-      <Label fx:id="calcule_label" layoutX="468.0" layoutY="513.0" prefHeight="210.0" prefWidth="468.0" style="-fx-background-color: #ffffff;" text="Label" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="468.0" AnchorPane.rightAnchor="355.0" />
-      <Label fx:id="total_label" layoutX="947.0" layoutY="190.0" prefHeight="265.0" prefWidth="309.0" style="-fx-background-color: #ffffff; -fx-alignment: center;" text="Label" AnchorPane.bottomAnchor="306.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="190.0">
+      <Label fx:id="calcule_label" layoutX="432.0" layoutY="503.0" prefHeight="210.0" prefWidth="468.0" style="-fx-background-color: #ffffff;" text="Label" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="432.0" AnchorPane.rightAnchor="391.0" />
+      <Label fx:id="total_label" layoutX="947.0" layoutY="190.0" prefHeight="266.0" prefWidth="352.0" style="-fx-background-color: #ffffff; -fx-alignment: center;" text="Label" AnchorPane.bottomAnchor="295.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="190.0">
          <font>
             <Font size="24.0" />
          </font></Label>
-      <Label fx:id="lb1" layoutX="467.0" layoutY="143.0" prefHeight="36.0" prefWidth="481.0" text="Virtual Machines Placement" textFill="#173dc3" AnchorPane.leftAnchor="467.0" AnchorPane.rightAnchor="343.0">
+      <Label fx:id="lb1" layoutX="431.0" layoutY="143.0" prefHeight="36.0" prefWidth="481.0" text="Virtual Machines Placement" textFill="#173dc3" AnchorPane.leftAnchor="431.0" AnchorPane.rightAnchor="379.0">
          <font>
             <Font name="System Bold Italic" size="28.0" />
          </font>
       </Label>
-      <Label fx:id="lb2" layoutX="524.0" layoutY="456.0" text="Energy and info of PM" textFill="#173dc3" AnchorPane.bottomAnchor="259.0" AnchorPane.leftAnchor="468.0" AnchorPane.rightAnchor="355.0">
+      <Label fx:id="lb2" layoutX="432.0" layoutY="456.0" text="Energy and info of PM" textFill="#173dc3" AnchorPane.bottomAnchor="259.0" AnchorPane.leftAnchor="432.0" AnchorPane.rightAnchor="391.0">
          <font>
             <Font name="System Bold Italic" size="30.0" />
          </font>
       </Label>
-      <Button fx:id="place_vm" layoutX="17.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="First fit" textFill="WHITE" AnchorPane.rightAnchor="1152.0" AnchorPane.topAnchor="15.0">
+      <Button fx:id="place_vm" layoutX="17.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="First fit" textFill="WHITE" AnchorPane.topAnchor="15.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Button>
-      <Label fx:id="alocation" layoutX="975.0" layoutY="149.0" text="The first a location" textAlignment="CENTER" textFill="#4db976" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="149.0">
+      <Label fx:id="alocation" layoutX="952.0" layoutY="149.0" text="The first a location" textAlignment="CENTER" textFill="#4db976" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="149.0">
          <font>
             <Font name="System Bold" size="25.0" />
          </font>
       </Label>
-      <Button fx:id="random" layoutX="150.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="Random" textFill="WHITE">
+      <Button fx:id="random" layoutX="139.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="Random" textFill="WHITE" AnchorPane.topAnchor="15.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Button>
+      <Button fx:id="MBFD" layoutX="263.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="MBFD" textFill="WHITE" AnchorPane.topAnchor="15.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>

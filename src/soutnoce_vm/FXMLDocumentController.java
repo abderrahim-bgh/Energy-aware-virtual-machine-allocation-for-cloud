@@ -68,9 +68,6 @@ public class FXMLDocumentController implements Initializable {
     private TableColumn<Vmcl, Integer> vm_storage;
 
     @FXML
-    private TableColumn<Vmcl, Integer> vm_eng;
-
-    @FXML
     private TableColumn<Vmcl, Integer> vm_ram;
     
     @FXML
@@ -237,14 +234,13 @@ FileChooser fileChooser = new FileChooser();
          for(int i=0;i<vv;i++){
              if(vmm[1][i]!=null){
                 // add Vm in table view
-                Vmcl vmi = new Vmcl("vm"+vi,vmm[2][i],vmm[3][i]+" MB",vmm[1][i]+" G",vmm[4][i]);
+                Vmcl vmi = new Vmcl("vm"+vi,vmm[2][i],vmm[3][i]+" MB",vmm[1][i]+" G");
                         idvm.getItems().add(vmi);
                         nb_vm++;
                         allVm[0][i]= String.valueOf( vi);
                       allVm[1][i]=vmm[2][i];
-                       System.out.println(vmm[2][i]+" "+ allVm[1][i]);
                        allVm[2][i]=vmm[3][i];
-                       allVm[3][i]=vmm[4][i];
+                     //  allVm[3][i]=vmm[4][i];
                        allVm[4][i]=vmm[1][i];
                         vi++;
                  
@@ -546,7 +542,6 @@ FileChooser fileChooser = new FileChooser();
                                 pm_state.setCellValueFactory(new PropertyValueFactory<pmCl,String>("state"));
                                  vm.setCellValueFactory(new PropertyValueFactory<Vmcl,String>("vm"));
             vm_ram.setCellValueFactory(new PropertyValueFactory<Vmcl,Integer>("ram"));
-              vm_eng.setCellValueFactory(new PropertyValueFactory<Vmcl,Integer>("energy"));
                 vm_cpu.setCellValueFactory(new PropertyValueFactory<Vmcl,Integer>("cpu"));
                 vm_storage.setCellValueFactory(new PropertyValueFactory<Vmcl,Integer>("vm_storage"));
 

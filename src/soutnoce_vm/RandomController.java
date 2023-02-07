@@ -4,23 +4,41 @@
  */
 package soutnoce_vm;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -61,6 +79,8 @@ public class RandomController implements Initializable {
     private Button place_vm;
     @FXML
     private Button random;
+    @FXML
+    private Button MBFD;
     
     public void pm_clik(String[][]classment_pm1,String[][]classment_vm1){
     
@@ -101,8 +121,8 @@ public class RandomController implements Initializable {
           calcule_label.setText(" - CPU utilization of "+click+" is: "+cpu+"Mips /"+classment_pm1[1][Integer.parseInt(clk)-1]+
                   "Mips \n - RAM utilisation :"+ram+"MB /"+num+"MB"
                           + "\n - Total of vm placed in this "+click+" is: "+vm_p
-                           + "\n - Total storage in "+click+"is :"+storage+" G / "+classment_pm1[4][Integer.parseInt(clk)-1]+" G"
-                            + "\n - Energy: "+Energy);
+                           + "\n - Total storage in "+click+"is :"+storage+" G / "+classment_pm1[3][Integer.parseInt(clk)-1]+" G"
+                            + "\n - Energy: "+Energy+" W");
         }
     });
     
@@ -149,12 +169,15 @@ public class RandomController implements Initializable {
           energy_total=energy_total+Energy;
         }
          
-         
-            total_label.setText("Total of vm placed "
+            total_label.setText("1- Total of vm placed "
                     + "\n is: "+nb_vm+"/"+(classment_vm1[0].length+vm2[0].length)
-                            + "\n energy total:"+energy_total);    
+                            + "\n\n  2- The total energy\n consumption:"+
+                               energy_total+" W"
+                               ); 
+              
             
             pm_clik(classment_pm1,classment_vm1);
+            
    
       
     }
@@ -263,9 +286,11 @@ public class RandomController implements Initializable {
           energy_total=energy_total+Energy;
         }
          
-            total_label.setText("Total of vm placed "
+            total_label.setText("1- Total of vm placed "
                     + "\n is: "+nb_vm+"/"+(VmAll[0].length)
-                            + "\n energy total:"+energy_total); 
+                            + "\n\n  2- The total energy\n consumption: "+
+                                energy_total+" W"
+                               ); 
             
             
                         pm_clik(classment_pm1,VmAll);
@@ -364,15 +389,106 @@ public class RandomController implements Initializable {
           energy_total=energy_total+Energy;
         }
          
-            total_label.setText("Total of vm placed "
-                    + "\n is: "+nb_vm+"/"+(VmAll2[0].length)
-                            + "\n energy total:"+energy_total); 
+            total_label.setText("1- Total of vm placed "
+                    + "\n is: "+nb_vm+"/"+(VmAll[0].length)
+                            + "\n\n  2- The total energy\n consumption: "+
+                                energy_total+" W"
+                               );  
             
             
                         pm_clik(classment_pm1,VmAll2);
 
             
           }
+      });
+           String []percentage_min ={"10%","20%","30%","40%","50%"};
+            String []percentage_max ={"50%","60%","70%","80%","90%"};
+
+      MBFD.setOnMouseClicked(new EventHandler<MouseEvent>(){
+         @Override
+         public void handle(MouseEvent event) {
+
+           Dialog<String> dialog = new Dialog<>();
+           dialog.setTitle("energy threshold");
+          dialog.setHeaderText("Modified Best Fit Decreasing");
+           dialog.setResizable(true);
+ 
+           Label label1 = new Label("Min threshold : ");
+           Label label2 = new Label("Max threshold : ");
+           ChoiceBox min = new ChoiceBox();
+           ChoiceBox max = new ChoiceBox();
+           min.getItems().addAll(percentage_min);
+           max.getItems().addAll(percentage_max);
+         
+          GridPane grid = new GridPane();
+            grid.add(label1, 1, 1);
+            grid.add(min, 2, 1);
+            grid.add(label2, 1, 2);
+            grid.add(max, 2, 2);
+         dialog.getDialogPane().setContent(grid);
+         
+ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
+dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+ 
+dialog.setResultConverter(new Callback<ButtonType, String>() {
+    @Override
+    public String call(ButtonType b) {
+ 
+        if (b == buttonTypeOk) {
+            List<Vmcl> vm_migrated=new  ArrayList<>();
+            for(int i=0;i<classment_pm1[0].length;i++){
+               // String [][] vm_list= new String [4][vm[0].length];
+                List<Vmcl> vm_list=new  ArrayList<>();
+                int z=0;
+                for(int j=0;j<vm[0].length;j++){
+                    if(classment_pm1[0][i].equals(vm[3][j])){
+                        vm_list.add(new Vmcl(vm[0][j],vm[1][j],vm[2][j],vm[4][j]));
+                        z++;
+                    }
+
+                    
+                }
+                
+              
+                Collections.sort(vm_list,new Comparator<Vmcl>(){
+                    @Override
+                    public int compare(Vmcl o1, Vmcl o2) {
+                        return Integer.compare(Integer.parseInt(o1.getCpu()), Integer.parseInt(o2.getCpu()));
+                    }
+                });
+                Collections.reverse(vm_list);
+                int cpu_total=0;
+                for(int j=0;j<vm_list.size();j++){
+                cpu_total=cpu_total+Integer.parseInt(vm_list.get(j).cpu.toString());
+                }
+                String Tmin= min.getValue().toString();
+                String num=Tmin.substring(0, Tmin.length()-1);
+                int min_threthreshold=Integer.parseInt(num);
+                int cpu_thre= (Integer.parseInt(classment_pm1[1][i])*min_threthreshold)/100;
+                if(cpu_thre >=cpu_total){
+                vm_migrated.addAll(vm_list);
+                
+                }
+                
+               }
+            for(int i=0;i<vm_migrated.size();i++)
+                System.out.println(vm_migrated.get(i).vm+":"+vm_migrated.get(i).cpu);
+        }
+ 
+        return null;
+    }
+});
+         
+    Optional<String> result = dialog.showAndWait();
+         
+if (result.isPresent()) {
+ 
+  //  actionStatus.setText("Result: " + result.get());
+}
+
+         }
+      
+          
       });
       
       
