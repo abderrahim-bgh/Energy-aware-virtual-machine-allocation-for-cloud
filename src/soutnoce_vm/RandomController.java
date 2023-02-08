@@ -436,6 +436,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
  
         if (b == buttonTypeOk) {
             List<Vmcl> vm_migrated=new  ArrayList<>();
+            
             for(int i=0;i<classment_pm1[0].length;i++){
                // String [][] vm_list= new String [4][vm[0].length];
                 List<Vmcl> vm_list=new  ArrayList<>();
@@ -465,14 +466,58 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                 String num=Tmin.substring(0, Tmin.length()-1);
                 int min_threthreshold=Integer.parseInt(num);
                 int cpu_thre= (Integer.parseInt(classment_pm1[1][i])*min_threthreshold)/100;
-                if(cpu_thre >=cpu_total){
-                vm_migrated.addAll(vm_list);
                 
+                String Tmax= max.getValue().toString();
+                String num2=Tmax.substring(0, Tmax.length()-1);
+                int max_threthreshold=Integer.parseInt(num2);
+                
+                System.out.println("max treeee "+max_threthreshold);
+                int cpu_thre_max= (Integer.parseInt(classment_pm1[1][i])*max_threthreshold)/100;
+                 
+                for(int j=0;j<vm_list.size();j++)
+                System.out.println(vm_list.get(j).vm+":"+vm_list.get(j).cpu);
+        
+                Vmcl bestFit_vm = null;
+                if(vm_list.size()>=1) {
+                    int Maxx=Integer.parseInt(vm_list.get(0).cpu.toString());
+                int bestFit_cpu= Maxx;
+                System.out.println(cpu_thre_max+"deffff "+cpu_total);
+                while(cpu_thre_max< cpu_total){
+                    for(int j=0;j<vm_list.size();j++){
+                        int t0= cpu_total-cpu_thre_max;
+                        if(Integer.parseInt(vm_list.get(j).cpu.toString())>t0){
+                           int t= Integer.parseInt(vm_list.get(j).cpu.toString())-cpu_total
+                                +cpu_thre_max; 
+                           if(t<bestFit_cpu){
+                               bestFit_cpu=t;
+                               bestFit_vm=vm_list.get(j);
+                           }
+                        }
+                        else if(bestFit_cpu==Maxx){
+                            bestFit_vm=vm_list.get(j);
+                        }
+                    }
+                    cpu_total=cpu_total-Integer.parseInt(bestFit_vm.cpu.toString());
+                    vm_migrated.add(bestFit_vm);
+                    vm_list.remove(bestFit_vm);
+                }
                 }
                 
-               }
+                if(cpu_thre >cpu_total){
+                    vm_migrated.addAll(vm_list);
+                    
+                }
+            }
+            for(int j=0;j<vm_migrated.size();j++)
+              for(int i=0;i<vm[0].length;i++){
+                  if(vm[0][i].equals(vm_migrated.get(j).vm)){
+                      vm[3][i]="0";
+                    }
+                 }
+            
+            
             for(int i=0;i<vm_migrated.size();i++)
-                System.out.println(vm_migrated.get(i).vm+":"+vm_migrated.get(i).cpu);
+                System.out.println(vm_migrated.get(i).vm+" megrated:"+vm_migrated.get(i).cpu);
         }
  
         return null;
