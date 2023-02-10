@@ -210,9 +210,8 @@ public class RandomController implements Initializable {
       
        VmAll2[4]=Arrays.copyOf(vm[4], vm[4].length+vm2[4].length);
       System.arraycopy(vm2[4],0,VmAll2[4],vm[4].length,vm2[4].length);
+     
       
-      
-       
       place_vm.setOnMouseClicked(new EventHandler<MouseEvent>(){
           @Override
           public void handle(MouseEvent event) {
@@ -310,8 +309,8 @@ public class RandomController implements Initializable {
         vm_p=Arrays.copyOf(vm2[3], vm2[3].length);  
         String[] cpu_pm=new String[classment_pm1[4].length];
         cpu_pm=Arrays.copyOf(classment_pm1[4], classment_pm1[4].length);
-        String[] cpu_vm=new String[classment_pm1[4].length];
-        cpu_vm=Arrays.copyOf(classment_pm1[5], classment_pm1[4].length);
+        String[] ram_vm=new String[classment_pm1[4].length];
+        ram_vm=Arrays.copyOf(classment_pm1[5], classment_pm1[4].length);
        int total_cpu=0;
        int total_ram=0;
        
@@ -331,8 +330,8 @@ public class RandomController implements Initializable {
           
             if(cpu_pm[z]==null)cpu_pm[z]="0";
            total_cpu=Integer.parseInt(cpu_pm[z])+Integer.parseInt(vm2[1][i]);
-            if(cpu_vm[z]==null)cpu_vm[z]="0";
-           total_ram=Integer.parseInt(cpu_vm[z])+Integer.parseInt(vm2[2][i]);
+            if(ram_vm[z]==null)ram_vm[z]="0";
+           total_ram=Integer.parseInt(ram_vm[z])+Integer.parseInt(vm2[2][i]);
               
                 String vm_number=vm_shuffle[i];
                 int p1=Integer.parseInt(classment_pm1[1][z]);
@@ -341,10 +340,10 @@ public class RandomController implements Initializable {
                    int xv=Integer.parseInt(vi)-vm[0].length;
             
                 total_cpu=Integer.parseInt(cpu_pm[z])+Integer.parseInt(vm2[1][xv-1]);
-                total_ram=Integer.parseInt(cpu_vm[z])+Integer.parseInt(vm2[2][xv-1]);
+                total_ram=Integer.parseInt(ram_vm[z])+Integer.parseInt(vm2[2][xv-1]);
               
                cpu_pm[z]=String.valueOf(total_cpu);
-               cpu_vm[z]=String.valueOf(total_ram);
+               ram_vm[z]=String.valueOf(total_ram);
                
            if(total_cpu<=p1 &&total_ram<=p2 ){
                      vm_p[xv-1]=String.valueOf(z+1);
@@ -412,7 +411,7 @@ public class RandomController implements Initializable {
            dialog.setTitle("energy threshold");
           dialog.setHeaderText("Modified Best Fit Decreasing");
            dialog.setResizable(true);
- 
+          
            Label label1 = new Label("Min threshold : ");
            Label label2 = new Label("Max threshold : ");
            ChoiceBox min = new ChoiceBox();
@@ -435,13 +434,24 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
     public String call(ButtonType b) {
  
         if (b == buttonTypeOk) {
+            String[] vm_p=new String[vm[3].length];
+            vm_p=Arrays.copyOf(vm[3], vm[3].length);
+            
+            String[] cpu_pm=new String[classment_pm1[4].length];
+            cpu_pm=Arrays.copyOf(classment_pm1[4], classment_pm1[4].length);
+           
+            String[] ram_vm=new String[classment_pm1[5].length];
+            ram_vm=Arrays.copyOf(classment_pm1[5], classment_pm1[5].length);
+            
+            int total_cpu=0;
+            int total_ram=0;
             List<Vmcl> vm_migrated=new  ArrayList<>();
             
             for(int i=0;i<classment_pm1[0].length;i++){
                // String [][] vm_list= new String [4][vm[0].length];
                 List<Vmcl> vm_list=new  ArrayList<>();
                 int z=0;
-                for(int j=0;j<vm[0].length;j++){
+                for(int j=0;j<vm_p.length;j++){
                     if(classment_pm1[0][i].equals(vm[3][j])){
                         vm_list.add(new Vmcl(vm[0][j],vm[1][j],vm[2][j],vm[4][j]));
                         z++;
@@ -471,11 +481,9 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                 String num2=Tmax.substring(0, Tmax.length()-1);
                 int max_threthreshold=Integer.parseInt(num2);
                 
-                System.out.println("max treeee "+max_threthreshold);
                 int cpu_thre_max= (Integer.parseInt(classment_pm1[1][i])*max_threthreshold)/100;
                  
-                for(int j=0;j<vm_list.size();j++)
-                System.out.println(vm_list.get(j).vm+":"+vm_list.get(j).cpu);
+                
         
                 Vmcl bestFit_vm = null;
                 if(vm_list.size()>=1) {
@@ -510,14 +518,153 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
             }
             for(int j=0;j<vm_migrated.size();j++)
               for(int i=0;i<vm[0].length;i++){
+                  if(vm[0][i]!=null)
                   if(vm[0][i].equals(vm_migrated.get(j).vm)){
-                      vm[3][i]="0";
+                      // delete cpu utilization of vm deleted
+                      int x=Integer.parseInt(vm_p[i]);
+                      int d=Integer.parseInt(vm_migrated.get(j).cpu.toString());
+                     int r = Integer.parseInt(cpu_pm[x-1]) -d;
+                     cpu_pm[x-1]=String.valueOf(r);
+                     //deleted ram utilization from this pm of vm deleted
+                     int xr=Integer.parseInt(vm_p[i]);
+                      int dr=Integer.parseInt(vm_migrated.get(j).ram.toString());
+                     int rr = Integer.parseInt(ram_vm[x-1]) -d;
+                     ram_vm[x-1]=String.valueOf(rr);
+                      vm_p[i]="0";
+                      
                     }
                  }
             
             
-            for(int i=0;i<vm_migrated.size();i++)
-                System.out.println(vm_migrated.get(i).vm+" megrated:"+vm_migrated.get(i).cpu);
+            for(int j=0;j<vm2[0].length;j++){
+                        vm_migrated.add(new Vmcl(vm2[0][j],vm2[1][j],vm2[2][j],vm2[4][j]));
+                    
+                }
+            // sort Decreasing cpu Utilization
+             Collections.sort(vm_migrated,new Comparator<Vmcl>(){
+                    @Override
+                    public int compare(Vmcl o1, Vmcl o2) {
+                        return Integer.compare(Integer.parseInt(o1.getCpu()), Integer.parseInt(o2.getCpu()));
+                    }
+                });
+                Collections.reverse(vm_migrated);
+                String [] allocate_vm=new String[vm_migrated.size()];
+                System.out.print("vm_migrated.size()"+vm_migrated.size());
+                for(int j=0;j<vm_migrated.size();j++){
+                    double minPower=250;
+                    String allocatedHost=null;
+                    int total_cpu2=0;
+                    int total_ram2=0;
+                    for(int z=0;z<classment_pm1[0].length;z++){
+                        //if host has enough resource for vm
+                        
+                        if(cpu_pm[z]==null)cpu_pm[z]="0";
+                          total_cpu=Integer.parseInt(cpu_pm[z])+Integer.parseInt(vm_migrated.get(j).cpu);
+                        if(ram_vm[z]==null)ram_vm[z]="0";
+                          total_ram=Integer.parseInt(ram_vm[z])+Integer.parseInt(vm_migrated.get(j).ram); 
+                          //System.out.println("cpu_pm[z] "+cpu_pm[z] +"vm_migrated.get(j).cpu "+vm_migrated.get(j).cpu);
+                          int p2=Integer.parseInt(classment_pm1[2][z])*1024;
+                          int p1=Integer.parseInt(classment_pm1[1][z]);
+                        if(p1>=total_cpu ){
+                            
+                            int num=0;
+                            num= Integer.parseInt(classment_pm1[2][z])*1024 ;
+                           double c1=Integer.parseInt(classment_pm1[1][z]);
+                           double c=total_cpu/c1;
+                           double k =0.7;
+                           double  k1=0.3;
+                           double e2=k1*250;
+                           double Energy = (k*250) + (e2*c); 
+                          
+                           if(Energy<minPower){
+                               allocatedHost=classment_pm1[0][z];
+                               minPower=Energy;
+                               total_cpu2=total_cpu;
+                               total_ram2=total_ram;
+                               
+                           }
+                        }
+                    }
+
+                    if(allocatedHost!=null) {
+                               allocate_vm[j]= allocatedHost;
+                               cpu_pm[Integer.parseInt(allocatedHost)-1]=String.valueOf(total_cpu2);
+                               ram_vm[Integer.parseInt(allocatedHost)-1]=String.valueOf(total_ram2);
+                               
+                           }
+                }
+                
+                
+
+                       String[][] VmAll3= new String[5][vm[0].length+vm2[0].length];
+                     VmAll3[0]=Arrays.copyOf(vm[0], vm[0].length+vm2[0].length);
+                     System.arraycopy(vm2[0],0,VmAll3[0],vm[0].length,vm2[0].length);
+                     VmAll3[1]=Arrays.copyOf(vm[1], vm[1].length+vm2[1].length);
+                    System.arraycopy(vm2[1],0,VmAll3[1],vm[1].length,vm2[1].length);
+                    VmAll3[2]=Arrays.copyOf(vm[2], vm[2].length+vm2[2].length);
+                    System.arraycopy(vm2[2],0,VmAll3[2],vm[2].length,vm2[2].length);
+      
+                   VmAll3[4]=Arrays.copyOf(vm[4], vm[4].length+vm2[4].length);
+                   System.arraycopy(vm2[4],0,VmAll3[4],vm[4].length,vm2[4].length);
+                   
+                  for(int i=0;i<vm_p.length;i++){
+                      VmAll3[3][i]=vm_p[i];
+                      
+                  }
+                  // for(int i=0;i<VmAll3[0].length;i++) System.out.println(VmAll3[0][i]+" look 22 "+VmAll3[3][i]);
+                   
+                   for(int i=0;i<vm_migrated.size();i++){
+                       String v=vm_migrated.get(i).vm.toString();
+                       for(int j=0;j<VmAll3[0].length;j++){
+                           if(v.equals(VmAll3[0][j])){
+                               
+                               VmAll3[3][j]=allocate_vm[i];
+                               
+                           }
+                       }
+                       
+                       }
+                    int nb_vm=0;
+                    for(int i=0;i<VmAll3[0].length;i++){
+                        if(VmAll3[3][i]!=null ) 
+                            if(!VmAll3[3][i].equals("0"))
+                                nb_vm++;
+                    }
+                   double energy_total=0;
+                   for(int j=0;j<classment_pm1[0].length;j++){
+                       int cpu=0;
+                       int ram=0;
+                       int zi= Integer.parseInt(classment_pm1[0][j]);
+                       for(int i=0;i<VmAll3[4].length;i++){
+                           if(VmAll3[3][i]!=null )
+                               if(!VmAll3[3][i].equals("0"))
+                                   if(VmAll3[3][i].equals(String.valueOf(zi))){
+                                       cpu=cpu+Integer.parseInt(VmAll2[1][i]);
+                                       ram=ram+Integer.parseInt(VmAll2[2][i]);
+                }  
+            }
+                       int num=0;
+                       num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
+                       double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
+                       double c=cpu/c1;
+                       double k =0.7;
+                       double  k1=0.3;
+                       double e2=k1*250;
+                       double Energy = (k*250) + (e2*c); 
+                       energy_total= energy_total+Energy;
+                   }
+                   total_label.setText("1- Total of vm placed "
+                           + "\n is: "+String.valueOf(nb_vm)+"/"+(VmAll[0].length)
+                            + "\n\n  2- The total energy\n consumption: "+
+                                energy_total+" W"
+                               );  
+                   
+                       
+                   
+                                          pm_clik(classment_pm1,VmAll3);
+  
+                
+           
         }
  
         return null;
