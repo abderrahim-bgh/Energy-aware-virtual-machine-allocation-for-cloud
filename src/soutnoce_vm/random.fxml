@@ -5,6 +5,8 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -46,7 +48,7 @@
             <Font name="System Bold Italic" size="30.0" />
          </font>
       </Label>
-      <Button fx:id="place_vm" layoutX="17.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="First fit" textFill="WHITE" AnchorPane.topAnchor="15.0">
+      <Button fx:id="place_vm" layoutX="122.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="First fit" textFill="WHITE" AnchorPane.topAnchor="15.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
@@ -56,15 +58,20 @@
             <Font name="System Bold" size="25.0" />
          </font>
       </Label>
-      <Button fx:id="random" layoutX="139.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="Random" textFill="WHITE" AnchorPane.topAnchor="15.0">
+      <Button fx:id="random" layoutX="244.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="Random" textFill="WHITE" AnchorPane.topAnchor="15.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Button>
-      <Button fx:id="MBFD" layoutX="263.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="MBFD" textFill="WHITE" AnchorPane.topAnchor="15.0">
+      <Button fx:id="MBFD" layoutX="351.0" layoutY="15.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="122.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="MBFD" textFill="WHITE" AnchorPane.topAnchor="15.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Button>
+      <ImageView fx:id="back" fitHeight="42.0" fitWidth="66.0" layoutX="17.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@icons/arrow-small-left.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

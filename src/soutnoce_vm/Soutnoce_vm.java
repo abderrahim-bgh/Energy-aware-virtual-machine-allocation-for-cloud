@@ -18,7 +18,16 @@ public class Soutnoce_vm extends Application {
     double x=0,y=0;
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
+        root.setOnMousePressed(event->{
+            x=event.getSceneX();
+            y=event.getSceneY();
+        });
+        root.setOnMouseDragged(event->{
+           stage.setX(event.getSceneX()-x);
+           stage.setY(event.getSceneY()-y);
+           
+        });
         
         Scene scene = new Scene(root);
 

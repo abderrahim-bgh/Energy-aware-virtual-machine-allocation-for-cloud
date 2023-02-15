@@ -14,9 +14,12 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -24,11 +27,19 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import javax.swing.text.View;
 
 public class FXMLDocumentController implements Initializable {
 
@@ -87,6 +98,8 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private ChoiceBox<String> choice_vmp;
+    
+  
    
     //number of VMs
     int vv=290;
@@ -257,11 +270,14 @@ FileChooser fileChooser = new FileChooser();
     
     // for open anthere window
     Parent root1;
-    
+    @FXML
+    StackPane stak;
+       @FXML
+       Button random1;
+       maincontroller mn=new maincontroller();
        @FXML
     void random(ActionEvent event) throws IOException {
-              
-
+              mn.setZ("1");
               // get % of VM p
               String prce= choice_vmp.getValue();
               // empl: 50% = 50
@@ -388,18 +404,26 @@ FileChooser fileChooser = new FileChooser();
                    Stage stage =new Stage();
                    stage.setTitle("random");
                     randomController.get_date2(Pm1,Vm1,Vm2);
-
-                   stage.setScene(new Scene(root1));
-                   stage.show();
+                    Scene s= new Scene(root1);
+                    
+                   stage.setScene(s);
+                   stage.setX(getTablePane(event).getScene().getWindow().getX() + (getTablePane(event).getScene().getWindow().getWidth() - stage.getWidth()) / 2);
+                  stage.setY(getTablePane(event).getScene().getWindow().getY() + (getTablePane(event).getScene().getWindow().getHeight() - stage.getHeight()) / 2);
+                    stage.show();
                    // return vm no random
             List<String> vmLs1 = Arrays.asList(T_vm_return);
                vmLs1.toArray(allVm[0]);
 
     }
     
+    private AnchorPane getTablePane(ActionEvent event)  {
+   return (AnchorPane) ((Node) event.getSource()).getScene().getRoot();
+
+    }
+    
     @FXML
     void firstfit(ActionEvent event) throws IOException {
-          
+          mn.setZ("1");
                     // get % of VM p
               String prce= choice_vmp.getValue();
               // empl: 50% = 50
@@ -500,16 +524,19 @@ FileChooser fileChooser = new FileChooser();
                
                        // FXMLLoader fxml= new FXMLLoader(getClass().getResource("random.fxml"));
                  FXMLLoader loader= new FXMLLoader(getClass().getResource("random.fxml"));
-                root1=loader.load();
+                 
+                 root1=loader.load();
+                Scene s= new Scene(root1);
                  RandomController randomController = loader.
                        getController();
                
                 randomController.get_data(Pm1, Vm1,Vm2);
                 randomController.get_date2(Pm1,Vm1,Vm2);
                 randomController.titel_classification.setText("first fit Classification");
+                    
                    Stage stage =new Stage();
                    stage.setTitle("random");
-                   stage.setScene(new Scene(root1));
+                   stage.setScene(s);
                    stage.show();
     }
     
@@ -526,8 +553,8 @@ FileChooser fileChooser = new FileChooser();
         label_pm.setVisible(false);
         label_vm.setVisible(false);
         choice_vmp.setVisible(false);
-                lebel_spnr.setVisible(false);
-
+        lebel_spnr.setVisible(false);
+        
         choice_vmp.getItems().addAll(percentage);
         
         idpm.setVisible(false);

@@ -11,31 +11,34 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="slids" prefHeight="736.0" prefWidth="1240.0" stylesheets="style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="soutnoce_vm.FXMLDocumentController">
+<AnchorPane id="AnchorPane" fx:id="slids" prefHeight="841.0" prefWidth="1280.0" stylesheets="style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="soutnoce_vm.FXMLDocumentController">
     <children>
-      <HBox alignment="CENTER_LEFT" prefHeight="76.0" prefWidth="1247.0" style="-fx-background-color: #9DABE0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <HBox alignment="CENTER_LEFT" prefHeight="76.0" prefWidth="1341.0" style="-fx-background-color: #9DABE0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#add_pm" prefHeight="35.0" prefWidth="90.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="add Pm" textAlignment="CENTER" textFill="WHITE">
+            <Button alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#add_pm" prefHeight="35.0" prefWidth="90.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="add Pm" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font size="17.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" onAction="#add_vm" prefHeight="35.0" prefWidth="90.0" style="-fx-background-color: #9DABE0; -fx-border-width: #4F525E;" styleClass="menuItem" stylesheets="@style.css" text="add VM" textAlignment="CENTER" textFill="WHITE">
+            <Button alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#add_vm" prefHeight="35.0" prefWidth="90.0" style="-fx-background-color: #9DABE0; -fx-border-width: #4F525E;" styleClass="menuItem" stylesheets="@style.css" text="add VM" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font size="17.0" />
                </font>
             </Button>
-            <Button fx:id="random1" mnemonicParsing="false" onAction="#random" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="Random" textAlignment="CENTER" textFill="WHITE">
+            <Button fx:id="firstfit1" alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#firstfit" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="first-fit" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font size="17.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="random1" alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#random" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="Random" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font size="17.0" />
                </font>
             </Button>
-            <Button fx:id="firstfit1" mnemonicParsing="false" onAction="#firstfit" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="first-fit" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font size="17.0" />
-               </font>
-            </Button>
-            <Button fx:id="MBFD" mnemonicParsing="false" onAction="#MBFD_Fonc" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="MBFD" textAlignment="CENTER" textFill="WHITE">
+            <Button fx:id="MBFD" alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#MBFD_Fonc" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="MBFD" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font size="17.0" />
                </font>
@@ -48,11 +51,11 @@
             <Insets left="8.0" />
          </padding>
       </HBox>
-        <Label fx:id="label_pm" layoutX="212.0" layoutY="142.0" minHeight="16" minWidth="69" text="The physical Machines" textFill="#173dc3" AnchorPane.leftAnchor="212.0" AnchorPane.rightAnchor="847.0">
+        <Label fx:id="label_pm" layoutX="224.0" layoutY="152.0" minHeight="16" minWidth="69" text="The physical Machines" textFill="#173dc3" AnchorPane.rightAnchor="835.0">
          <font>
             <Font size="16.0" />
          </font></Label>
-      <TableView fx:id="idpm" layoutX="3.0" layoutY="170.0" prefHeight="550.0" prefWidth="500.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="680.0" AnchorPane.topAnchor="170.0">
+      <TableView fx:id="idpm" layoutX="64.0" layoutY="193.0" prefHeight="550.0" prefWidth="500.0" AnchorPane.bottomAnchor="-7.0" AnchorPane.rightAnchor="676.0" AnchorPane.topAnchor="193.0">
         <columns>
           <TableColumn fx:id="pm" prefWidth="86.0" text="PM" />
           <TableColumn fx:id="pm_cpu" minWidth="5.0" prefWidth="64.0" text="CPU" />
@@ -65,7 +68,7 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <TableView fx:id="idvm" layoutX="675.0" layoutY="170.0" prefHeight="550.0" prefWidth="500.0" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="65.0" AnchorPane.topAnchor="170.0">
+      <TableView fx:id="idvm" layoutX="708.0" layoutY="186.0" prefHeight="550.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="186.0">
          <columns>
             <TableColumn fx:id="vm" prefWidth="86.0" text="VM" />
             <TableColumn fx:id="vm_cpu" minWidth="5.0" prefWidth="64.0" text="CPU" />
@@ -76,16 +79,16 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <Label fx:id="lebel_spnr" layoutX="266.0" layoutY="83.0" prefHeight="35.0" prefWidth="550.0" text="Select the percentage of virtual machines placement" textFill="#173dc3">
+      <Label fx:id="lebel_spnr" layoutX="316.0" layoutY="84.0" prefHeight="35.0" prefWidth="550.0" text="Select the percentage of virtual machines placement" textFill="#173dc3" AnchorPane.rightAnchor="414.0">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="label_vm" layoutX="835.0" layoutY="142.0" minHeight="16" minWidth="69" text="The Virtual Machines" textFill="#173dc3" AnchorPane.rightAnchor="237.0">
+      <Label fx:id="label_vm" layoutX="853.0" layoutY="152.0" minHeight="16" minWidth="69" text="The Virtual Machines" textFill="#173dc3" AnchorPane.rightAnchor="259.0">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="choice_vmp" layoutX="816.0" layoutY="89.0" prefHeight="26.0" prefWidth="84.0" />
+      <ChoiceBox fx:id="choice_vmp" layoutX="880.0" layoutY="89.0" prefHeight="26.0" prefWidth="84.0" AnchorPane.rightAnchor="316.0" />
     </children>
 </AnchorPane>
