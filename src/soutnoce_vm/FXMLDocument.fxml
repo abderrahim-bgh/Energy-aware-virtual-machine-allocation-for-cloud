@@ -38,11 +38,6 @@
                   <Font size="17.0" />
                </font>
             </Button>
-            <Button fx:id="MBFD" alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#MBFD_Fonc" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #9DABE0;" styleClass="menuItem" stylesheets="@style.css" text="MBFD" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font size="17.0" />
-               </font>
-            </Button>
          </children>
          <cursor>
             <Cursor fx:constant="DEFAULT" />
@@ -51,11 +46,11 @@
             <Insets left="8.0" />
          </padding>
       </HBox>
-        <Label fx:id="label_pm" layoutX="224.0" layoutY="152.0" minHeight="16" minWidth="69" text="The physical Machines" textFill="#173dc3" AnchorPane.rightAnchor="835.0">
+        <Label fx:id="label_pm" layoutX="307.0" layoutY="162.0" minHeight="16" minWidth="69" text="The physical Machines" textFill="#173dc3" AnchorPane.rightAnchor="792.0">
          <font>
             <Font size="16.0" />
          </font></Label>
-      <TableView fx:id="idpm" layoutX="64.0" layoutY="193.0" prefHeight="550.0" prefWidth="500.0" AnchorPane.bottomAnchor="-7.0" AnchorPane.rightAnchor="676.0" AnchorPane.topAnchor="193.0">
+      <TableView fx:id="idpm" layoutX="144.0" layoutY="190.0" prefHeight="618.0" prefWidth="500.0" AnchorPane.bottomAnchor="33.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="592.0" AnchorPane.topAnchor="190.0">
         <columns>
           <TableColumn fx:id="pm" prefWidth="86.0" text="PM" />
           <TableColumn fx:id="pm_cpu" minWidth="5.0" prefWidth="64.0" text="CPU" />
@@ -68,7 +63,7 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <TableView fx:id="idvm" layoutX="708.0" layoutY="186.0" prefHeight="550.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="186.0">
+      <TableView fx:id="idvm" layoutX="708.0" layoutY="186.0" prefHeight="625.0" prefWidth="500.0" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="186.0">
          <columns>
             <TableColumn fx:id="vm" prefWidth="86.0" text="VM" />
             <TableColumn fx:id="vm_cpu" minWidth="5.0" prefWidth="64.0" text="CPU" />

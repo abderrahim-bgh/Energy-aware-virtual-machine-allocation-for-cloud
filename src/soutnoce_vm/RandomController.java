@@ -114,12 +114,19 @@ public class RandomController implements Initializable {
               }
           int num=0;
           num= Integer.parseInt(classment_pm1[2][Integer.parseInt(clk)-1])*1024 ;
-          double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(clk)-1]);
-          double c=cpu/c1;
-          double k =0.7;
-          double  k1=0.3;
-          double e2=k1*250;
-          double Energy = (k*250) + (e2*c); 
+          double Energy =0;
+          if(cpu==0){
+              Energy =0;
+          }
+          else{
+             double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(clk)-1]);
+             double c=cpu/c1;
+             double k =0.7;
+             double  k1=0.3;
+             double e2=k1*250;
+           Energy = (k*250) + (e2*c);  
+          }
+          
           calcule_label.setVisible(true);
           calcule_label.setText(" - CPU utilization of "+click+" is: "+cpu+"Mips /"+classment_pm1[1][Integer.parseInt(clk)-1]+
                   "Mips \n - RAM utilisation :"+ram+"MB /"+num+"MB"
@@ -163,12 +170,19 @@ public class RandomController implements Initializable {
             }
             int num=0;
           num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
-          double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
-          double c=cpu/c1;
-          double k =0.7;
-        double  k1=0.3;
-          double e2=k1*250;
-          double Energy = (k*250) + (e2*c); 
+          double Energy =0;
+          if(cpu==0){
+              Energy =0;
+          }
+          else{
+             double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
+             double c=cpu/c1;
+             double k =0.7;
+             double  k1=0.3;
+             double e2=k1*250;
+           Energy = (k*250) + (e2*c);  
+          }
+          
           energy_total=energy_total+Energy;
         }
          
@@ -266,6 +280,8 @@ public class RandomController implements Initializable {
                 if(VmAll[3][i]!=null) nb_vm++;
        }
         
+        String eng[]=new String[classment_pm1[0].length];
+        
            for(int j=0;j<classment_pm1[0].length;j++){
              int cpu=0;
              int ram=0;
@@ -279,14 +295,26 @@ public class RandomController implements Initializable {
             }
             int num=0;
           num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
-          double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
-          double c=cpu/c1;
-          double k =0.7;
-        double  k1=0.3;
-          double e2=k1*250;
-          double Energy = (k*250) + (e2*c); 
+          double Energy =0;
+          if(cpu==0){
+              Energy =0;
+          }
+          else{
+             double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
+             double c=cpu/c1;
+             double k =0.7;
+             double  k1=0.3;
+             double e2=k1*250;
+           Energy = (k*250) + (e2*c);  
+          }
+          
           energy_total=energy_total+Energy;
+          
+          eng[j]=String.valueOf(Energy);
+          
         }
+           FXMLDocumentController dc = new FXMLDocumentController();
+         //  dc.getEnergy(eng);
          
             total_label.setText("1- Total of vm placed "
                     + "\n is: "+nb_vm+"/"+(VmAll[0].length)
@@ -382,12 +410,19 @@ public class RandomController implements Initializable {
             }
             int num=0;
           num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
-          double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
-          double c=cpu/c1;
-          double k =0.7;
-        double  k1=0.3;
-          double e2=k1*250;
-          double Energy = (k*250) + (e2*c); 
+          double Energy =0;
+          if(cpu==0){
+              Energy =0;
+          }
+          else{
+             double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
+             double c=cpu/c1;
+             double k =0.7;
+             double  k1=0.3;
+             double e2=k1*250;
+           Energy = (k*250) + (e2*c);  
+          }
+          
           energy_total=energy_total+Energy;
         }
          
@@ -403,8 +438,8 @@ public class RandomController implements Initializable {
             
           }
       });
-           String []percentage_min ={"10%","20%","30%","40%","50%"};
-            String []percentage_max ={"50%","60%","70%","80%","90%"};
+           String []percentage_min ={"10%","15%","20%","25%","30%","40%","50%"};
+            String []percentage_max ={"50%","60%","70%","80%","85%","90%","95%"};
 
       MBFD.setOnMouseClicked(new EventHandler<MouseEvent>(){
          @Override
@@ -492,7 +527,6 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                 if(vm_list.size()>=1) {
                     int Maxx=Integer.parseInt(vm_list.get(0).cpu.toString());
                 int bestFit_cpu= Maxx;
-                System.out.println(cpu_thre_max+"deffff "+cpu_total);
                 while(cpu_thre_max< cpu_total){
                     for(int j=0;j<vm_list.size();j++){
                         int t0= cpu_total-cpu_thre_max;
@@ -622,7 +656,6 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                            if(v.equals(VmAll3[0][j])){
                                
                                VmAll3[3][j]=allocate_vm[i];
-                               
                            }
                        }
                        
@@ -633,6 +666,8 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                             if(!VmAll3[3][i].equals("0"))
                                 nb_vm++;
                     }
+                    for(int i=0;i<VmAll3[0].length;i++) System.out.println(VmAll3[0][i]+"vm");
+                    
                    double energy_total=0;
                    for(int j=0;j<classment_pm1[0].length;j++){
                        int cpu=0;
@@ -648,13 +683,19 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
             }
                        int num=0;
                        num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
-                       double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
-                       double c=cpu/c1;
-                       double k =0.7;
-                       double  k1=0.3;
-                       double e2=k1*250;
-                       double Energy = (k*250) + (e2*c); 
-                       energy_total= energy_total+Energy;
+                       double Energy =0;
+                       if(cpu==0){
+                           Energy =0;
+                       }
+                       else{
+                           double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
+                           double c=cpu/c1;
+                           double k =0.7;
+                           double  k1=0.3;
+                           double e2=k1*250;
+                           Energy = (k*250) + (e2*c);  
+                       }
+                       energy_total=energy_total+Energy;
                    }
                    total_label.setText("1- Total of vm placed "
                            + "\n is: "+String.valueOf(nb_vm)+"/"+(VmAll[0].length)

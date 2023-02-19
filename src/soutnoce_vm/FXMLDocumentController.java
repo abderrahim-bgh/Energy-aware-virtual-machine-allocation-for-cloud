@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Set;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -289,6 +290,7 @@ FileChooser fileChooser = new FileChooser();
                String Vm2[][]=new String[6][num2];
               int i3 =0;
               // add vm no used in array
+              String []T_vm_return= new String[num_max];
               for(int i2=0;i2<nb_vm;i2++){
               if (i2>=num_max){
                                 Vm2[0][i3]="vm"+allVm[0][i2];
@@ -298,20 +300,23 @@ FileChooser fileChooser = new FileChooser();
                                 Vm2[4][i3]=allVm[4][i2];
                                 i3++;
                             }
+              else if(i2<num_max){
+                  T_vm_return[i2]=allVm[0][i2];
+              }
               }
               
 
                 // copy all vms
-               String []T_vm_return= new String[allVm[0].length];
-               List<String> vmLs = Arrays.asList(allVm[0]);
-               vmLs.toArray(T_vm_return);
+               
+              // List<String> vmLs = Arrays.asList(T_vm_return);
+               //vmLs.toArray(T_vm_return);
                
               // add line of number vm in list (for shuffling)
-                List<String> vmList = Arrays.asList(allVm[0]);
+                List<String> vmList = Arrays.asList(T_vm_return);
                // shuffle the Vms number in the list
 		Collections.shuffle(vmList);
                 // return the Vms number in the array
-		vmList.toArray(allVm[0]);
+		vmList.toArray(T_vm_return);
                 
               // z is number  of pm used ;
                 int z=0;
@@ -321,9 +326,10 @@ FileChooser fileChooser = new FileChooser();
                 String Vm1[][]=new String[6][num_max];
                 String Pm1[][]= new String[6][nb_pm];
                
-                for(int i=0;i<nb_vm;i++){
+                for(int i=0;i<num_max;i++){
                     //get vm form vms random
-                   int xv=Integer.parseInt(allVm[0][i]);
+                    
+                   int xv=Integer.parseInt(T_vm_return[i]);
                   
                   if(z<nb_pm && !allVm[1][xv-1].isEmpty()){
                        Random rd = new Random();
@@ -332,12 +338,14 @@ FileChooser fileChooser = new FileChooser();
                           // get ram and cpu of the this pm 
                            int p= Integer.parseInt( allPm[1][nbP]);
                            int p2= Integer.parseInt( allPm[2][nbP])*1024;
+                  
                             // total cpu and ramin this pm
                          if(allPm[5][nbP]== null)allPm[5][nbP]="0";
                      N_vm_cpu= Integer.parseInt(allPm[5][nbP])+ Integer.parseInt(allVm[1][xv-1]);
                      
                      if(allPm[6][nbP]== null)allPm[6][nbP]="0";
                      N_vm_ram=Integer.parseInt(allPm[6][nbP])+Integer.parseInt(allVm[2][xv-1]);
+                  
                      
                      // it must totl of cpu or ram inf to cpu and ram of pm
                      if(N_vm_cpu <=p&& N_vm_ram<=p2 && nb_vm>0){
@@ -361,14 +369,7 @@ FileChooser fileChooser = new FileChooser();
                             }
                            
                             // list of pm
-                            if(i<nb_pm){
-                                 Pm1[0][i]=String.valueOf(i+1);
-                                 Pm1[1][i]=allPm[1][i];
-                                 Pm1[2][i]=allPm[2][i];
-                                 Pm1[3][i]=allPm[7][i];
-                                
-
-                            }
+                            
                         }
                       else{
                          N_vm_cpu=0;
@@ -377,6 +378,16 @@ FileChooser fileChooser = new FileChooser();
                             i--; 
                          }
                     }  
+                }
+                for(int i=0;i<nb_pm;i++){
+                    if(i<nb_pm){
+                                 Pm1[0][i]=String.valueOf(i+1);
+                                 Pm1[1][i]=allPm[1][i];
+                                 Pm1[2][i]=allPm[2][i];
+                                 Pm1[3][i]=allPm[7][i];
+                                
+
+                            }
                 }
                for(int c=0;c<Pm1[4].length;c++){
                  //cpu using
@@ -420,7 +431,30 @@ FileChooser fileChooser = new FileChooser();
    return (AnchorPane) ((Node) event.getSource()).getScene().getRoot();
 
     }
+    /*
+    public void getEnergy(String []energy){
+        ObservableList<pmCl> items = idpm.getItems(); 
+        int columnIndex = 2; 
+        int i =0;
+      
+        for (pmCl item : items) {
+    // get the value of the third column
+         
     
+          String value = item.getEnergy(); 
+    String newValue = energy[i]; 
+
+    i++;
+    item.setEnergy(newValue); 
+}
+
+   // refresh the table view to display the updated values
+   idpm.refresh();
+        
+        
+               
+
+    }*/
     @FXML
     void firstfit(ActionEvent event) throws IOException {
           mn.setZ("1");
@@ -542,10 +576,7 @@ FileChooser fileChooser = new FileChooser();
     
     private String []percentage={"10%","20%","30%","40%","50%","100%"};
     
-     @FXML
-    void MBFD_Fonc(ActionEvent event) {
-
-    }
+    
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

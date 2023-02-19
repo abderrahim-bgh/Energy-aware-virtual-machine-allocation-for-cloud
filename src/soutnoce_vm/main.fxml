@@ -113,6 +113,6 @@
                </children>
             </AnchorPane>
          </left></BorderPane>
-      <WebView fx:id="webView" layoutX="254.0" prefHeight="890.0" prefWidth="1033.0" />
+      <WebView fx:id="webView" layoutX="254.0" prefHeight="890.0" prefWidth="1033.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="260.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>
