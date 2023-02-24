@@ -151,7 +151,8 @@ public class RandomController implements Initializable {
            }
                   int nb_vm=0;
        for(int i=0;i<classment_vm1[0].length;i++){
-                if(classment_vm1[0][i]!=null) nb_vm++;
+                if(classment_vm1[3][i]!=null)
+                    if(!classment_vm1[3][i].equals("0")) nb_vm++;
        }
        
        
@@ -440,6 +441,7 @@ public class RandomController implements Initializable {
       });
            String []percentage_min ={"10%","15%","20%","25%","30%","40%","50%"};
             String []percentage_max ={"50%","60%","70%","80%","85%","90%","95%"};
+           
 
       MBFD.setOnMouseClicked(new EventHandler<MouseEvent>(){
          @Override
@@ -472,6 +474,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
     public String call(ButtonType b) {
  
         if (b == buttonTypeOk) {
+            
             String[] vm_p=new String[vm[3].length];
             vm_p=Arrays.copyOf(vm[3], vm[3].length);
             
@@ -485,6 +488,92 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
             int total_ram=0;
             List<Vmcl> vm_migrated=new  ArrayList<>();
             
+            for(int j=0;j<vm2[0].length;j++){
+                        vm_migrated.add(new Vmcl(vm2[0][j],vm2[1][j],vm2[2][j],vm2[4][j]));
+                    
+                }
+            
+            //mbfd
+            Collections.sort(vm_migrated,new Comparator<Vmcl>(){
+                    @Override
+                    public int compare(Vmcl o1, Vmcl o2) {
+                        return Integer.compare(Integer.parseInt(o1.getCpu()), Integer.parseInt(o2.getCpu()));
+                    }
+                });
+            
+                Collections.reverse(vm_migrated);
+                String [] allocate_vm=new String[vm_migrated.size()];
+                for(int j=0;j<vm_migrated.size();j++){
+                    double minPower=250;
+                    String allocatedHost=null;
+                    int total_cpu2=0;
+                    int total_ram2=0;
+                    for(int z=0;z<classment_pm1[0].length;z++){
+                        //if host has enough resource for vm
+                        
+                        if(cpu_pm[z]==null)cpu_pm[z]="0";
+                          total_cpu=Integer.parseInt(cpu_pm[z])+Integer.parseInt(vm_migrated.get(j).cpu);
+                        if(ram_vm[z]==null)ram_vm[z]="0";
+                        
+                          total_ram=Integer.parseInt(ram_vm[z])+Integer.parseInt(vm_migrated.get(j).ram); 
+                          int p2=Integer.parseInt(classment_pm1[2][z])*1024;
+                          int p1=Integer.parseInt(classment_pm1[1][z]);
+                        if(p1>=total_cpu ){
+                            
+                            int num=0;
+                            num= Integer.parseInt(classment_pm1[2][z])*1024 ;
+                           double c1=Integer.parseInt(classment_pm1[1][z]);
+                           double c=total_cpu/c1;
+                           double k =0.7;
+                           double  k1=0.3;
+                           double e2=k1*250;
+                           double Energy = (k*250) + (e2*c); 
+                          
+                           if(Energy<minPower){
+                               allocatedHost=classment_pm1[0][z];
+                               minPower=Energy;
+                               total_cpu2=total_cpu;
+                               total_ram2=total_ram;
+                               
+                           }
+                        }
+                    }
+
+                    if(allocatedHost!=null) {
+                               allocate_vm[j]= allocatedHost;
+                               cpu_pm[Integer.parseInt(allocatedHost)-1]=String.valueOf(total_cpu2);
+                               ram_vm[Integer.parseInt(allocatedHost)-1]=String.valueOf(total_ram2);
+                               
+                           }
+                }
+            
+               String[][] VmAll3= new String[5][vm[0].length+vm2[0].length];
+                     VmAll3[0]=Arrays.copyOf(vm[0], vm[0].length+vm2[0].length);
+                     System.arraycopy(vm2[0],0,VmAll3[0],vm[0].length,vm2[0].length);
+                     VmAll3[1]=Arrays.copyOf(vm[1], vm[1].length+vm2[1].length);
+                    System.arraycopy(vm2[1],0,VmAll3[1],vm[1].length,vm2[1].length);
+                    VmAll3[2]=Arrays.copyOf(vm[2], vm[2].length+vm2[2].length);
+                    System.arraycopy(vm2[2],0,VmAll3[2],vm[2].length,vm2[2].length);
+      
+                   VmAll3[4]=Arrays.copyOf(vm[4], vm[4].length+vm2[4].length);
+                   System.arraycopy(vm2[4],0,VmAll3[4],vm[4].length,vm2[4].length);
+                   
+                  for(int i=0;i<vm_p.length;i++){
+                      VmAll3[3][i]=vm_p[i];
+                  }
+                   for(int i=0;i<vm_migrated.size();i++){
+                       String v=vm_migrated.get(i).vm.toString();
+                       for(int j=0;j<VmAll3[0].length;j++){
+                           if(v.equals(VmAll3[0][j])){
+                               
+                               VmAll3[3][j]=allocate_vm[i];
+                           }
+                        }
+                    }
+                   
+                   vm_migrated= new ArrayList<>();
+            
+            //Minimization of Migrations algo
             for(int i=0;i<classment_pm1[0].length;i++){
                // String [][] vm_list= new String [4][vm[0].length];
                 List<Vmcl> vm_list=new  ArrayList<>();
@@ -550,33 +639,12 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                 
                 if(cpu_thre >cpu_total){
                     vm_migrated.addAll(vm_list);
-                    
                 }
             }
-            for(int j=0;j<vm_migrated.size();j++)
-              for(int i=0;i<vm[0].length;i++){
-                  if(vm[0][i]!=null)
-                  if(vm[0][i].equals(vm_migrated.get(j).vm)){
-                      // delete cpu utilization of vm deleted
-                      int x=Integer.parseInt(vm_p[i]);
-                      int d=Integer.parseInt(vm_migrated.get(j).cpu.toString());
-                     int r = Integer.parseInt(cpu_pm[x-1]) -d;
-                     cpu_pm[x-1]=String.valueOf(r);
-                     //deleted ram utilization from this pm of vm deleted
-                     int xr=Integer.parseInt(vm_p[i]);
-                      int dr=Integer.parseInt(vm_migrated.get(j).ram.toString());
-                     int rr = Integer.parseInt(ram_vm[x-1]) -d;
-                     ram_vm[x-1]=String.valueOf(rr);
-                      vm_p[i]="0";
-                      
-                    }
-                 }
             
             
-            for(int j=0;j<vm2[0].length;j++){
-                        vm_migrated.add(new Vmcl(vm2[0][j],vm2[1][j],vm2[2][j],vm2[4][j]));
-                    
-                }
+            
+            
             // sort Decreasing cpu Utilization
              Collections.sort(vm_migrated,new Comparator<Vmcl>(){
                     @Override
@@ -585,8 +653,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                     }
                 });
                 Collections.reverse(vm_migrated);
-                String [] allocate_vm=new String[vm_migrated.size()];
-                System.out.print("vm_migrated.size()"+vm_migrated.size());
+                allocate_vm=new String[vm_migrated.size()];
                 for(int j=0;j<vm_migrated.size();j++){
                     double minPower=250;
                     String allocatedHost=null;
@@ -630,36 +697,26 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                                
                            }
                 }
-                
-                
-
-                       String[][] VmAll3= new String[5][vm[0].length+vm2[0].length];
-                     VmAll3[0]=Arrays.copyOf(vm[0], vm[0].length+vm2[0].length);
-                     System.arraycopy(vm2[0],0,VmAll3[0],vm[0].length,vm2[0].length);
-                     VmAll3[1]=Arrays.copyOf(vm[1], vm[1].length+vm2[1].length);
-                    System.arraycopy(vm2[1],0,VmAll3[1],vm[1].length,vm2[1].length);
-                    VmAll3[2]=Arrays.copyOf(vm[2], vm[2].length+vm2[2].length);
-                    System.arraycopy(vm2[2],0,VmAll3[2],vm[2].length,vm2[2].length);
-      
-                   VmAll3[4]=Arrays.copyOf(vm[4], vm[4].length+vm2[4].length);
-                   System.arraycopy(vm2[4],0,VmAll3[4],vm[4].length,vm2[4].length);
-                   
-                  for(int i=0;i<vm_p.length;i++){
-                      VmAll3[3][i]=vm_p[i];
-                      
-                  }
-                  // for(int i=0;i<VmAll3[0].length;i++) System.out.println(VmAll3[0][i]+" look 22 "+VmAll3[3][i]);
-                   
-                   for(int i=0;i<vm_migrated.size();i++){
+                for(int i=0;i<vm_migrated.size();i++){
                        String v=vm_migrated.get(i).vm.toString();
                        for(int j=0;j<VmAll3[0].length;j++){
                            if(v.equals(VmAll3[0][j])){
                                
                                VmAll3[3][j]=allocate_vm[i];
+                               // delete cpu utilization of vm deleted
+                               int x=Integer.parseInt(vm_p[j]);
+                               int d=Integer.parseInt(vm_migrated.get(i).cpu.toString());
+                               int r = Integer.parseInt(cpu_pm[x-1]) -d;
+                               cpu_pm[x-1]=String.valueOf(r);
+                               //deleted ram utilization from this pm of vm deleted
+                               int xr=Integer.parseInt(vm_p[j]);
+                               int dr=Integer.parseInt(vm_migrated.get(i).ram.toString());
+                               int rr = Integer.parseInt(ram_vm[xr-1]) -dr;
+                               ram_vm[xr-1]=String.valueOf(rr);
                            }
-                       }
-                       
-                       }
+                        }
+                    }
+                    
                     int nb_vm=0;
                     for(int i=0;i<VmAll3[0].length;i++){
                         if(VmAll3[3][i]!=null ) 
@@ -717,10 +774,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
          
     Optional<String> result = dialog.showAndWait();
          
-if (result.isPresent()) {
- 
-  //  actionStatus.setText("Result: " + result.get());
-}
+
 
          }
       
@@ -729,6 +783,8 @@ if (result.isPresent()) {
       
       
       }
+       public void mbfd1(){
+            }
 
     @FXML
     ImageView back;

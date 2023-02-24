@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -13,7 +14,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.collections.ObservableList;
@@ -24,7 +29,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -35,10 +43,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import javax.swing.text.View;
 
@@ -305,11 +315,6 @@ FileChooser fileChooser = new FileChooser();
               }
               }
               
-
-                // copy all vms
-               
-              // List<String> vmLs = Arrays.asList(T_vm_return);
-               //vmLs.toArray(T_vm_return);
                
               // add line of number vm in list (for shuffling)
                 List<String> vmList = Arrays.asList(T_vm_return);
@@ -346,10 +351,8 @@ FileChooser fileChooser = new FileChooser();
                      if(allPm[6][nbP]== null)allPm[6][nbP]="0";
                      N_vm_ram=Integer.parseInt(allPm[6][nbP])+Integer.parseInt(allVm[2][xv-1]);
                   
-                     
                      // it must totl of cpu or ram inf to cpu and ram of pm
                      if(N_vm_cpu <=p&& N_vm_ram<=p2 && nb_vm>0){
-                         
                          
                            //add new random list of Vms
                             if(i<num_max){
@@ -395,16 +398,12 @@ FileChooser fileChooser = new FileChooser();
                    //ram using
                     Pm1[5][c]=allPm[6][c];
                }
-                   for(int c=0;c<Pm1[4].length;c++){
-                     System.out.print("[[[]]]]][[[[]"+Pm1[4][c]);
-                     System.out.println("[[[]]]]][[[[]"+Pm1[1][c]);
-                    }
+                   
                 for(int i=0;i<nb_pm;i++){
                 allPm[5][i]="0";
                 allPm[6][i]="0";
                 }
                
-                       // FXMLLoader fxml= new FXMLLoader(getClass().getResource("random.fxml"));
                  FXMLLoader loader= new FXMLLoader(getClass().getResource("random.fxml"));
                 root1=loader.load();
                  RandomController randomController = loader.
@@ -421,10 +420,7 @@ FileChooser fileChooser = new FileChooser();
                    stage.setX(getTablePane(event).getScene().getWindow().getX() + (getTablePane(event).getScene().getWindow().getWidth() - stage.getWidth()) / 2);
                   stage.setY(getTablePane(event).getScene().getWindow().getY() + (getTablePane(event).getScene().getWindow().getHeight() - stage.getHeight()) / 2);
                     stage.show();
-                   // return vm no random
-            List<String> vmLs1 = Arrays.asList(T_vm_return);
-               vmLs1.toArray(allVm[0]);
-
+                  
     }
     
     private AnchorPane getTablePane(ActionEvent event)  {
@@ -450,11 +446,347 @@ FileChooser fileChooser = new FileChooser();
 
    // refresh the table view to display the updated values
    idpm.refresh();
-        
-        
-               
 
     }*/
+    @FXML
+    void mbfd(ActionEvent event) throws IOException {
+        
+              // get % of VM p
+              String prce= choice_vmp.getValue();
+              // empl: 50% = 50
+              String val_p=prce.substring(0,prce.length()-1);
+                   // max number of vm by %          
+              int num_max=(nb_vm*Integer.parseInt(val_p))/100;
+              // number of vms no utilized
+               int num2=nb_vm-num_max;    
+               String Vm2[][]=new String[6][num2];
+                String Vm1[][]=new String[6][num_max];
+                   String Pm1[][]= new String[6][nb_pm];
+              int i3 =0;
+              // add vm no used in array
+              String []T_vm_return= new String[num_max];
+              for(int i2=0;i2<nb_vm;i2++){
+              if (i2>=num_max){
+                                Vm2[0][i3]="vm"+allVm[0][i2];
+                                Vm2[1][i3]=allVm[1][i2];
+                                Vm2[2][i3]=allVm[2][i2];
+                              //   Vm2[3][i3]=String.valueOf(i2);
+                                Vm2[4][i3]=allVm[4][i2];
+                                i3++;
+                            }
+              else if(i2<num_max){
+                  T_vm_return[i2]=allVm[0][i2];
+              }
+              }
+              String []percentage_min ={"10%","15%","20%","25%","30%","40%","50%"};
+              String []percentage_max ={"50%","60%","70%","80%","85%","90%","95%"};
+              //dialog of threshold 
+              
+           Dialog<String> dialog = new Dialog<>();
+           dialog.setTitle("energy threshold");
+          dialog.setHeaderText("Modified Best Fit Decreasing");
+           dialog.setResizable(true);
+          
+           Label label1 = new Label("Min threshold : ");
+           Label label2 = new Label("Max threshold : ");
+           ChoiceBox min = new ChoiceBox();
+           ChoiceBox max = new ChoiceBox();
+           min.getItems().addAll(percentage_min);
+           max.getItems().addAll(percentage_max);
+         
+          GridPane grid = new GridPane();
+            grid.add(label1, 1, 1);
+            grid.add(min, 2, 1);
+            grid.add(label2, 1, 2);
+            grid.add(max, 2, 2);
+         dialog.getDialogPane().setContent(grid);
+         ButtonType buttonTypeOk = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+         dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+ 
+         dialog.setResultConverter(new Callback<ButtonType, String>() {
+         @Override
+         public String call(ButtonType b) {
+                 
+                 
+             if (b == buttonTypeOk) {
+                  int total_cpu=0;
+            int total_ram=0;
+            
+            //start MBFD: 
+            
+            List<Vmcl> vm_migrated=new  ArrayList<>();
+            
+            for(int j=0;j<num_max;j++){
+                        vm_migrated.add(new Vmcl("vm"+allVm[0][j],allVm[1][j],allVm[2][j],allVm[4][j]));
+                    
+                }
+            
+            //mbfd
+            Collections.sort(vm_migrated,new Comparator<Vmcl>(){
+                    @Override
+                    public int compare(Vmcl o1, Vmcl o2) {
+                        return Integer.compare(Integer.parseInt(o1.getCpu()), Integer.parseInt(o2.getCpu()));
+                    }
+                });
+            
+                Collections.reverse(vm_migrated);
+                String [] allocate_vm=new String[vm_migrated.size()];
+                for(int j=0;j<vm_migrated.size();j++){
+                    double minPower=250;
+                    String allocatedHost=null;
+                    int total_cpu2=0;
+                    int total_ram2=0;
+                    for(int z=0;z<allPm[1].length;z++){
+                        //if host has enough resource for vm
+                        
+                        if(allPm[5][z]==null)allPm[5][z]="0";
+                          total_cpu=Integer.parseInt(allPm[5][z])+Integer.parseInt(vm_migrated.get(j).cpu);
+                        if(allPm[6][z]==null)allPm[6][z]="0";
+                        
+                          total_ram=Integer.parseInt(allPm[6][z])+Integer.parseInt(vm_migrated.get(j).ram); 
+                          //System.out.println("cpu_pm[z] "+cpu_pm[z] +"vm_migrated.get(j).cpu "+vm_migrated.get(j).cpu);
+                          int p2=Integer.parseInt(allPm[2][z])*1024;
+                          int p1=Integer.parseInt(allPm[1][z]);
+                        if(p1>=total_cpu ){
+                            
+                            int num=0;
+                            num= Integer.parseInt(allPm[2][z])*1024 ;
+                           double c1=Integer.parseInt(allPm[1][z]);
+                           double c=total_cpu/c1;
+                           double k =0.7;
+                           double  k1=0.3;
+                           double e2=k1*250;
+                           double Energy = (k*250) + (e2*c); 
+                          
+                           if(Energy<minPower){
+                               allocatedHost=String.valueOf(z+1);
+                               minPower=Energy;
+                               total_cpu2=total_cpu;
+                               total_ram2=total_ram;
+                               
+                           }
+                        }
+                    }
+
+                    if(allocatedHost!=null) {
+                               allocate_vm[j]= allocatedHost;
+                               allPm[5][Integer.parseInt(allocatedHost)-1]=String.valueOf(total_cpu2);
+                               allPm[6][Integer.parseInt(allocatedHost)-1]=String.valueOf(total_ram2);
+                               
+                           }
+                }
+ 
+                  
+                   for(int i=0;i<vm_migrated.size();i++){
+                       String v=vm_migrated.get(i).vm.toString();
+
+                       for(int j=0;j<Vm1[0].length;j++){
+                           if(v.equals("vm"+allVm[0][j])){
+                               Vm1[0][j]=vm_migrated.get(i).vm.toString();
+                               Vm1[1][j]=vm_migrated.get(i).cpu.toString();
+                               Vm1[2][j]=vm_migrated.get(i).ram.toString();
+                               Vm1[3][j]=allocate_vm[i];
+                               Vm1[4][j]=vm_migrated.get(i).vm_storage.toString();
+                              
+                           }
+                        }
+                    }
+                   // End MBFD
+                   vm_migrated= new ArrayList<>();
+                   //Minimization of Migrations algo
+            for(int i=0;i<allPm[1].length;i++){
+               // String [][] vm_list= new String [4][vm[0].length];
+                List<Vmcl> vm_list=new  ArrayList<>();
+                int z=0;
+               for(int j=0;j<Vm1[0].length;j++){
+                    if(String.valueOf(i+1).equals(Vm1[3][j])){
+                        vm_list.add(new Vmcl(Vm1[0][j],Vm1[1][j],Vm1[2][j],Vm1[4][j]));
+                        z++;
+                    }
+                    
+                }
+                
+              
+                Collections.sort(vm_list,new Comparator<Vmcl>(){
+                    @Override
+                    public int compare(Vmcl o1, Vmcl o2) {
+                        return Integer.compare(Integer.parseInt(o1.getCpu()), Integer.parseInt(o2.getCpu()));
+                    }
+                });
+                Collections.reverse(vm_list);
+                int cpu_total=0;
+                for(int j=0;j<vm_list.size();j++){
+                cpu_total=cpu_total+Integer.parseInt(vm_list.get(j).cpu.toString());
+                }
+                String Tmin= min.getValue().toString();
+                String num=Tmin.substring(0, Tmin.length()-1);
+                int min_threthreshold=Integer.parseInt(num);
+                int cpu_thre= (Integer.parseInt(allPm[1][i])*min_threthreshold)/100;
+                
+                String Tmax= max.getValue().toString();
+                String num2=Tmax.substring(0, Tmax.length()-1);
+                int max_threthreshold=Integer.parseInt(num2);
+                
+                int cpu_thre_max= (Integer.parseInt(allPm[1][i])*max_threthreshold)/100;
+                 
+                
+        
+                Vmcl bestFit_vm = null;
+                if(vm_list.size()>=1) {
+                    int Maxx=Integer.parseInt(vm_list.get(0).cpu.toString());
+                int bestFit_cpu= Maxx;
+                while(cpu_thre_max< cpu_total){
+                    for(int j=0;j<vm_list.size();j++){
+                        int t0= cpu_total-cpu_thre_max;
+                        if(Integer.parseInt(vm_list.get(j).cpu.toString())>t0){
+                           int t= Integer.parseInt(vm_list.get(j).cpu.toString())-cpu_total
+                                +cpu_thre_max; 
+                           if(t<bestFit_cpu){
+                               bestFit_cpu=t;
+                               bestFit_vm=vm_list.get(j);
+                           }
+                        }
+                        else if(bestFit_cpu==Maxx){
+                            bestFit_vm=vm_list.get(j);
+                        }
+                    }
+                    cpu_total=cpu_total-Integer.parseInt(bestFit_vm.cpu.toString());
+                    vm_migrated.add(bestFit_vm);
+                    vm_list.remove(bestFit_vm);
+                }
+                }
+                
+                if(cpu_thre >cpu_total){
+                    vm_migrated.addAll(vm_list);
+                }
+            }
+            
+            // end of MM algo
+            
+            // mbfd 2
+            // sort Decreasing cpu Utilization
+             Collections.sort(vm_migrated,new Comparator<Vmcl>(){
+                    @Override
+                    public int compare(Vmcl o1, Vmcl o2) {
+                        return Integer.compare(Integer.parseInt(o1.getCpu()), Integer.parseInt(o2.getCpu()));
+                    }
+                });
+                Collections.reverse(vm_migrated);
+                allocate_vm=new String[vm_migrated.size()];
+                for(int j=0;j<vm_migrated.size();j++){
+                    double minPower=250;
+                    String allocatedHost=null;
+                    int total_cpu2=0;
+                    int total_ram2=0;
+                    for(int z=0;z<allPm[1].length;z++){
+                        //if host has enough resource for vm
+                        
+                        if(allPm[5][z]==null)allPm[5][z]="0";
+                          total_cpu=Integer.parseInt(allPm[5][z])+Integer.parseInt(vm_migrated.get(j).cpu);
+                        if(allPm[6][z]==null)allPm[6][z]="0";
+                          total_ram=Integer.parseInt(allPm[6][z])+Integer.parseInt(vm_migrated.get(j).ram); 
+                          //System.out.println("cpu_pm[z] "+cpu_pm[z] +"vm_migrated.get(j).cpu "+vm_migrated.get(j).cpu);
+                          int p2=Integer.parseInt(allPm[2][z])*1024;
+                          int p1=Integer.parseInt(allPm[1][z]);
+                        if(p1>=total_cpu ){
+                            
+                            int num=0;
+                            num= Integer.parseInt(allPm[2][z])*1024 ;
+                           double c1=Integer.parseInt(allPm[1][z]);
+                           double c=total_cpu/c1;
+                           double k =0.7;
+                           double  k1=0.3;
+                           double e2=k1*250;
+                           double Energy = (k*250) + (e2*c); 
+                          
+                           if(Energy<minPower){
+                               allocatedHost= String.valueOf(z);
+                               minPower=Energy;
+                               total_cpu2=total_cpu;
+                               total_ram2=total_ram;
+                               
+                           }
+                        }
+                    }
+
+                    if(allocatedHost!=null) {
+                               allocate_vm[j]= allocatedHost;
+                               allPm[5][Integer.parseInt(allocatedHost)-1]=String.valueOf(total_cpu2);
+                               allPm[6][Integer.parseInt(allocatedHost)-1]=String.valueOf(total_ram2);
+                               
+                           }
+                }
+                for(int i=0;i<vm_migrated.size();i++){
+                       String v=vm_migrated.get(i).vm.toString();
+                       for(int j=0;j<Vm1[0].length;j++){
+                           if(v.equals(Vm1[0][j])){
+                               
+                               
+                               // delete cpu utilization of vm deleted
+                               int x=Integer.parseInt(Vm1[3][j]);
+                               int d=Integer.parseInt(vm_migrated.get(i).cpu.toString());
+                               int r = Integer.parseInt(allPm[5][x-1]) -d;
+                               allPm[5][x-1]=String.valueOf(r);
+                               //deleted ram utilization from this pm of vm deleted
+                               int xr=Integer.parseInt(Vm1[3][j]);
+                               int dr=Integer.parseInt(vm_migrated.get(i).ram.toString());
+                               int rr = Integer.parseInt(allPm[6][xr-1]) -dr;
+                               allPm[6][xr-1]=String.valueOf(rr);
+                               //  change 
+                               Vm1[3][j]=allocate_vm[i];
+                           }
+                        }
+                    }
+            
+                   
+                     for(int i=0;i<nb_pm;i++){
+                    if(i<nb_pm){
+                                 Pm1[0][i]=String.valueOf(i+1);
+                                 Pm1[1][i]=allPm[1][i];
+                                 Pm1[2][i]=allPm[2][i];
+                                 Pm1[3][i]=allPm[7][i];
+                                
+
+                            }
+                }
+               for(int c=0;c<Pm1[4].length;c++){
+                 //cpu using
+                   Pm1[4][c]=allPm[5][c];
+                   //ram using
+                    Pm1[5][c]=allPm[6][c];
+               }
+                   
+                for(int i=0;i<nb_pm;i++){
+                allPm[5][i]="0";
+                allPm[6][i]="0";
+                }
+                
+                 FXMLLoader loader= new FXMLLoader(getClass().getResource("random.fxml"));
+                 try {
+                     root1=loader.load();
+                 } catch (IOException ex) {
+                 }
+                 RandomController randomController = loader.
+                       getController();
+               
+                randomController.get_data(Pm1,Vm1,Vm2);
+                   randomController.titel_classification.setText("Random Classification");
+                   Stage stage =new Stage();
+                   stage.setTitle("random");
+                    randomController.get_date2(Pm1,Vm1,Vm2);
+                    Scene s= new Scene(root1);
+                    
+                   stage.setScene(s);
+                   stage.setX(getTablePane(event).getScene().getWindow().getX() + (getTablePane(event).getScene().getWindow().getWidth() - stage.getWidth()) / 2);
+                  stage.setY(getTablePane(event).getScene().getWindow().getY() + (getTablePane(event).getScene().getWindow().getHeight() - stage.getHeight()) / 2);
+                    stage.show();
+                 }
+             return null;
+             }
+         });
+          Optional<String> result = dialog.showAndWait();
+           
+    }
     @FXML
     void firstfit(ActionEvent event) throws IOException {
           mn.setZ("1");
@@ -482,14 +814,14 @@ FileChooser fileChooser = new FileChooser();
                 int z=0;
                 int  N_vm_cpu=0; int  N_vm_ram=0;
                 
-                for(int i=0;i<nb_vm;i++){
-                System.out.println(nb_vm +" "+ allVm[0][i]+" "+allVm[0].length);
-                }
+                
                  
                 String Vm1[][]=new String[6][num_max];
                 String Pm1[][]= new String[6][nb_pm];
                 int i2=0;
+                
                 for(int i=0;i<nb_vm;i++){
+                    
                 int xv=Integer.parseInt(allVm[0][i]);
                 if(z<nb_pm && !allVm[1][xv-1].isEmpty()){
                 if(allPm[5][z]== null)allPm[5][z]="0";
@@ -544,13 +876,7 @@ FileChooser fileChooser = new FileChooser();
                    Pm1[5][c]=allPm[6][c];
                
                }
-                                   for(int c=0;c<Pm1[4].length;c++){
-               
-                   System.out.print("[[[]]]]][[[[]"+Pm1[4][c]);
-                   System.out.println("[[[]]]]][[[[]"+Pm1[1][c]);
-                
-               
-               }
+                          
                   for(int i=0;i<nb_pm;i++){
                 allPm[5][i]="0";
                 allPm[6][i]="0";
@@ -572,6 +898,7 @@ FileChooser fileChooser = new FileChooser();
                    stage.setTitle("random");
                    stage.setScene(s);
                    stage.show();
+                   
     }
     
     private String []percentage={"10%","20%","30%","40%","50%","100%"};
