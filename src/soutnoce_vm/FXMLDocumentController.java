@@ -3,6 +3,7 @@ package soutnoce_vm;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -113,19 +114,15 @@ public class FXMLDocumentController implements Initializable {
   
    
     //number of VMs
-    int vv=290;
+    int vv=0;
     //number of PMs
-    int pp = 100;
-    // in VM there are type of vm and number, CPu and ram and energy 
-    String vmm[][] = new String[5][vv];
-        // in VM there are type of vm and number, CPu and ram, State and energy 
-        String pmm[][] = new String[6][pp];
+    int pp = 0;
+        String vmm[][] ;
+        String pmm[][] ;
         int nb_vm=0;
         int nb_pm=0;
-        
-        // same of vmm and pmm but we remove type and changing of mempry and cpu.
-                String allVm[][] = new String[6][vv];
-                 String allPm[][] = new String[8][pp];
+        String allVm[][];
+        String allPm[][];
 
    
     
@@ -144,11 +141,31 @@ FileChooser fileChooser = new FileChooser();
         
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
+            //Count the number of lines
+                 int x=1;
+                  String st;
+                    BufferedReader br0;
+             try {
+                 br0 = new BufferedReader(new FileReader(file));
+                  while ((st = br0.readLine()) != null){
+                     for(int i=0;i<st.length();i++)
+                         if(st.charAt(i)=='+') x++;
+                 }
+             } catch (FileNotFoundException ex) {
+             } catch (IOException ex) {
+                 Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+             }
+                
+                 pp=x;
+                pmm=  new String[6][pp];
+                // in Pm there are type of vm and number, CPu and ram, State and energy 
+                allPm = new String[8][pp];
             try {
                  BufferedReader br
             = new BufferedReader(new FileReader(file));
                  
-                 String st;
+                
+                 
         // Condition holds true till
         // there is character in a string
        String  txt="" ;
@@ -177,11 +194,10 @@ FileChooser fileChooser = new FileChooser();
             
             } 
         }
-        
          int vi=1;
          for(int i=0;i<pp;i++){
              if(pmm[2][i]!=null){
-                                     //Add pm in Table view
+                      //Add pm in Table view
                       pmCl ipm = new pmCl("pm"+vi,pmm[2][i],pmm[3][i]+" G",pmm[4][i],pmm[1][i]+" G",pmm[5][i]);
                       idpm.getItems().add(ipm);
                       // add pm in second arry 
@@ -223,11 +239,31 @@ FileChooser fileChooser = new FileChooser();
         
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
+            //Count the number of lines
+                 int x=1;
+                  String st;
+                    BufferedReader br0;
+             try {
+                 br0 = new BufferedReader(new FileReader(file));
+                  while ((st = br0.readLine()) != null){
+                     for(int i=0;i<st.length();i++)
+                         if(st.charAt(i)=='+') x++;
+                 }
+             } catch (FileNotFoundException ex) {
+             } catch (IOException ex) {
+                 Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+             }
+             vv=x;
+                 // in VM there are type of vm and number, CPu and ram and  
+                 vmm = new String[5][vv];
+                 // same of vmm and pmm but we remove type and changing of mempry and cpu.
+                 allVm = new String[6][vv];
             try {
                  BufferedReader br
             = new BufferedReader(new FileReader(file));
                  
-                 String st;
+                
+                 
         // Condition holds true till
         // there is character in a string
        String  txt="" ;
@@ -239,15 +275,12 @@ FileChooser fileChooser = new FileChooser();
                     txt= txt+st.charAt(i);
                 }
                 else if(st.charAt(i)=='+'){
-               // System.out.println("typ2");
                    m++;
                    z=0;
                 }
                 else {
                     vmm[z][m]=txt;
                     
-                    
-                   // System.out.println(txt);
                     z++;
                 txt="";
                 }
@@ -544,7 +577,6 @@ FileChooser fileChooser = new FileChooser();
                         if(allPm[6][z]==null)allPm[6][z]="0";
                         
                           total_ram=Integer.parseInt(allPm[6][z])+Integer.parseInt(vm_migrated.get(j).ram); 
-                          //System.out.println("cpu_pm[z] "+cpu_pm[z] +"vm_migrated.get(j).cpu "+vm_migrated.get(j).cpu);
                           int p2=Integer.parseInt(allPm[2][z])*1024;
                           int p1=Integer.parseInt(allPm[1][z]);
                         if(p1>=total_cpu ){
@@ -592,8 +624,18 @@ FileChooser fileChooser = new FileChooser();
                         }
                     }
                    // End MBFD
+                    FXMLLoader loader= new FXMLLoader(getClass().getResource("random.fxml"));
+                 try {
+                     root1=loader.load();
+                 } catch (IOException ex) {
+                 }
+                 RandomController randomController = loader.
+                       getController();
                    vm_migrated= new ArrayList<>();
                    //Minimization of Migrations algo
+                    int cpu_thre=0;
+                     int cpu_thre_max=0;
+                    List<Vmcl> old_pm=new  ArrayList<>();
             for(int i=0;i<allPm[1].length;i++){
                // String [][] vm_list= new String [4][vm[0].length];
                 List<Vmcl> vm_list=new  ArrayList<>();
@@ -613,6 +655,7 @@ FileChooser fileChooser = new FileChooser();
                         return Integer.compare(Integer.parseInt(o1.getCpu()), Integer.parseInt(o2.getCpu()));
                     }
                 });
+               
                 Collections.reverse(vm_list);
                 int cpu_total=0;
                 for(int j=0;j<vm_list.size();j++){
@@ -621,13 +664,14 @@ FileChooser fileChooser = new FileChooser();
                 String Tmin= min.getValue().toString();
                 String num=Tmin.substring(0, Tmin.length()-1);
                 int min_threthreshold=Integer.parseInt(num);
-                int cpu_thre= (Integer.parseInt(allPm[1][i])*min_threthreshold)/100;
+                cpu_thre= (Integer.parseInt(allPm[1][i])*min_threthreshold)/100;
                 
                 String Tmax= max.getValue().toString();
                 String num2=Tmax.substring(0, Tmax.length()-1);
                 int max_threthreshold=Integer.parseInt(num2);
+                randomController.setSlaV(num2);
                 
-                int cpu_thre_max= (Integer.parseInt(allPm[1][i])*max_threthreshold)/100;
+                cpu_thre_max= (Integer.parseInt(allPm[1][i])*max_threthreshold)/100;
                  
                 
         
@@ -660,9 +704,26 @@ FileChooser fileChooser = new FileChooser();
                     vm_migrated.addAll(vm_list);
                 }
             }
+            for(int j=0;j<vm_migrated.size();j++)
+              for(int i=0;i<Vm1[0].length;i++){
+                  if(Vm1[0][i].equals(vm_migrated.get(j).vm)){
+                      
+                               int x=Integer.parseInt(Vm1[3][i]);
+                               int d=Integer.parseInt(vm_migrated.get(j).cpu.toString());
+                               int r = Integer.parseInt(allPm[5][x-1]) -d;
+                               allPm[5][x-1]=String.valueOf(r);
+                               //deleted ram utilization from this pm of vm deleted
+                               int xr=Integer.parseInt(Vm1[3][i]);
+                               int dr=Integer.parseInt(vm_migrated.get(j).ram.toString());
+                               int rr = Integer.parseInt(allPm[6][xr-1]) -dr;
+                               allPm[6][xr-1]=String.valueOf(rr);
+                               
+                               old_pm.add(new Vmcl(Vm1[0][i],Vm1[1][i],Vm1[2][j],Vm1[3][i]));
+                               Vm1[3][i]="0";
+                    }
+                 }
             
             // end of MM algo
-            
             // mbfd 2
             // sort Decreasing cpu Utilization
              Collections.sort(vm_migrated,new Comparator<Vmcl>(){
@@ -672,7 +733,7 @@ FileChooser fileChooser = new FileChooser();
                     }
                 });
                 Collections.reverse(vm_migrated);
-                allocate_vm=new String[vm_migrated.size()];
+                List<String> allocate_vm1=new  ArrayList<>();
                 for(int j=0;j<vm_migrated.size();j++){
                     double minPower=250;
                     String allocatedHost=null;
@@ -685,58 +746,67 @@ FileChooser fileChooser = new FileChooser();
                           total_cpu=Integer.parseInt(allPm[5][z])+Integer.parseInt(vm_migrated.get(j).cpu);
                         if(allPm[6][z]==null)allPm[6][z]="0";
                           total_ram=Integer.parseInt(allPm[6][z])+Integer.parseInt(vm_migrated.get(j).ram); 
-                          //System.out.println("cpu_pm[z] "+cpu_pm[z] +"vm_migrated.get(j).cpu "+vm_migrated.get(j).cpu);
                           int p2=Integer.parseInt(allPm[2][z])*1024;
                           int p1=Integer.parseInt(allPm[1][z]);
-                        if(p1>=total_cpu ){
-                            
-                            int num=0;
-                            num= Integer.parseInt(allPm[2][z])*1024 ;
+                          String Tmax= max.getValue().toString();
+                         String num2=Tmax.substring(0, Tmax.length()-1);
+                         int max_threthreshold=Integer.parseInt(num2);
+                         cpu_thre_max=(p1*max_threthreshold)/100;
+                        if(cpu_thre_max>=total_cpu){
+                           int num=0;
+                           num= Integer.parseInt(allPm[2][z])*1024 ;
                            double c1=Integer.parseInt(allPm[1][z]);
                            double c=total_cpu/c1;
                            double k =0.7;
                            double  k1=0.3;
                            double e2=k1*250;
                            double Energy = (k*250) + (e2*c); 
-                          
                            if(Energy<minPower){
-                               allocatedHost= String.valueOf(z);
+                               allocatedHost= String.valueOf(z+1);
+                               
+
                                minPower=Energy;
                                total_cpu2=total_cpu;
                                total_ram2=total_ram;
-                               
                            }
                         }
                     }
-
                     if(allocatedHost!=null) {
-                               allocate_vm[j]= allocatedHost;
+                        allocate_vm1.add(allocatedHost);
                                allPm[5][Integer.parseInt(allocatedHost)-1]=String.valueOf(total_cpu2);
                                allPm[6][Integer.parseInt(allocatedHost)-1]=String.valueOf(total_ram2);
-                               
+                               String v=vm_migrated.get(j).vm.toString();
+                               for(int i=0;i<Vm1[0].length;i++){
+                                   if(v.equals(Vm1[0][i])){
+                                       Vm1[3][i]=allocatedHost;
+                                   }
+                               }
                            }
                 }
-                for(int i=0;i<vm_migrated.size();i++){
-                       String v=vm_migrated.get(i).vm.toString();
-                       for(int j=0;j<Vm1[0].length;j++){
-                           if(v.equals(Vm1[0][j])){
-                               
-                               
-                               // delete cpu utilization of vm deleted
-                               int x=Integer.parseInt(Vm1[3][j]);
-                               int d=Integer.parseInt(vm_migrated.get(i).cpu.toString());
-                               int r = Integer.parseInt(allPm[5][x-1]) -d;
+                int SLA=0;
+               
+                
+                for(int j=0;j<old_pm.size();j++)
+                for(int i=0;i<Vm1[0].length;i++){
+                    if(Vm1[3][i]!=null)
+                    if(Vm1[3][i].equals("0")){
+                        String c= old_pm.get(j).vm.toString();
+                        if(c.equals(Vm1[0][i])){ 
+                            Vm1[3][i]=old_pm.get(j).vm_storage.toString();
+                            SLA++;
+                            //add cpu
+                            int x=Integer.parseInt(Vm1[3][i]);
+                               int d=Integer.parseInt(old_pm.get(j).cpu.toString());
+                               int r = Integer.parseInt(allPm[5][x-1]) +d;
                                allPm[5][x-1]=String.valueOf(r);
-                               //deleted ram utilization from this pm of vm deleted
-                               int xr=Integer.parseInt(Vm1[3][j]);
-                               int dr=Integer.parseInt(vm_migrated.get(i).ram.toString());
-                               int rr = Integer.parseInt(allPm[6][xr-1]) -dr;
+                               //add  ram utilization from this pm of vm deleted
+                               int xr=Integer.parseInt(Vm1[3][i]);
+                               int dr=Integer.parseInt(old_pm.get(j).ram.toString());
+                               int rr = Integer.parseInt(allPm[6][xr-1]) +dr;
                                allPm[6][xr-1]=String.valueOf(rr);
-                               //  change 
-                               Vm1[3][j]=allocate_vm[i];
-                           }
                         }
                     }
+                }
             
                    
                      for(int i=0;i<nb_pm;i++){
@@ -761,24 +831,20 @@ FileChooser fileChooser = new FileChooser();
                 allPm[6][i]="0";
                 }
                 
-                 FXMLLoader loader= new FXMLLoader(getClass().getResource("random.fxml"));
-                 try {
-                     root1=loader.load();
-                 } catch (IOException ex) {
-                 }
-                 RandomController randomController = loader.
-                       getController();
+                
                
-                randomController.get_data(Pm1,Vm1,Vm2);
-                   randomController.titel_classification.setText("Random Classification");
+                
+                randomController.setSla1(String.valueOf(SLA));
+                   randomController.setAlVm(String.valueOf(old_pm.size()));
+                   randomController.titel_classification.setText("MBFD Classification");
+                   randomController.get_data(Pm1,Vm1,Vm2);
+                   
                    Stage stage =new Stage();
-                   stage.setTitle("random");
+                   stage.setTitle("MBFD");
                     randomController.get_date2(Pm1,Vm1,Vm2);
                     Scene s= new Scene(root1);
                     
                    stage.setScene(s);
-                   stage.setX(getTablePane(event).getScene().getWindow().getX() + (getTablePane(event).getScene().getWindow().getWidth() - stage.getWidth()) / 2);
-                  stage.setY(getTablePane(event).getScene().getWindow().getY() + (getTablePane(event).getScene().getWindow().getHeight() - stage.getHeight()) / 2);
                     stage.show();
                  }
              return null;
@@ -835,7 +901,6 @@ FileChooser fileChooser = new FileChooser();
                 if(N_vm_cpu <=p&& N_vm_ram<p2 && nb_vm>0){
                      if(i<num_max){
                        allPm[5][z]=String.valueOf(N_vm_cpu);
-                       System.out.println("cpuuuuuuuuuuu"+N_vm_cpu);
                        allPm[6][z]=String.valueOf(N_vm_ram);
 
                      
