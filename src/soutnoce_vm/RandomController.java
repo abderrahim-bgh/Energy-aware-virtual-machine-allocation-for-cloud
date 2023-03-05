@@ -33,6 +33,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
@@ -93,6 +94,7 @@ public class RandomController implements Initializable {
 
     @FXML
     private TableColumn<vmInPm, String> old_pm;
+    TableRow<vmInPm> row ;
     
     String sla1,AlVm;
 
@@ -117,6 +119,14 @@ public class RandomController implements Initializable {
         list_pm.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
+            if(list_pm.getSelectionModel().getSelectedItem().equals("Old and New Pms")){
+                 tab_vms.setVisible(true);
+          lb1.setVisible(false);                        
+          lb2.setVisible(false);
+          vm_in_pm.setVisible(false);
+          calcule_label.setVisible(false);
+            }
+            else{
           tab_vms.setVisible(false);
           lb1.setVisible(true);                        
           lb2.setVisible(true);
@@ -161,9 +171,24 @@ public class RandomController implements Initializable {
                            + "\n - Total storage in "+click+"is :"+storage+" G / "+classment_pm1[3][Integer.parseInt(clk)-1]+" G"
                             + "\n - Energy: "+Energy+" W");
         }
+            }
     });
     
     
+    }
+    
+    public void listAllVMs(String [][]tabVms){
+        if(!titel_classification.getText().equals("MBFD Classification"))
+            new_pm.setVisible(false);
+        else new_pm.setVisible(true);
+        tab_vms.getItems().clear();
+        for(int i=0;i<tabVms[0].length;i++){
+            if(tabVms[0][i]!=null){
+                if(tabVms[2][i]==null) tabVms[2][i]= "  / ";
+                vmInPm pv = new vmInPm(tabVms[0][i], "Pm "+tabVms[1][i], "Pm "+tabVms[2][i]);
+                tab_vms.getItems().add(pv);
+            }
+        }
     }
     String slaV;
 
@@ -178,6 +203,7 @@ public class RandomController implements Initializable {
         
         double energy_total=0;
       
+        list_pm.getItems().add("Old and New Pms");
         
         String p=classment_pm1[0][0];
 
@@ -285,7 +311,10 @@ public class RandomController implements Initializable {
       place_vm.setOnMouseClicked(new EventHandler<MouseEvent>(){
           @Override
           public void handle(MouseEvent event) {
+              tab_vms.getItems().clear();
+              titel_classification.setText("first fit Classification");
               alocation.setText("the second a location");
+              
               double energy_total=0;
                   int nb_vm=0;
         String[] vm_p=new String[vm2[3].length];
@@ -297,6 +326,7 @@ public class RandomController implements Initializable {
        int total_cpu=0;
        int total_ram=0;
        int z=0;
+       String tabVms [][]= new String [4][VmAll[0].length];
        
        for(int i=0;i<vm2[0].length;i++){
            
@@ -329,6 +359,13 @@ public class RandomController implements Initializable {
               }
             VmAll[3]=Arrays.copyOf(vm[3], vm[3].length+vm2[3].length);
       System.arraycopy(vm_p,0,VmAll[3],vm[3].length,vm2[3].length);
+      
+      tabVms[1]=Arrays.copyOf(vm[3], vm[3].length+vm2[3].length);
+      System.arraycopy(vm_p,0,tabVms[1],vm[3].length,vm2[3].length);
+      tabVms[0]=Arrays.copyOf(vm[0], vm[3].length+vm2[3].length);
+      System.arraycopy(vm2[0],0,tabVms[0],vm[0].length,vm2[0].length);
+      listAllVMs(tabVms);
+      
         for(int i=0;i<VmAll[0].length;i++){
                 if(VmAll[3][i]!=null) nb_vm++;
        }
@@ -377,7 +414,7 @@ public class RandomController implements Initializable {
             
             
                         pm_clik(classment_pm1,VmAll);
-
+                         tabVms = new String [4][VmAll[0].length];
             
           }
       });
@@ -386,7 +423,13 @@ public class RandomController implements Initializable {
       random.setOnMouseClicked(new EventHandler<MouseEvent>(){
          @Override
          public void handle(MouseEvent event) {
+              titel_classification.setText("Random Classification");
+             tab_vms.getItems().clear();
              alocation.setText("the second a location");
+             String tabVms [][]= new String [4][VmAll2[0].length];
+             
+      tabVms[0]=Arrays.copyOf(vm[0], vm[3].length+vm2[3].length);
+      System.arraycopy(vm2[0],0,tabVms[0],vm[0].length,vm2[0].length);
               double energy_total=0;
                   int nb_vm=0;
         String[] vm_p=new String[vm2[3].length];
@@ -397,7 +440,9 @@ public class RandomController implements Initializable {
         ram_vm=Arrays.copyOf(classment_pm1[5], classment_pm1[4].length);
        int total_cpu=0;
        int total_ram=0;
-       
+       String[] vm_p1=new String[vm2[0].length];
+        vm_p1=Arrays.copyOf(vm2[0], vm2[0].length); 
+        
        String vm_shuffle[]=new String[vm2[0].length];
         List<String> vmList = Arrays.asList(vm2[0]);
                // shuffle the Vms number in the list
@@ -445,7 +490,14 @@ public class RandomController implements Initializable {
        
         VmAll2[3]=Arrays.copyOf(vm[3], vm[3].length+vm2[3].length);
       System.arraycopy(vm_p,0,VmAll2[3],vm[3].length,vm2[3].length);
-        
+      
+      tabVms[1]=Arrays.copyOf(vm[3], vm[3].length+vm2[3].length);
+      System.arraycopy(vm_p,0,tabVms[1],vm[3].length,vm2[3].length);
+      
+     
+      listAllVMs(tabVms);
+      //for clear vm_p tab
+        vm_p=new String[vm2[3].length];
       for(int i=0;i<VmAll2[0].length;i++){
                 if(VmAll2[3][i]!=null) nb_vm++;
        }
@@ -485,9 +537,10 @@ public class RandomController implements Initializable {
                                 energy_total+" W"
                                );  
             
-            
+                        vm2[0]=Arrays.copyOf(vm_p1, vm2[0].length); 
                         pm_clik(classment_pm1,VmAll2);
-
+                        
+                        tabVms = new String [4][VmAll2[0].length];
             
           }
       });
@@ -526,6 +579,9 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
     public String call(ButtonType b) {
  
         if (b == buttonTypeOk) {
+            titel_classification.setText("MBFD Classification");
+            tab_vms.getItems().clear();
+            String num_sla="";
             String[] vm_p=new String[vm[3].length];
             vm_p=Arrays.copyOf(vm[3], vm[3].length);
             
@@ -543,7 +599,21 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                         vm_migrated.add(new Vmcl(vm2[0][j],vm2[1][j],vm2[2][j],vm2[4][j]));
                     
                 }
-            
+            String[][] VmAll3= new String[5][vm[0].length+vm2[0].length];
+                     VmAll3[0]=Arrays.copyOf(vm[0], vm[0].length+vm2[0].length);
+                     System.arraycopy(vm2[0],0,VmAll3[0],vm[0].length,vm2[0].length);
+                     VmAll3[1]=Arrays.copyOf(vm[1], vm[1].length+vm2[1].length);
+                     System.arraycopy(vm2[1],0,VmAll3[1],vm[1].length,vm2[1].length);
+                     VmAll3[2]=Arrays.copyOf(vm[2], vm[2].length+vm2[2].length);
+                     System.arraycopy(vm2[2],0,VmAll3[2],vm[2].length,vm2[2].length);
+      
+                   VmAll3[4]=Arrays.copyOf(vm[4], vm[4].length+vm2[4].length);
+                   System.arraycopy(vm2[4],0,VmAll3[4],vm[4].length,vm2[4].length);
+                   
+                   String tabVms [][]= new String [4][VmAll2[0].length];
+                   tabVms[1]=Arrays.copyOf(vm[3], VmAll2[0].length);
+                   tabVms[0]=Arrays.copyOf(vm[0], vm[3].length+vm2[3].length);
+                   System.arraycopy(vm2[0],0,tabVms[0],vm[0].length,vm2[0].length);
             //mbfd
             Collections.sort(vm_migrated,new Comparator<Vmcl>(){
                     @Override
@@ -597,17 +667,8 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                                
                            }
                 }
-            
-                     String[][] VmAll3= new String[5][vm[0].length+vm2[0].length];
-                     VmAll3[0]=Arrays.copyOf(vm[0], vm[0].length+vm2[0].length);
-                     System.arraycopy(vm2[0],0,VmAll3[0],vm[0].length,vm2[0].length);
-                     VmAll3[1]=Arrays.copyOf(vm[1], vm[1].length+vm2[1].length);
-                     System.arraycopy(vm2[1],0,VmAll3[1],vm[1].length,vm2[1].length);
-                     VmAll3[2]=Arrays.copyOf(vm[2], vm[2].length+vm2[2].length);
-                     System.arraycopy(vm2[2],0,VmAll3[2],vm[2].length,vm2[2].length);
-      
-                   VmAll3[4]=Arrays.copyOf(vm[4], vm[4].length+vm2[4].length);
-                   System.arraycopy(vm2[4],0,VmAll3[4],vm[4].length,vm2[4].length);
+                
+                     
                    
                   for(int i=0;i<vm_p.length;i++){
                       VmAll3[3][i]=vm_p[i];
@@ -618,6 +679,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                            if(v.equals(VmAll3[0][j])){
                                
                                VmAll3[3][j]=allocate_vm[i];
+                               tabVms[1][j]=allocate_vm[i];
                            }
                         }
                     }
@@ -660,6 +722,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                 
                 String Tmax= max.getValue().toString();
                 String num2=Tmax.substring(0, Tmax.length()-1);
+                num_sla=num2;
                 int max_threthreshold=Integer.parseInt(num2);
                 
                 cpu_thre_max= (Integer.parseInt(classment_pm1[1][i])*max_threthreshold)/100;
@@ -773,10 +836,14 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                                for(int i=0;i<VmAll3[0].length;i++){
                                    if(v.equals(VmAll3[0][i])){
                                        VmAll3[3][i]=allocatedHost;
+                                       tabVms[2][i]=allocatedHost;
+                                       
+                                       
                                    }
                                }
                            }
                 }
+                
                 int SLA=0;
                 for(int j=0;j<old_pm.size();j++)
                     for(int i=0;i<VmAll3[0].length;i++){
@@ -785,30 +852,39 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                                 String c= old_pm.get(j).vm.toString();
                                 if(c.equals(VmAll3[0][i])){
                                     SLA++;
+                                    // vm_storage in old_pm is number of pm
                                    VmAll3[3][i]=old_pm.get(j).vm_storage.toString();
+                                   tabVms[2][i]=old_pm.get(j).vm_storage.toString();
                                      // add cpu utilization of vm deleted
-                                     int x=Integer.parseInt(VmAll3[3][j]);
+                                     int x=Integer.parseInt(VmAll3[3][i]);
                                      int d=Integer.parseInt(old_pm.get(j).cpu.toString());
                                      int r = Integer.parseInt(cpu_pm[x-1]) +d;
                                      cpu_pm[x-1]=String.valueOf(r);
                                     //add ram utilization from this pm of vm deleted
-                                     int xr=Integer.parseInt(VmAll3[3][j]);
+                                     int xr=Integer.parseInt(VmAll3[3][i]);
                                      int dr=Integer.parseInt(old_pm.get(j).ram.toString());
                                      int rr = Integer.parseInt(ram_vm[xr-1]) +dr;
                                      ram_vm[xr-1]=String.valueOf(rr);
                                 }
                             }
                     }
+                    listAllVMs(tabVms);
                     int nb_vm=0;
                     for(int i=0;i<VmAll3[0].length;i++){
                         if(VmAll3[3][i]!=null ) 
                             if(!VmAll3[3][i].equals("0"))
                                 nb_vm++;
                     }
+                    int sla_x=0;
+                    
+                     
+                   int ssla=0;
                    double energy_total=0;
                    for(int j=0;j<classment_pm1[0].length;j++){
                        int cpu=0; int ram=0;
                        int zi= Integer.parseInt(classment_pm1[0][j]);
+                       int z1=Integer.parseInt(classment_pm1[1][j]);
+                        sla_x= (z1*Integer.valueOf(num_sla))/100;
                        for(int i=0;i<VmAll3[4].length;i++){
                            if(VmAll3[3][i]!=null )
                                if(!VmAll3[3][i].equals("0"))
@@ -817,6 +893,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                                        ram=ram+Integer.parseInt(VmAll2[2][i]);
                 }  
             }
+                        if(cpu > sla_x){ ssla++;} 
                        int num=0; double Energy =0;
                        num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
                        if(cpu==0){
@@ -831,14 +908,20 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                        }
                        energy_total=energy_total+Energy;
                    }
+                  //is % of pms top of threshold (SLA violation)
+                   int ss= (ssla*100)/classment_pm1[0].length;
                    total_label.setText("1- Total of vm placed "
                            + "\n is: "+String.valueOf(nb_vm)+"/"+(VmAll[0].length)
-                            + "\n\n  2- The total energy\n consumption: "+
-                                energy_total+" W"+"\n\n  3- SLA violations: "+SLA+"/"+old_pm.size()+" VMs"
-                               );  
+                            + "\n\n  2- The total energy\n consumption:"+
+                               energy_total+" W"+"\n\n  3- Vms that we did not find \na place in Pm:"+SLA+"/"+old_pm.size()+" VMs"
+                                +"\n\n  4- SLA violations: "+ss+" %"
+                                 );  
+                   
+                           
                    
                    
                                           pm_clik(classment_pm1,VmAll3);
+                                          tabVms = new String [4][VmAll[0].length];
   
         }
  
@@ -880,7 +963,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
          vp_ram.setCellValueFactory(new PropertyValueFactory<PmVmCl,String>("ram"));
          vm_Name.setCellValueFactory(new PropertyValueFactory<vmInPm,String>("Vm"));
          old_pm.setCellValueFactory(new PropertyValueFactory<vmInPm,String>("Old_pm"));
-         new_pm.setCellValueFactory(new PropertyValueFactory<vmInPm,String>("ram"));
+         new_pm.setCellValueFactory(new PropertyValueFactory<vmInPm,String>("New_pm"));
 
     }    
     

@@ -157,6 +157,7 @@ FileChooser fileChooser = new FileChooser();
              }
                 
                  pp=x;
+                 label_pm.setText("    The physical Machines ("+pp+" PMs )");
                 pmm=  new String[6][pp];
                 // in Pm there are type of vm and number, CPu and ram, State and energy 
                 allPm = new String[8][pp];
@@ -254,6 +255,7 @@ FileChooser fileChooser = new FileChooser();
                  Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
              }
              vv=x;
+             label_vm.setText("   The Virtual Machines ("+vv+" VMs )");
                  // in VM there are type of vm and number, CPu and ram and  
                  vmm = new String[5][vv];
                  // same of vmm and pmm but we remove type and changing of mempry and cpu.
@@ -322,6 +324,7 @@ FileChooser fileChooser = new FileChooser();
        @FXML
     void random(ActionEvent event) throws IOException {
               mn.setZ("1");
+               String tabVms [][]= new String [4][nb_vm];
               // get % of VM p
               String prce= choice_vmp.getValue();
               // empl: 50% = 50
@@ -394,8 +397,10 @@ FileChooser fileChooser = new FileChooser();
                                  N_vm_cpu=0;
                                  N_vm_ram=0;
                                Vm1[0][i]="vm"+allVm[0][i];
+                               tabVms[0][i]="vm"+allVm[0][i];
                                //vm placed in pm number
                                Vm1[3][i]=String.valueOf(nbP+1);
+                               tabVms[1][i]=String.valueOf(nbP+1);
                                //cpu of vm
                                Vm1[1][i]=allVm[1][xv-1];
                                // ram of vm
@@ -446,6 +451,7 @@ FileChooser fileChooser = new FileChooser();
                    randomController.titel_classification.setText("Random Classification");
                    Stage stage =new Stage();
                    stage.setTitle("random");
+                   randomController.listAllVMs(tabVms);
                     randomController.get_date2(Pm1,Vm1,Vm2);
                     Scene s= new Scene(root1);
                     
@@ -453,6 +459,7 @@ FileChooser fileChooser = new FileChooser();
                    stage.setX(getTablePane(event).getScene().getWindow().getX() + (getTablePane(event).getScene().getWindow().getWidth() - stage.getWidth()) / 2);
                   stage.setY(getTablePane(event).getScene().getWindow().getY() + (getTablePane(event).getScene().getWindow().getHeight() - stage.getHeight()) / 2);
                     stage.show();
+                    tabVms= new String [4][nb_vm];
                   
     }
     
@@ -539,21 +546,17 @@ FileChooser fileChooser = new FileChooser();
          dialog.setResultConverter(new Callback<ButtonType, String>() {
          @Override
          public String call(ButtonType b) {
-                 
-                 
              if (b == buttonTypeOk) {
                   int total_cpu=0;
             int total_ram=0;
             
             //start MBFD: 
-            
             List<Vmcl> vm_migrated=new  ArrayList<>();
-            
             for(int j=0;j<num_max;j++){
                         vm_migrated.add(new Vmcl("vm"+allVm[0][j],allVm[1][j],allVm[2][j],allVm[4][j]));
                     
                 }
-            
+            String tabVms [][]= new String [4][nb_vm];
             //mbfd
             Collections.sort(vm_migrated,new Comparator<Vmcl>(){
                     @Override
@@ -561,7 +564,6 @@ FileChooser fileChooser = new FileChooser();
                         return Integer.compare(Integer.parseInt(o1.getCpu()), Integer.parseInt(o2.getCpu()));
                     }
                 });
-            
                 Collections.reverse(vm_migrated);
                 String [] allocate_vm=new String[vm_migrated.size()];
                 for(int j=0;j<vm_migrated.size();j++){
@@ -619,6 +621,8 @@ FileChooser fileChooser = new FileChooser();
                                Vm1[2][j]=vm_migrated.get(i).ram.toString();
                                Vm1[3][j]=allocate_vm[i];
                                Vm1[4][j]=vm_migrated.get(i).vm_storage.toString();
+                               tabVms[0][j]=vm_migrated.get(i).vm.toString();
+                               tabVms[1][j]=allocate_vm[i];
                               
                            }
                         }
@@ -669,8 +673,7 @@ FileChooser fileChooser = new FileChooser();
                 String Tmax= max.getValue().toString();
                 String num2=Tmax.substring(0, Tmax.length()-1);
                 int max_threthreshold=Integer.parseInt(num2);
-                randomController.setSlaV(num2);
-                
+                randomController.setSlaV(num2);                
                 cpu_thre_max= (Integer.parseInt(allPm[1][i])*max_threthreshold)/100;
                  
                 
@@ -779,6 +782,7 @@ FileChooser fileChooser = new FileChooser();
                                for(int i=0;i<Vm1[0].length;i++){
                                    if(v.equals(Vm1[0][i])){
                                        Vm1[3][i]=allocatedHost;
+                                        tabVms[2][i]=allocatedHost;
                                    }
                                }
                            }
@@ -793,6 +797,7 @@ FileChooser fileChooser = new FileChooser();
                         String c= old_pm.get(j).vm.toString();
                         if(c.equals(Vm1[0][i])){ 
                             Vm1[3][i]=old_pm.get(j).vm_storage.toString();
+                             tabVms[2][i]=old_pm.get(j).vm_storage.toString();
                             SLA++;
                             //add cpu
                             int x=Integer.parseInt(Vm1[3][i]);
@@ -837,6 +842,7 @@ FileChooser fileChooser = new FileChooser();
                 randomController.setSla1(String.valueOf(SLA));
                    randomController.setAlVm(String.valueOf(old_pm.size()));
                    randomController.titel_classification.setText("MBFD Classification");
+                   randomController.listAllVMs(tabVms);
                    randomController.get_data(Pm1,Vm1,Vm2);
                    
                    Stage stage =new Stage();
@@ -845,6 +851,7 @@ FileChooser fileChooser = new FileChooser();
                     Scene s= new Scene(root1);
                     
                    stage.setScene(s);
+                   tabVms= new String [4][nb_vm];
                     stage.show();
                  }
              return null;
@@ -856,6 +863,7 @@ FileChooser fileChooser = new FileChooser();
     @FXML
     void firstfit(ActionEvent event) throws IOException {
           mn.setZ("1");
+          String tabVms [][]= new String [4][nb_vm];
                     // get % of VM p
               String prce= choice_vmp.getValue();
               // empl: 50% = 50
@@ -910,6 +918,8 @@ FileChooser fileChooser = new FileChooser();
                         Vm1[1][i]=allVm[1][i];
                         Vm1[2][i]=allVm[2][i];
                         Vm1[4][i]=allVm[4][i];
+                        tabVms[0][i]="vm"+allVm[0][i];
+                        tabVms[1][i]=String.valueOf(z+1);
                             }
                         
                         if(i<nb_pm){
@@ -958,11 +968,13 @@ FileChooser fileChooser = new FileChooser();
                 randomController.get_data(Pm1, Vm1,Vm2);
                 randomController.get_date2(Pm1,Vm1,Vm2);
                 randomController.titel_classification.setText("first fit Classification");
+                randomController.listAllVMs(tabVms);
                     
                    Stage stage =new Stage();
                    stage.setTitle("random");
                    stage.setScene(s);
                    stage.show();
+                   tabVms= new String [4][nb_vm];
                    
     }
     
