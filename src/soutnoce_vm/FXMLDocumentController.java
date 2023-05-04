@@ -38,6 +38,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -110,6 +112,10 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private ChoiceBox<String> choice_vmp;
+    @FXML 
+    Tab home_tab;
+    @FXML
+    TabPane tabP;
     
   
    
@@ -315,7 +321,7 @@ FileChooser fileChooser = new FileChooser();
     }
     
     // for open anthere window
-    Parent root1;
+    AnchorPane root1= new AnchorPane();
     @FXML
     StackPane stak;
        @FXML
@@ -335,6 +341,7 @@ FileChooser fileChooser = new FileChooser();
                int num2=nb_vm-num_max;    
                String Vm2[][]=new String[6][num2];
               int i3 =0;
+              
               // add vm no used in array
               String []T_vm_return= new String[num_max];
               for(int i2=0;i2<nb_vm;i2++){
@@ -446,19 +453,17 @@ FileChooser fileChooser = new FileChooser();
                 root1=loader.load();
                  RandomController randomController = loader.
                        getController();
-               
                 randomController.get_data(Pm1,Vm1,Vm2);
                    randomController.titel_classification.setText("Random Classification");
-                   Stage stage =new Stage();
-                   stage.setTitle("random");
+                   
                    randomController.listAllVMs(tabVms);
                     randomController.get_date2(Pm1,Vm1,Vm2);
-                    Scene s= new Scene(root1);
-                    
-                   stage.setScene(s);
-                   stage.setX(getTablePane(event).getScene().getWindow().getX() + (getTablePane(event).getScene().getWindow().getWidth() - stage.getWidth()) / 2);
-                  stage.setY(getTablePane(event).getScene().getWindow().getY() + (getTablePane(event).getScene().getWindow().getHeight() - stage.getHeight()) / 2);
-                    stage.show();
+                     Tab tabP1=new Tab();
+                     tabP1.setText("random");
+                      tabP1.setContent(root1);
+                     tabP.getTabs().add(tabP1);
+                      tabP.getSelectionModel().select(tabP1);
+                   
                     tabVms= new String [4][nb_vm];
                   
     }
@@ -467,27 +472,7 @@ FileChooser fileChooser = new FileChooser();
    return (AnchorPane) ((Node) event.getSource()).getScene().getRoot();
 
     }
-    /*
-    public void getEnergy(String []energy){
-        ObservableList<pmCl> items = idpm.getItems(); 
-        int columnIndex = 2; 
-        int i =0;
-      
-        for (pmCl item : items) {
-    // get the value of the third column
-         
-    
-          String value = item.getEnergy(); 
-    String newValue = energy[i]; 
 
-    i++;
-    item.setEnergy(newValue); 
-}
-
-   // refresh the table view to display the updated values
-   idpm.refresh();
-
-    }*/
     @FXML
     void mbfd(ActionEvent event) throws IOException {
         
@@ -518,8 +503,8 @@ FileChooser fileChooser = new FileChooser();
                   T_vm_return[i2]=allVm[0][i2];
               }
               }
-              String []percentage_min ={"10%","15%","20%","25%","30%","40%","50%"};
-              String []percentage_max ={"50%","60%","70%","80%","85%","90%","95%"};
+              String []percentage_min ={"05%","10%","15%","20%","25%","30%","35%"};
+              String []percentage_max ={"60%","70%","80%","85%","90%","95%","97%"};
               //dialog of threshold 
               
            Dialog<String> dialog = new Dialog<>();
@@ -553,7 +538,7 @@ FileChooser fileChooser = new FileChooser();
             //start MBFD: 
             List<Vmcl> vm_migrated=new  ArrayList<>();
             for(int j=0;j<num_max;j++){
-                        vm_migrated.add(new Vmcl("vm"+allVm[0][j],allVm[1][j],allVm[2][j],allVm[4][j]));
+                        vm_migrated.add(new Vmcl(allVm[0][j],allVm[1][j],allVm[2][j],allVm[4][j]));
                     
                 }
             String tabVms [][]= new String [4][nb_vm];
@@ -615,7 +600,7 @@ FileChooser fileChooser = new FileChooser();
                        String v=vm_migrated.get(i).vm.toString();
 
                        for(int j=0;j<Vm1[0].length;j++){
-                           if(v.equals("vm"+allVm[0][j])){
+                           if(v.equals(allVm[0][j])){
                                Vm1[0][j]=vm_migrated.get(i).vm.toString();
                                Vm1[1][j]=vm_migrated.get(i).cpu.toString();
                                Vm1[2][j]=vm_migrated.get(i).ram.toString();
@@ -636,6 +621,7 @@ FileChooser fileChooser = new FileChooser();
                  RandomController randomController = loader.
                        getController();
                    vm_migrated= new ArrayList<>();
+                   
                    //Minimization of Migrations algo
                     int cpu_thre=0;
                      int cpu_thre_max=0;
@@ -830,7 +816,7 @@ FileChooser fileChooser = new FileChooser();
                    //ram using
                     Pm1[5][c]=allPm[6][c];
                }
-                   
+                   vm_migrated.clear();
                 for(int i=0;i<nb_pm;i++){
                 allPm[5][i]="0";
                 allPm[6][i]="0";
@@ -844,15 +830,14 @@ FileChooser fileChooser = new FileChooser();
                    randomController.titel_classification.setText("MBFD Classification");
                    randomController.listAllVMs(tabVms);
                    randomController.get_data(Pm1,Vm1,Vm2);
-                   
-                   Stage stage =new Stage();
-                   stage.setTitle("MBFD");
                     randomController.get_date2(Pm1,Vm1,Vm2);
-                    Scene s= new Scene(root1);
-                    
-                   stage.setScene(s);
+                   
+                   Tab tabP1=new Tab();
+                     tabP1.setText("MBFD");
+                      tabP1.setContent(root1);
+                     tabP.getTabs().add(tabP1);
+                      tabP.getSelectionModel().select(tabP1);
                    tabVms= new String [4][nb_vm];
-                    stage.show();
                  }
              return null;
              }
@@ -961,7 +946,6 @@ FileChooser fileChooser = new FileChooser();
                  FXMLLoader loader= new FXMLLoader(getClass().getResource("random.fxml"));
                  
                  root1=loader.load();
-                Scene s= new Scene(root1);
                  RandomController randomController = loader.
                        getController();
                
@@ -970,21 +954,66 @@ FileChooser fileChooser = new FileChooser();
                 randomController.titel_classification.setText("first fit Classification");
                 randomController.listAllVMs(tabVms);
                     
-                   Stage stage =new Stage();
-                   stage.setTitle("random");
-                   stage.setScene(s);
-                   stage.show();
+                   Tab tabP1=new Tab();
+                     tabP1.setText("first fit");
+                      tabP1.setContent(root1);
+                     tabP.getTabs().add(tabP1);
+                      tabP.getSelectionModel().select(tabP1);
+                      
                    tabVms= new String [4][nb_vm];
                    
     }
-    
+       @FXML
+         void  AG(ActionEvent event) throws IOException{
+             String[][] Vm1= new String[5][nb_vm];
+            String[][] Pm1= new String[4][nb_pm];
+
+         
+             
+            for(int i=0;i<allVm[0].length;i++) {
+
+                     
+                        Vm1[0][i]=allVm[0][i];
+                        Vm1[1][i]=allVm[1][i];
+                        Vm1[2][i]=allVm[2][i];
+                        Vm1[4][i]=allVm[4][i];
+                        
+                            
+                        
+                        if(i<nb_pm){
+                        Pm1[0][i]=String.valueOf(i+1);
+                         Pm1[1][i]=allPm[1][i];
+                         Pm1[2][i]=allPm[2][i];
+                         Pm1[3][i]=allPm[7][i];
+                         
+              }
+            }
+              FXMLLoader loader0= new FXMLLoader(getClass().getResource("AgPage.fxml"));
+                 root1=loader0.load();
+                 
+                 AgPageController gc = loader0.getController();
+               System.out.print("pm "+Pm1[0][1]);
+                   gc. InitializationFF(allVm,allPm);
+                   gc. InitializationRandom(allVm,allPm);
+                   gc.InitializationBFD(allVm, allPm);
+                    
+                   Tab tabP1=new Tab();
+                     tabP1.setText("AG");
+                      tabP1.setContent(root1);
+                     tabP.getTabs().add(tabP1);
+                      tabP.getSelectionModel().select(tabP1);
+                      
+      
+                        
+               
+         }
     private String []percentage={"10%","20%","30%","40%","50%","100%"};
     
     
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+       
         label_pm.setVisible(false);
         label_vm.setVisible(false);
         choice_vmp.setVisible(false);

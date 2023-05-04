@@ -73,7 +73,7 @@
             <Image url="@icons/arrow-small-left.png" />
          </image>
       </ImageView>
-      <TableView fx:id="tab_vms" layoutX="424.0" layoutY="118.0" prefHeight="592.0" prefWidth="454.0">
+      <TableView fx:id="tab_vms" layoutX="424.0" layoutY="118.0" prefHeight="592.0" prefWidth="454.0" AnchorPane.bottomAnchor="41.0" AnchorPane.leftAnchor="424.0" AnchorPane.rightAnchor="413.0" AnchorPane.topAnchor="118.0">
          <columns>
             <TableColumn fx:id="vm_Name" prefWidth="75.0" text="Vm" />
             <TableColumn fx:id="old_pm" prefWidth="75.0" text="Vm place " />
