@@ -16,31 +16,25 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 
 /**
  * FXML Controller class
  *
- * @author abderrahim
+ * @author abderrahimA
  */
 public class AgPageController implements Initializable {
 
     @FXML
-    private TableView<ag_coding> RBFD;
+    private Label ll;
 
     @FXML
     private TableColumn<ag_coding, String> pm_RFF;
 
-    @FXML
-    private TableColumn<ag_coding, String> pm_bfd;
-
-    @FXML
-    private TableColumn<ag_coding, String>pmr;
-
-    @FXML
-    private TableView<ag_coding> random;
 
     @FXML
     private TableView<ag_coding> rff;
@@ -49,21 +43,26 @@ public class AgPageController implements Initializable {
     private TableColumn<ag_coding, String> vm_RFF;
 
     @FXML
-    private TableColumn<ag_coding, String> vm_bfd;
-
+    private TableView<showIdivFit> fitt;
     @FXML
-    private TableColumn<ag_coding, String> vmr;
+    private TableColumn<showIdivFit,String> idivid;
+    @FXML
+    private TableColumn<showIdivFit,String> fit;
+    @FXML
+    private TableColumn<showIdivFit,String> nb;      
     
-    
+             List<List> initialPop= new ArrayList<>();         
     public void InitializationBFD(String [][]Vm1,String[][] Pm1){
+         System.out.println("bfd");
+        for(int p=0;p<30;p++){
+         List<individu> individual=new  ArrayList<>();
          int total_cpu=0;
          int total_ram=0;  
          List<Vmcl> vm_migrated=new  ArrayList<>();
-          String[][] Vm2= random(Vm1,Pm1);
+         String[][] Vm2= random(Vm1,Pm1);
           
             for(int j=0;j<Vm1[0].length;j++){
-                        vm_migrated.add(new Vmcl(Vm1[0][j],Vm1[1][j],Vm1[2][j],Vm1[4][j]));
-                    
+                        vm_migrated.add(new Vmcl(Vm1[0][j],Vm1[1][j],Vm1[2][j],Vm1[4][j]));            
                 }
             String tabVms [][]= new String [4][Vm1[0].length];
             //mbfd
@@ -88,7 +87,6 @@ public class AgPageController implements Initializable {
                         if(Pm1[5][z]==null)Pm1[5][z]="0";
                           total_cpu=Integer.parseInt(Pm1[5][z])+Integer.parseInt(vm_migrated.get(j).cpu);
                         if(Pm1[6][z]==null)Pm1[6][z]="0";
-                        
                           total_ram=Integer.parseInt(Pm1[6][z])+Integer.parseInt(vm_migrated.get(j).ram); 
                           int p2=Integer.parseInt(Pm1[2][z])*1024;
                           int p1=Integer.parseInt(Pm1[1][z]);
@@ -153,24 +151,42 @@ public class AgPageController implements Initializable {
                                tabVms[0][j]=vm_migrated.get(i).vm.toString();
                                tabVms[1][j]=vm_migrated.get(i).vm_storage;
                                }
+                               if(p==0){
                                ag_coding coding=new ag_coding(vm_migrated.get(i).vm.toString(), vm_migrated.get(i).vm_storage);
-                                      RBFD.getItems().add(coding);
+                                     // RBFD.getItems().add(coding);
+                               }
+                                      individu e= new individu(vm_migrated.get(i).vm.toString(), vm_migrated.get(i).cpu.toString(),
+                                              vm_migrated.get(i).ram.toString(), Vm1[4][j], Vm1[3][j],"Random Best-fit decreasing ");
+                                      individual.add(e);
                            }
                         }
                       
                     }
         
+                   initialPop.add(individual);
                    vm_migrated.clear();
-    for(int z1=0;z1<Pm1[5].length;z1++){
-                   Pm1[5][z1]="0";
-                    Pm1[6][z1]="0";
-                }
+   
+                   for(int z1=0;z1<Pm1[5].length;z1++){
+                       Pm1[5][z1]="0";
+                       Pm1[6][z1]="0";
+                   }
+     }
+                  for(int i=0;i<initialPop.size();i++){
+                      showIdivFit sh=new showIdivFit(String.valueOf(i+1),initialPop.get(i).toString(), String.valueOf(i));
+                      fitt.getItems().add(sh);
+                    //  idivid.getColumns().add(initialPop.get(i).toString());
+                  }
+                  
+                System.out.println("pop"+initialPop.get(61).toString());
+                 System.out.println("pop"+initialPop.get(62).toString());
+                  System.out.println("pop"+initialPop.get(63).toString());
+
     }
     
-    public void InitializationRandom(String [][]Vm1,String[][] Pm1){
-        String[] pm11= new String [Vm1[0].length];
-        
-                 
+    public void InitializationRandom(String [][]Vm1,String[][] Pm1){   
+         System.out.println("rd");
+                 for(int pp=0;pp<30;pp++){
+                   
                    // z is number  of pm used ;
                 int z=0;
                 int  N_vm_cpu=0; int  N_vm_ram=0;
@@ -237,15 +253,26 @@ public class AgPageController implements Initializable {
                          }
                     }  
                 }
-                
+                if(pp==0)
                 for(int i=0;i<Vm1[0].length;i++){
                     ag_coding coding=new ag_coding(String.valueOf(i+1), String.valueOf(Vm1[3][i]));
-                                      random.getItems().add(coding);
+                                    //  random.getItems().add(coding);
                 }
            for(int z1=0;z1<Pm1[5].length;z1++){
                    Pm1[5][z1]="0";
                     Pm1[6][z1]="0";
                 }
+           List<individu> individual=new  ArrayList<>();
+               for(int i=0;i<Vm1[0].length;i++){
+                   individu e=new individu(Vm1[0][i], Vm1[1][i], Vm1[2][i], Vm1[4][i], Vm1[3][i],"Random");
+                   individual.add(e);
+               }
+               initialPop.add(individual);
+        }
+                  System.out.println("pop"+initialPop.get(31).toString());
+                 System.out.println("pop"+initialPop.get(32).toString());
+                  System.out.println("pop"+initialPop.get(33).toString());
+
     }
     
         public String [][] random(String [][]Vm2,String[][] Pm1){
@@ -332,18 +359,18 @@ public class AgPageController implements Initializable {
                             i--; 
                          }
                     } 
-                    
+                  
                 }
+               
                 return Vm1;
                
     }
 
         
     public void InitializationFF(String [][]Vm1,String[][] Pm1){
-        
-                   //random
-                   
-      
+        System.out.println("ff");
+        for(int pp=0;pp<30;pp++){
+         List<individu> individual=new  ArrayList<>();
        String[][] Vm2= random(Vm1,Pm1);
 
         int z=0;
@@ -387,61 +414,36 @@ public class AgPageController implements Initializable {
                    }
              }
             }
-      /*
-        
-        //Vm1= new String [7][allVm.size()];
-        String [][]Vm= new String[Vm1.length][Vm1[0].length];
-        int i2=0;
-        String []vmm= new String [Vm1[0].length];
-        for(int j=0;j<Vm1[0].length;j++)
-        for(int i=0;i<vm2.length;i++){
-            
-            if(Vm1[0][j].equals(vm2[i])){
-                Vm[0][i]= vm2[i];
-            
-                Vm[1][i2]= Vm1[1][i];
-                Vm[2][i2]= Vm1[2][i];
-                Vm[3][i2]= Vm1[3][i];
-                vmm[i]="0";
-                i2++;
-            }
-            else vmm[i]=Vm1[0][i];
-            
-        }
-        boolean tr=false;
-        for(int j=0;j<Vm1[0].length;j++){
-             for(int i=0;i<vm2.length;i++){
-                 if(i2<Vm1[0].length)
-                     if(!"0".equals(vmm[j])){
-                         tr=true;
-                
-                 }
-                     else {tr=false;
-                     break;}
-                 
-      
-             }  if(i2<Vm[0].length)
-             if(tr==true){
-                Vm[0][i2]=Vm1[0][j];
-                Vm[1][i2]= Vm1[1][j];
-                Vm[2][i2]= Vm1[2][j];
-                Vm[3][i2]= Vm1[3][j];
-               i2++;
-             }
-        } */
               
         for(int i=0;i<Vm1[0].length;i++){
+             individu e=new individu(Vm1[0][i], Vm1[1][i], Vm1[2][i], Vm1[4][i], Vm1[3][i],"Random First Fit");
+              individual.add(e);
              ag_coding coding=new ag_coding(String.valueOf(i+1), String.valueOf(Vm1[3][i]));
                                       rff.getItems().add(coding);
         }
-        
+           initialPop.add(individual);
        
                 for(int z1=0;z1<Pm1[5].length;z1++){
                    Pm1[5][z1]="0";
                     Pm1[6][z1]="0";
                 }
+                }
+                
+             
     }
-
+      @FXML
+    void selectIdiv(MouseEvent event) {
+        rff.getItems().clear();
+      
+       int n= Integer.parseInt(fitt.getSelectionModel().getSelectedItem().getNb());
+        List<individu> individual=new  ArrayList<>();
+       individual=initialPop.get(n-1);
+         ll.setText(individual.get(1).Type_pop);
+       for(int i=0;i<individual.size();i++){
+        ag_coding coding=new ag_coding(individual.get(i).vm.toString(), individual.get(i).pm_num.toString());
+                                      rff.getItems().add(coding);
+       }
+    }
 
 
     
@@ -451,11 +453,10 @@ public class AgPageController implements Initializable {
                   pm_RFF.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("pm"));
                   vm_RFF.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("vm"));
                   
-                  pmr.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("pm"));
-                  vmr.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("vm"));
-                  
-                  pm_bfd.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("pm"));
-                  vm_bfd.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("vm"));
+                  idivid.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("indiv"));
+                  nb.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("nb"));
+                  fit.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("fit"));
+                 
 
     }    
     

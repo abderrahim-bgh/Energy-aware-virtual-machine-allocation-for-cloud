@@ -222,7 +222,6 @@ FileChooser fileChooser = new FileChooser();
             }
         }
         
-                // Files.lines(file.toPath()).forEach(System.out::println);
             } catch (IOException ex) {
                
             }
@@ -313,7 +312,6 @@ FileChooser fileChooser = new FileChooser();
             }
         }
         
-                // Files.lines(file.toPath()).forEach(System.out::println);
             } catch (IOException ex) {
                
             }
@@ -992,7 +990,6 @@ FileChooser fileChooser = new FileChooser();
                  root1=loader0.load();
                  
                  AgPageController gc = loader0.getController();
-               System.out.print("pm "+Pm1[0][1]);
                    gc. InitializationFF(allVm,allPm);
                    gc. InitializationRandom(allVm,allPm);
                    gc.InitializationBFD(allVm, allPm);
