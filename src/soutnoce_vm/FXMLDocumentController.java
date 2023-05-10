@@ -35,6 +35,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.SplitPane;
@@ -42,6 +43,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -108,17 +110,15 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Label label_vm;
     @FXML
-    private Label lebel_spnr;
-
+    private Label lebel_spnr; 
+    @FXML
+    private Label lebel_spnr1;
     @FXML
     private ChoiceBox<String> choice_vmp;
     @FXML 
     Tab home_tab;
     @FXML
     TabPane tabP;
-    
-  
-   
     //number of VMs
     int vv=0;
     //number of PMs
@@ -236,6 +236,7 @@ FileChooser fileChooser = new FileChooser();
         label_vm.setVisible(true);
         choice_vmp.setVisible(true);
         lebel_spnr.setVisible(true);
+         lebel_spnr1.setVisible(true);
         // open file 
  FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters()
@@ -501,8 +502,8 @@ FileChooser fileChooser = new FileChooser();
                   T_vm_return[i2]=allVm[0][i2];
               }
               }
-              String []percentage_min ={"05%","10%","15%","20%","25%","30%","35%"};
-              String []percentage_max ={"60%","70%","80%","85%","90%","95%","97%"};
+              String []percentage_min ={"10%","15%","20%","25%","30%","35%"};
+              String []percentage_max ={"65%","70%","80%","85%","90%","95%","97%"};
               //dialog of threshold 
               
            Dialog<String> dialog = new Dialog<>();
@@ -966,30 +967,63 @@ FileChooser fileChooser = new FileChooser();
              String[][] Vm1= new String[5][nb_vm];
             String[][] Pm1= new String[4][nb_pm];
 
-         
-             
-            for(int i=0;i<allVm[0].length;i++) {
-
-                     
-                        Vm1[0][i]=allVm[0][i];
-                        Vm1[1][i]=allVm[1][i];
-                        Vm1[2][i]=allVm[2][i];
-                        Vm1[4][i]=allVm[4][i];
-                        
-                            
-                        
-                        if(i<nb_pm){
-                        Pm1[0][i]=String.valueOf(i+1);
-                         Pm1[1][i]=allPm[1][i];
-                         Pm1[2][i]=allPm[2][i];
-                         Pm1[3][i]=allPm[7][i];
-                         
-              }
-            }
-              FXMLLoader loader0= new FXMLLoader(getClass().getResource("AgPage.fxml"));
-                 root1=loader0.load();
+              // get % of VM p
+              String prce= choice_vmp.getValue();
+              // empl: 50% = 50
+              String val_p=prce.substring(0,prce.length()-1);
+              
+               Dialog<String> dialog = new Dialog<>();
+           dialog.setTitle("genetic algorithm");
+          dialog.setHeaderText(" genetic algorithm parameter");
+           dialog.setResizable(true);
+           String [] talliePop1={"30","60","90","120"};
+           String [] tallieSelc={"30%","50%","60%","70%","80%","100%"};
+           Label label2 = new Label("the selection size : ");
+           ChoiceBox selection = new ChoiceBox();
+           Label label1 = new Label("population size: ");
+           ChoiceBox Pop = new ChoiceBox();
+           RadioButton fit1 = new RadioButton();
+           RadioButton fit2 = new RadioButton();
+           fit1.setText("fitness 1");
+           fit2.setText("fitness 2");
+           Pop.getItems().addAll(talliePop1);
+           selection.getItems().addAll(tallieSelc);
+          GridPane grid = new GridPane();
+            grid.add(label1, 1, 1);
+            grid.add(Pop, 2, 1);
+            grid.add(label2, 1, 2);
+            grid.add(selection, 2, 2);
+            grid.add(fit1, 1, 3);
+            grid.add(fit2, 1, 4);
+            ToggleGroup grp=new ToggleGroup();
+            fit1.setToggleGroup(grp);
+            fit2.setToggleGroup(grp);
+         dialog.getDialogPane().setContent(grid);
+         ButtonType buttonTypeOk = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+         dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+ 
+         dialog.setResultConverter(new Callback<ButtonType, String>() {
+         @Override
+         public String call(ButtonType b) {
+             if (b == buttonTypeOk) {
+                 FXMLLoader loader0= new FXMLLoader(getClass().getResource("AgPage.fxml"));
+                 try {
+                     root1=loader0.load();
+                 } catch (IOException ex) {
+                     Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                 }
                  
                  AgPageController gc = loader0.getController();
+                 if(fit1.isSelected())
+                     gc.setFittChoice(1);
+                 else if(fit2.isSelected())
+                     gc.setFittChoice(2);
+                  String Vselection= selection.getValue().toString();
+                String num=Vselection.substring(0, Vselection.length()-1);
+                int Vselec=Integer.parseInt(num);
+                   gc.setNumberSelect(Vselec);
+                   gc.setRandomDegrry(Integer.parseInt(val_p));
+                   gc.setTaillePop(Integer.parseInt(Pop.getValue().toString()));
                    gc. InitializationFF(allVm,allPm);
                    gc. InitializationRandom(allVm,allPm);
                    gc.InitializationBFD(allVm, allPm);
@@ -999,10 +1033,11 @@ FileChooser fileChooser = new FileChooser();
                       tabP1.setContent(root1);
                      tabP.getTabs().add(tabP1);
                       tabP.getSelectionModel().select(tabP1);
-                      
-      
-                        
-               
+             }
+              return null;
+         }
+         });         
+            Optional<String> result = dialog.showAndWait();   
          }
     private String []percentage={"10%","20%","30%","40%","50%","100%"};
     
@@ -1015,6 +1050,7 @@ FileChooser fileChooser = new FileChooser();
         label_vm.setVisible(false);
         choice_vmp.setVisible(false);
         lebel_spnr.setVisible(false);
+        lebel_spnr1.setVisible(false);
         
         choice_vmp.getItems().addAll(percentage);
         

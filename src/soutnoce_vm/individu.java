@@ -15,7 +15,49 @@ public class individu {
     String vm_storage;
     String pm_num;
     String Type_pop;
+    String energy;
+    String sla;
+    double fit;
 
+    public double getFit() {
+        return fit;
+    }
+
+    public void setFit(double fit) {
+        this.fit = fit;
+    }
+    
+
+  
+    
+    public individu(String vm, String cpu, String ram, String vm_storage, String pm_num, String Type_pop,String energy,String sla,double fit) {
+        this.vm = vm;
+        this.energy=energy;
+        this.cpu = cpu;
+        this.ram = ram;
+        this.vm_storage = vm_storage;
+        this.pm_num = pm_num;
+        this.Type_pop = Type_pop;
+        this.fit=fit;
+        this.sla=sla;
+    }
+      public String getSla() {
+        return sla;
+    }
+
+    public void setSla(String sla) {
+        this.sla = sla;
+    }
+    
+
+    public String getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(String energy) {
+        this.energy = energy;
+    }
+    
     public void setType_pop(String Type_pop) {
         this.Type_pop = Type_pop;
     }
@@ -23,16 +65,6 @@ public class individu {
     public String getType_pop() {
         return Type_pop;
     }
-    
-    public individu(String vm, String cpu, String ram, String vm_storage, String pm_num, String Type_pop) {
-        this.vm = vm;
-        this.cpu = cpu;
-        this.ram = ram;
-        this.vm_storage = vm_storage;
-        this.pm_num = pm_num;
-        this.Type_pop = Type_pop;
-    }
-    
 
     public String getPm_num() {
         return pm_num;

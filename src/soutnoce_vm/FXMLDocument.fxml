@@ -93,7 +93,7 @@
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                            </columnResizePolicy>
                         </TableView>
-                        <Label fx:id="lebel_spnr" layoutX="205.0" layoutY="82.0" prefHeight="35.0" prefWidth="550.0" text="Select the percentage of virtual machines placement" textFill="#173dc3" AnchorPane.rightAnchor="523.0" AnchorPane.topAnchor="82.0">
+                        <Label fx:id="lebel_spnr" layoutX="205.0" layoutY="77.0" prefHeight="35.0" prefWidth="550.0" text="Select the percentage of virtual machines placement" textFill="#173dc3" AnchorPane.rightAnchor="523.0" AnchorPane.topAnchor="77.0">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
@@ -104,6 +104,11 @@
                            </font>
                         </Label>
                         <ChoiceBox fx:id="choice_vmp" layoutX="780.0" layoutY="85.0" prefHeight="26.0" prefWidth="84.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="85.0" />
+                        <Label fx:id="lebel_spnr1" layoutX="294.0" layoutY="94.0" prefHeight="35.0" prefWidth="379.0" text="(Select the percentage of random in AG)" textFill="#173dc3">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
                      </children>
                      <padding>
                         <Insets left="-3.0" />

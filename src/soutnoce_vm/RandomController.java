@@ -7,6 +7,7 @@ package soutnoce_vm;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -256,7 +257,9 @@ public class RandomController implements Initializable {
           
           energy_total=energy_total+Energy;
         }
-         int ss= (ssla*100)/classment_pm1[0].length;
+          double sss= (1-(energy_total/(classment_pm1[0].length*250)))*100;
+                   DecimalFormat df = new DecimalFormat("#.##");
+                   String ss= df.format(sss);
          if(titel_classification.getText().equals("MBFD Classification")){
               total_label.setText("1- Total of vm placed "
                            + "\n is: "+nb_vm+"/"+(classment_vm1[0].length+vm2[0].length)
@@ -910,7 +913,9 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                        energy_total=energy_total+Energy;
                    }
                   //is % of pms top of threshold (SLA violation)
-                   int ss= (ssla*100)/classment_pm1[0].length;
+                   double sss= (1-(energy_total/(classment_pm1[0].length*250)))*100;
+                   DecimalFormat df = new DecimalFormat("#.##");
+                   String ss= df.format(sss);
                    total_label.setText("1- Total of vm placed "
                            + "\n is: "+String.valueOf(nb_vm)+"/"+(VmAll[0].length)
                             + "\n\n  2- The total energy\n consumption:"+

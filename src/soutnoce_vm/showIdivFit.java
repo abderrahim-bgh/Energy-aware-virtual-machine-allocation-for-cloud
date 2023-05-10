@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package soutnoce_vm;
 
 /**
@@ -10,12 +7,30 @@ package soutnoce_vm;
  */
 public class showIdivFit {
     String indiv,fit;
-    String nb;
+    String nb,sla,enrgy;
 
-    public showIdivFit(String nb, String indiv, String fit) {
+    public void setEnrgy(String enrgy) {
+        this.enrgy = enrgy;
+    }
+
+    public void setSla(String sla) {
+        this.sla = sla;
+    }
+
+    public String getEnrgy() {
+        return enrgy;
+    }
+
+    public String getSla() {
+        return sla;
+    }
+    
+    public showIdivFit(String nb, String indiv, String fit,String sla,String enrgy ) {
         this.indiv = indiv;
         this.fit = fit;
         this.nb = nb;
+        this.sla=sla;
+        this.enrgy=enrgy;
     }
 
     public void setNb(String nb) {
