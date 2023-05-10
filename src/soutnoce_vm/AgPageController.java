@@ -40,6 +40,12 @@ public class AgPageController implements Initializable {
     @FXML
     private TableColumn<ag_coding, String> vm_RFF;
     @FXML
+    private TableColumn<ag_coding, String> pm_RFF1;
+    @FXML
+    private TableView<ag_coding> new_indiv;
+    @FXML
+    private TableColumn<ag_coding, String> vm_RFF1;
+    @FXML
     private TableView<showIdivFit> fitt;
     @FXML
     private TableColumn<showIdivFit,String> idivid;
@@ -51,6 +57,12 @@ public class AgPageController implements Initializable {
     private TableColumn<showIdivFit,String> SLAv;
     @FXML
     private TableColumn<showIdivFit,String> Energy;
+     @FXML
+    private TableView<showIdivFit> fitt1;
+    @FXML
+    private TableColumn<showIdivFit,String> idivid1;
+    @FXML
+    private TableColumn<showIdivFit,String> nb1;    
     public int randomDegrry,TaillePop,fittChoice;
     int numberSelect;
 
@@ -99,7 +111,7 @@ public class AgPageController implements Initializable {
          String[][] Vm2= random(Vm1,Pm1);
           
             for(int j=0;j<Vm1[0].length;j++){
-                        vm_migrated.add(new Vmcl(Vm1[0][j],Vm1[1][j],Vm1[2][j],Vm1[4][j]));            
+                        vm_migrated.add(new Vmcl(Vm1[0][j],Vm1[1][j],Vm1[2][j],""));            
                 }
             String tabVms [][]= new String [4][Vm1[0].length];
             //mbfd
@@ -178,10 +190,7 @@ public class AgPageController implements Initializable {
                                tabVms[0][j]=vm_migrated.get(i).vm.toString();
                                tabVms[1][j]=vm_migrated.get(i).vm_storage;
                                }
-                               if(p==0){
-                               ag_coding coding=new ag_coding(vm_migrated.get(i).vm.toString(), vm_migrated.get(i).vm_storage);
-                                     // RBFD.getItems().add(coding);
-                               }
+                               
                                          double sss= (1-(energy(Pm1,Vm1)/(Pm1[0].length*250)))*100;
                                          DecimalFormat df = new DecimalFormat("#.##");
                                          String ss= df.format(sss);
@@ -203,24 +212,48 @@ public class AgPageController implements Initializable {
                        Pm1[6][z1]="0";
                    }
         }
-                  for(int i=0;i<initialPop.size();i++){
-                      List<individu> individual=new  ArrayList<>();
+        GA (Pm1);
+    }
+    List<List> newPop= new ArrayList<>();
+    public void GA (String[][] Pm1){
+        //initial pop
+          for(int i=0;i<initialPop.size();i++){
+                      List<individu> individual=new  ArrayList<individu>();
                       individual=initialPop.get(i);
                       
                       showIdivFit sh=new showIdivFit(String.valueOf(i+1),initialPop.get(i).toString(),String.valueOf(individual.get(1).fit),individual.get(1).sla, individual.get(1).energy);
                       indiv.add(sh);
                       fitt.getItems().add(sh);
                   }
-                  selectionsSize((getNumberSelect()*indiv.size())/100);
-                  
-                  
-
+          //selection
+        String [][] sellection =selectionsSize((getNumberSelect()*indiv.size())/100);
+        //crossover
+         
+        for(int i=0;i<sellection[0].length;i++){
+            int Npr1=Integer.parseInt(sellection[0][i]);
+             int Npr2=Integer.parseInt(sellection[1][i]);
+             List<individu> individual=new  ArrayList<individu>();
+             List<individu> individual2=new  ArrayList<individu>();
+               individual = initialPop.get(Npr1-1);
+               individual2 = initialPop.get(Npr2-1);
+           newPop.addAll(onePointCrossover(individual,individual2));
+        }
+        
+        FitrageNewPop(newPop,Pm1);
+         for(int i=0;i<newPop.size();i++){
+                      List<individu> individual=new  ArrayList<individu>();
+                      individual=newPop.get(i);
+                      
+                      showIdivFit sh=new showIdivFit(String.valueOf(i+1),newPop.get(i).toString(),"0","0", "0");
+                     // indiv.add(sh);
+                      fitt1.getItems().add(sh);
+                  }
+        
     }
     
     @FXML
     private Button next;
     public void InitializationRandom(String [][]Vm1,String[][] Pm1){   
-         System.out.println("rd");
                  for(int pp=0;pp<getTaillePop()/3;pp++){
                    
                    // z is number  of pm used ;
@@ -478,7 +511,7 @@ public class AgPageController implements Initializable {
                 
              
     }
-      @FXML
+    @FXML
     void selectIdiv(MouseEvent event) {
         rff.getItems().clear();
       
@@ -489,6 +522,18 @@ public class AgPageController implements Initializable {
        for(int i=0;i<individual.size();i++){
         ag_coding coding=new ag_coding(individual.get(i).vm.toString(), individual.get(i).pm_num.toString());
                                       rff.getItems().add(coding);
+       }
+    }
+    @FXML
+    void selectIdiv1(MouseEvent event) {
+        new_indiv.getItems().clear();
+      
+       int n= Integer.parseInt(fitt1.getSelectionModel().getSelectedItem().getNb());
+        List<individu> individual=new  ArrayList<>();
+       individual=newPop.get(n-1);
+       for(int i=0;i<individual.size();i++){
+        ag_coding coding=new ag_coding(individual.get(i).vm.toString(), individual.get(i).pm_num.toString());
+                                      new_indiv.getItems().add(coding);
        }
     }
     public double energy (String [][]classment_pm1,String[][] classment_vm1){
@@ -529,10 +574,8 @@ public class AgPageController implements Initializable {
     public double fitness1(double sla,double energy){
        double alpha = (energy - 175000) / (250000 - 175000) ;
        double beta = sla/20;  
-       System.out.print("alpha "+alpha+" beta "+beta);
        double Fitness= (1-alpha)*(1-beta);
        
-       System.out.print("alpha "+alpha+" beta "+beta+" Fitness "+Fitness);
        return Fitness;
     }
     
@@ -569,8 +612,7 @@ public class AgPageController implements Initializable {
     return selections;
   }
  
-    void selectionsSize(int numberSelect) {
-        System.out.println();
+    public String[][] selectionsSize(int numberSelect) {
         List<showIdivFit> findiv= new ArrayList<>();
         findiv= stochasticUniversalSampling(indiv);
                 String [][] allSelections= new String [2][numberSelect];
@@ -602,8 +644,61 @@ public class AgPageController implements Initializable {
                         System.out.println(allSelections[0][i1]+ " "+allSelections[1][i1]);    
                             
                   }
+                  return allSelections ;
     }
 
+    public static List<List> onePointCrossover(List<individu> parent1, List<individu> parent2) {
+    int length = parent1.size();
+    Random rand = new Random();
+    int crossoverPoint = rand.nextInt(length);
+    List<individu> child1 = new ArrayList<individu>();
+    List<individu> child2 = new ArrayList<individu>();
+    List<individu> individual=new  ArrayList<>();
+    // Create the first child by swapping tails of parents
+    child1.addAll(parent1.subList(0, crossoverPoint));
+    child1.addAll(parent2.subList(crossoverPoint, length));
+
+    // Create the second child by swapping tails of parents
+    child2.addAll(parent2.subList(0, crossoverPoint));
+    child2.addAll(parent1.subList(crossoverPoint, length));
+
+    // Return the two offspring
+    List<List> offspring = new ArrayList<List>();
+    offspring.add(child1);
+    offspring.add(child2);
+    
+    return offspring;
+}
+    
+    public void FitrageNewPop(List<List> newPop,String[][] Pm1){
+        List<List> newPopFiltred=new ArrayList<List>();
+        
+        for(int i=0;i<newPop.size();i++){
+                      boolean filtre=false;
+                      List<individu> individual=new  ArrayList<individu>();
+                      individual=newPop.get(i);
+                      for(int j=0;j<Pm1[0].length;j++){
+                          String numPm=Pm1[0][j];
+                          int pmUtilisation=0;
+                          for(int k=0;k<individual.size();k++){
+                              if(individual.get(k).pm_num.equals(numPm)){
+                                  pmUtilisation=pmUtilisation+Integer.parseInt(individual.get(k).getCpu());
+                              }
+                          }
+                          int cpuPm=Integer.parseInt(Pm1[1][j]);
+                          if(cpuPm<pmUtilisation){
+
+                              newPop.remove(i);
+                              filtre=true;
+                              break;
+                          }
+                      }
+                      if(filtre==false)  newPopFiltred.add(newPop.get(i));
+        }
+        newPop.clear();
+        newPop.addAll(newPopFiltred);
+        
+    }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
@@ -611,11 +706,16 @@ public class AgPageController implements Initializable {
         
                   pm_RFF.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("pm"));
                   vm_RFF.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("vm"));
+                  pm_RFF1.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("pm"));
+                  vm_RFF1.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("vm"));
                   idivid.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("indiv"));
                   nb.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("nb"));
                   fit.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("fit"));
                   SLAv.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("sla"));
                   Energy.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("enrgy"));
+                   idivid1.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("indiv"));
+                  nb1.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("nb"));
+                 
     }    
     
 }

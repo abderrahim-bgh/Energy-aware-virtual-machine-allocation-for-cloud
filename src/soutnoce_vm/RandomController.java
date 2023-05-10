@@ -264,7 +264,8 @@ public class RandomController implements Initializable {
               total_label.setText("1- Total of vm placed "
                            + "\n is: "+nb_vm+"/"+(classment_vm1[0].length+vm2[0].length)
                             + "\n\n  2- The total energy\n consumption:"+
-                               energy_total+" W"+"\n\n  3- Vms that we did not find \na place in Pm:"+getSla1()+"/"+getAlVm()+" VMs"
+                               energy_total+" W"+"\n\n  3- Vms not placed: \n"+getSla1()+"/"+getAlVm()+" VMs"
+                              +"\n\nNB Vms megrated : "+getAlVm()+" VMs"
                                 +"\n\n  4- SLA violations: "+ss+" %"
                                  ); 
          }
@@ -920,12 +921,10 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                            + "\n is: "+String.valueOf(nb_vm)+"/"+(VmAll[0].length)
                             + "\n\n  2- The total energy\n consumption:"+
                                energy_total+" W"+"\n\n  3- Vms that we did not find \na place in Pm:"+SLA+"/"+old_pm.size()+" VMs"
+                               +"\n\nNB Vms megrated : "+old_pm.size()+" VMs"
                                 +"\n\n  4- SLA violations: "+ss+" %"
-                                 );  
-                   
+                                 ); 
                            
-                   
-                   
                                           pm_clik(classment_pm1,VmAll3);
                                           tabVms = new String [4][VmAll[0].length];
   
