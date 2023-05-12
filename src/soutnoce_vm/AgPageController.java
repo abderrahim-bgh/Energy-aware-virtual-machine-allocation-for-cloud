@@ -185,6 +185,12 @@ public class AgPageController implements Initializable {
                                Vm1[0][j]=vm_migrated.get(i).vm.toString();
                                Vm1[1][j]=vm_migrated.get(i).cpu.toString();
                                Vm1[2][j]=vm_migrated.get(i).ram.toString();
+                               if(Vm1[3][j].equals("")){
+                                   for(int pc=0;pc<Pm1[1].length;pc++){
+                                      int ps= Integer.parseInt(Pm1[5][pc])+Integer.parseInt(Pm1[5][pc])+Integer.parseInt(vm_migrated.get(i).cpu.toString());
+                                       if(ps<Integer.parseInt(Pm1[1][pc]))  Vm1[3][j]=Pm1[1][pc];
+                                   }
+                               }
                                Vm1[3][j]=vm_migrated.get(i).vm_storage.toString();
                                //Vm1[4][j]=vm_migrated.get(i).vm_storage.toString();
                                tabVms[0][j]=vm_migrated.get(i).vm.toString();
@@ -688,12 +694,13 @@ public class AgPageController implements Initializable {
                           int cpuPm=Integer.parseInt(Pm1[1][j]);
                           if(cpuPm<pmUtilisation){
 
-                              newPop.remove(i);
+                              //newPop.remove(i);
                               filtre=true;
                               break;
                           }
                       }
-                      if(filtre==false)  newPopFiltred.add(newPop.get(i));
+                      if(filtre==false) { newPopFiltred.add(newPop.get(i));
+                      }
         }
         newPop.clear();
         newPop.addAll(newPopFiltred);

@@ -121,7 +121,7 @@ public class RandomController implements Initializable {
         list_pm.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
-            if(list_pm.getSelectionModel().getSelectedItem().equals("Old and New Pms")){
+            if(list_pm.getSelectionModel().getSelectedItem().equals("ALL Vms")){
                  tab_vms.setVisible(true);
           lb1.setVisible(false);                        
           lb2.setVisible(false);
@@ -205,7 +205,7 @@ public class RandomController implements Initializable {
         
         double energy_total=0;
       
-        list_pm.getItems().add("Old and New Pms");
+        list_pm.getItems().add("ALL Vms");
         
         String p=classment_pm1[0][0];
 
@@ -243,6 +243,7 @@ public class RandomController implements Initializable {
             int num=0;
           num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
           double Energy =0;
+          if(titel_classification.getText().equals("MBFD Classification")){
           if(cpu==0){
               Energy =0;
           }
@@ -257,6 +258,17 @@ public class RandomController implements Initializable {
           
           energy_total=energy_total+Energy;
         }
+         
+         else{
+                  double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
+             double c=cpu/c1;
+             double k =0.7;
+             double  k1=0.3;
+             double e2=k1*250;
+             Energy = (k*250) + (e2*c);  
+            energy_total=energy_total+Energy;
+                 }
+          } 
           double sss= (1-(energy_total/(classment_pm1[0].length*250)))*100;
                    DecimalFormat df = new DecimalFormat("#.##");
                    String ss= df.format(sss);
@@ -318,7 +330,7 @@ public class RandomController implements Initializable {
           public void handle(MouseEvent event) {
               tab_vms.getItems().clear();
               titel_classification.setText("first fit Classification");
-              alocation.setText("the second a location");
+              alocation.setText("the second allocation");
               
               double energy_total=0;
                   int nb_vm=0;
@@ -391,17 +403,14 @@ public class RandomController implements Initializable {
             int num=0;
           num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
           double Energy =0;
-          if(cpu==0){
-              Energy =0;
-          }
-          else{
+          
              double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
              double c=cpu/c1;
              double k =0.7;
              double  k1=0.3;
              double e2=k1*250;
            Energy = (k*250) + (e2*c);  
-          }
+          
           
           energy_total=energy_total+Energy;
           
@@ -430,7 +439,7 @@ public class RandomController implements Initializable {
          public void handle(MouseEvent event) {
               titel_classification.setText("Random Classification");
              tab_vms.getItems().clear();
-             alocation.setText("the second a location");
+             alocation.setText("the second allocation");
              String tabVms [][]= new String [4][VmAll2[0].length];
              
       tabVms[0]=Arrays.copyOf(vm[0], vm[3].length+vm2[3].length);
@@ -521,17 +530,14 @@ public class RandomController implements Initializable {
             int num=0;
           num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
           double Energy =0;
-          if(cpu==0){
-              Energy =0;
-          }
-          else{
+          
              double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
              double c=cpu/c1;
              double k =0.7;
              double  k1=0.3;
              double e2=k1*250;
            Energy = (k*250) + (e2*c);  
-          }
+          
           
           energy_total=energy_total+Energy;
         }
