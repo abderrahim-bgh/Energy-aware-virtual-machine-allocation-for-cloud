@@ -64,7 +64,16 @@ public class AgPageController implements Initializable {
     @FXML
     private TableColumn<showIdivFit,String> nb1;    
     public int randomDegrry,TaillePop,fittChoice;
-    int numberSelect;
+    int numberSelect,threshold;
+
+    public int getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(int threshold) {
+        this.threshold = threshold;
+    }
+    
 
     public int getNumberSelect() {
         return numberSelect;
@@ -100,6 +109,7 @@ public class AgPageController implements Initializable {
     public void setRandomDegrry(int randomDegrry) {
         this.randomDegrry = randomDegrry;
     }
+    
     List<List> initialPop= new ArrayList<>();         
     List<showIdivFit> indiv= new ArrayList<>();  
     public void InitializationBFD(String [][]Vm1,String[][] Pm1){
@@ -254,6 +264,7 @@ public class AgPageController implements Initializable {
                      // indiv.add(sh);
                       fitt1.getItems().add(sh);
                   }
+         Mutation(initialPop,newPop,Pm1);
         
     }
     
@@ -530,10 +541,10 @@ public class AgPageController implements Initializable {
                                       rff.getItems().add(coding);
        }
     }
-    @FXML
+       @FXML
     void selectIdiv1(MouseEvent event) {
         new_indiv.getItems().clear();
-      
+
        int n= Integer.parseInt(fitt1.getSelectionModel().getSelectedItem().getNb());
         List<individu> individual=new  ArrayList<>();
        individual=newPop.get(n-1);
@@ -542,6 +553,7 @@ public class AgPageController implements Initializable {
                                       new_indiv.getItems().add(coding);
        }
     }
+    @FXML
     public double energy (String [][]classment_pm1,String[][] classment_vm1){
         double energy_total=0;
           for(int j=0;j<classment_pm1[0].length;j++){
@@ -576,7 +588,6 @@ public class AgPageController implements Initializable {
           return energy_total;
     }
 
-
     public double fitness1(double sla,double energy){
        double alpha = (energy - 175000) / (250000 - 175000) ;
        double beta = sla/20;  
@@ -584,9 +595,7 @@ public class AgPageController implements Initializable {
        
        return Fitness;
     }
-    
 
-    
  public static List<showIdivFit> stochasticUniversalSampling(List<showIdivFit> population) {
     double totalFitness = 0;
     int numSelections=2;
@@ -705,6 +714,76 @@ public class AgPageController implements Initializable {
         newPop.clear();
         newPop.addAll(newPopFiltred);
         
+    }
+    
+    public void Mutation(List <List> oldPop,List <List> newPop,String [][] allPm){
+        int thershold= getThreshold();
+        //to have one population
+        oldPop.addAll(newPop);
+        
+        for(int pi=0;pi<oldPop.size();pi++){
+            List<Vmcl> vm_migrated= new ArrayList<>();
+             List<individu> individual=new  ArrayList<>();
+           individual =oldPop.get(pi);
+           // algo of Minimization of megration
+            int cpu_thre=0;
+            int cpu_thre_max=0;
+            List<Vmcl> old_pm=new  ArrayList<>();
+            for(int i=0;i<allPm[1].length;i++){
+               // String [][] vm_list= new String [4][vm[0].length];
+                List<Vmcl> vm_list=new  ArrayList<>();
+                int z=0;
+                for(int j=0;j<individual.size();j++){
+                    if(String.valueOf(i+1).equals(individual.get(j).pm_num)){
+                   
+                        Vmcl vm= new Vmcl(individual.get(j).getVm().toString(),individual.get(j).getCpu().toString(),
+                            individual.get(j).getRam().toString(),individual.get(j).getVm_storage().toString());
+                        vm_list.add(vm);
+                    }
+                }
+                    //stor vms list 
+                    Collections.sort(vm_list,new Comparator<Vmcl>(){
+                    @Override
+                    public int compare(Vmcl o1, Vmcl o2) {
+                        return Integer.compare(Integer.parseInt(o1.getCpu()), Integer.parseInt(o2.getCpu()));
+                    }
+                });
+               
+                Collections.reverse(vm_list);
+                int cpu_total=0;
+                for(int j=0;j<vm_list.size();j++){
+                    cpu_total=cpu_total+Integer.parseInt(vm_list.get(j).cpu.toString());
+                }
+                cpu_thre_max= (Integer.parseInt(allPm[1][i])*thershold)/100;   
+                 Vmcl bestFit_vm = null;
+                if(vm_list.size()>=1) {
+                    int Maxx=Integer.parseInt(vm_list.get(0).cpu.toString());
+                int bestFit_cpu= Maxx;
+                while(cpu_thre_max< cpu_total){
+                    for(int j=0;j<vm_list.size();j++){
+                        int t0= cpu_total-cpu_thre_max;
+                        if(Integer.parseInt(vm_list.get(j).cpu.toString())>t0){
+                           int t= Integer.parseInt(vm_list.get(j).cpu.toString())-cpu_total
+                                +cpu_thre_max; 
+                           if(t<bestFit_cpu){
+                               bestFit_cpu=t;
+                               bestFit_vm=vm_list.get(j);
+                           }
+                        }
+                        else if(bestFit_cpu==Maxx){
+                            bestFit_vm=vm_list.get(j);
+                        }
+                    }
+                    cpu_total=cpu_total-Integer.parseInt(bestFit_vm.cpu.toString());
+                    vm_migrated.add(bestFit_vm);
+                    vm_list.remove(bestFit_vm);
+                }
+                }
+                                
+                }
+            for(int i=0;i<vm_migrated.size();i++) System.out.print(vm_migrated.get(i).vm+" , ");
+           System.out.println();
+        }
     }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
