@@ -99,6 +99,16 @@ public class RandomController implements Initializable {
     TableRow<vmInPm> row ;
     
     String sla1,AlVm;
+    String SlaThreshold ;
+
+    public String getSlaThreshold() {
+        return SlaThreshold;
+    }
+
+    public void setSlaThreshold(String SlaThreshold) {
+        this.SlaThreshold = SlaThreshold;
+    }
+    
 
     public String getAlVm() {
         return AlVm;
@@ -218,9 +228,9 @@ public class RandomController implements Initializable {
                     if(!classment_vm1[3][i].equals("0")) nb_vm++;
        }
 
-       String num_sla="";
+       int num_sla=0;
        if(titel_classification.getText().equals("MBFD Classification"))
-            num_sla =getSlaV();
+            num_sla =Integer.parseInt(getSlaThreshold());
          int ssla=0;
          for(int j=0;j<classment_pm1[0].length;j++){
              int sla_x=0;
@@ -239,7 +249,12 @@ public class RandomController implements Initializable {
                 }  
             }
            if(titel_classification.getText().equals("MBFD Classification"))
-               if(cpu > sla_x){ ssla++;} 
+               if(cpu > sla_x){
+                   int cpux=cpu-sla_x;
+                   int tTershold=Integer.parseInt(classment_pm1[1][j]);
+                   int Sla =(cpux*100)/tTershold;
+                   ssla=ssla+Sla;
+               } 
             int num=0;
           num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
           double Energy =0;
@@ -269,7 +284,9 @@ public class RandomController implements Initializable {
             energy_total=energy_total+Energy;
                  }
           } 
-          double sss= (1-(energy_total/(classment_pm1[0].length*250)))*100;
+         
+                 double sss= (ssla/(classment_pm1[0].length));
+         // double sss= (1-(energy_total/(classment_pm1[0].length*250)))*100;
                    DecimalFormat df = new DecimalFormat("#.##");
                    String ss= df.format(sss);
          if(titel_classification.getText().equals("MBFD Classification")){
@@ -278,7 +295,7 @@ public class RandomController implements Initializable {
                             + "\n\n  2- The total energy\n consumption:"+
                                energy_total+" W"+"\n\n  3- Vms not placed: \n"+getSla1()+"/"+getAlVm()+" VMs"
                               +"\n\nNB Vms megrated : "+getAlVm()+" VMs"
-                                +"\n\n  4- SLA violations: "+ss+" %"
+                                +"\n\n  4- SLA violations: "+sss+" %"
                                  ); 
          }
          else{
@@ -547,16 +564,14 @@ public class RandomController implements Initializable {
                             + "\n\n  2- The total energy\n consumption: "+
                                 energy_total+" W"
                                );  
-            
                         vm2[0]=Arrays.copyOf(vm_p1, vm2[0].length); 
                         pm_clik(classment_pm1,VmAll2);
-                        
                         tabVms = new String [4][VmAll2[0].length];
             
           }
       });
            String []percentage_min ={"10%","15%","20%","25%","30%","40%","50%"};
-            String []percentage_max = {"50%","60%","70%","80%","85%","90%","95%"};
+            String []percentage_max = {"50%","60%","65%","70%","75%","80%","85%","90%","95%"};
            
 
       MBFD.setOnMouseClicked(new EventHandler<MouseEvent>(){
@@ -572,6 +587,10 @@ public class RandomController implements Initializable {
            Label label2 = new Label("Max threshold : ");
            ChoiceBox min = new ChoiceBox();
            ChoiceBox max = new ChoiceBox();
+           Label label3 = new Label("SLA threshold : ");
+           ChoiceBox sla = new ChoiceBox();
+           String []percentage_max2 ={"60%","70%","80%","85%"};
+           sla.getItems().addAll(percentage_max2);
            min.getItems().addAll(percentage_min);
            max.getItems().addAll(percentage_max);
          
@@ -580,6 +599,8 @@ public class RandomController implements Initializable {
             grid.add(min, 2, 1);
             grid.add(label2, 1, 2);
             grid.add(max, 2, 2);
+             grid.add(label3, 1, 3);
+            grid.add(sla, 2, 3);
          dialog.getDialogPane().setContent(grid);
          
 ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
@@ -592,7 +613,9 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
         if (b == buttonTypeOk) {
             titel_classification.setText("MBFD Classification");
             tab_vms.getItems().clear();
-            String num_sla="";
+            String TSla= sla.getValue().toString();
+             String numSla=TSla.substring(0, TSla.length()-1);
+            int num_sla=0;
             String[] vm_p=new String[vm[3].length];
             vm_p=Arrays.copyOf(vm[3], vm[3].length);
             
@@ -733,7 +756,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                 
                 String Tmax= max.getValue().toString();
                 String num2=Tmax.substring(0, Tmax.length()-1);
-                num_sla=num2;
+                num_sla =Integer.parseInt(numSla);
                 int max_threthreshold=Integer.parseInt(num2);
                 
                 cpu_thre_max= (Integer.parseInt(classment_pm1[1][i])*max_threthreshold)/100;
@@ -895,7 +918,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                        int cpu=0; int ram=0;
                        int zi= Integer.parseInt(classment_pm1[0][j]);
                        int z1=Integer.parseInt(classment_pm1[1][j]);
-                        sla_x= (z1*Integer.valueOf(num_sla))/100;
+                        sla_x= (z1*num_sla)/100;
                        for(int i=0;i<VmAll3[4].length;i++){
                            if(VmAll3[3][i]!=null )
                                if(!VmAll3[3][i].equals("0"))
@@ -904,7 +927,12 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                                        ram=ram+Integer.parseInt(VmAll2[2][i]);
                 }  
             }
-                        if(cpu > sla_x){ ssla++;} 
+                         if(cpu > sla_x){
+                             int cpux=cpu-sla_x;
+                             int tTershold=Integer.parseInt(classment_pm1[1][j]);
+                             int Sla =(cpux*100)/cpu_thre_max;
+                             ssla=ssla+Sla;
+                         }  
                        int num=0; double Energy =0;
                        num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
                        if(cpu==0){
@@ -920,7 +948,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                        energy_total=energy_total+Energy;
                    }
                   //is % of pms top of threshold (SLA violation)
-                   double sss= (1-(energy_total/(classment_pm1[0].length*250)))*100;
+                   double sss= (ssla/(classment_pm1[0].length));
                    DecimalFormat df = new DecimalFormat("#.##");
                    String ss= df.format(sss);
                    total_label.setText("1- Total of vm placed "

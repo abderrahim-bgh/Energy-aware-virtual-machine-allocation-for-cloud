@@ -341,7 +341,6 @@ FileChooser fileChooser = new FileChooser();
                int num2=nb_vm-num_max;    
                String Vm2[][]=new String[6][num2];
               int i3 =0;
-              
               // add vm no used in array
               String []T_vm_return= new String[num_max];
               for(int i2=0;i2<nb_vm;i2++){
@@ -356,9 +355,7 @@ FileChooser fileChooser = new FileChooser();
               else if(i2<num_max){
                   T_vm_return[i2]=allVm[0][i2];
               }
-              }
-              
-               
+              }              
               // add line of number vm in list (for shuffling)
                 List<String> vmList = Arrays.asList(T_vm_return);
                // shuffle the Vms number in the list
@@ -369,16 +366,13 @@ FileChooser fileChooser = new FileChooser();
               // z is number  of pm used ;
                 int z=0;
                 int  N_vm_cpu=0; int  N_vm_ram=0;
-                
                
                 String Vm1[][]=new String[6][num_max];
                 String Pm1[][]= new String[6][nb_pm];
                
                 for(int i=0;i<num_max;i++){
                     //get vm form vms random
-                    
                    int xv=Integer.parseInt(T_vm_return[i]);
-                  
                   if(z<nb_pm && !allVm[1][xv-1].isEmpty()){
                        Random rd = new Random();
                        // random number from liste of PMs
@@ -386,14 +380,12 @@ FileChooser fileChooser = new FileChooser();
                           // get ram and cpu of the this pm 
                            int p= Integer.parseInt( allPm[1][nbP]);
                            int p2= Integer.parseInt( allPm[2][nbP])*1024;
-                  
                             // total cpu and ramin this pm
                          if(allPm[5][nbP]== null)allPm[5][nbP]="0";
                      N_vm_cpu= Integer.parseInt(allPm[5][nbP])+ Integer.parseInt(allVm[1][xv-1]);
                      
                      if(allPm[6][nbP]== null)allPm[6][nbP]="0";
                      N_vm_ram=Integer.parseInt(allPm[6][nbP])+Integer.parseInt(allVm[2][xv-1]);
-                  
                      // it must totl of cpu or ram inf to cpu and ram of pm
                      if(N_vm_cpu <=p&& N_vm_ram<=p2 && nb_vm>0){
                          
@@ -415,9 +407,7 @@ FileChooser fileChooser = new FileChooser();
                                //storage of vm
                                Vm1[4][i]=allVm[4][xv-1];
                             }
-                           
                             // list of pm
-                            
                         }
                       else{
                          N_vm_cpu=0;
@@ -433,9 +423,7 @@ FileChooser fileChooser = new FileChooser();
                                  Pm1[1][i]=allPm[1][i];
                                  Pm1[2][i]=allPm[2][i];
                                  Pm1[3][i]=allPm[7][i];
-                                
-
-                            }
+                    }
                 }
                for(int c=0;c<Pm1[4].length;c++){
                  //cpu using
@@ -443,19 +431,16 @@ FileChooser fileChooser = new FileChooser();
                    //ram using
                     Pm1[5][c]=allPm[6][c];
                }
-                   
                 for(int i=0;i<nb_pm;i++){
                 allPm[5][i]="0";
                 allPm[6][i]="0";
                 }
-               
                  FXMLLoader loader= new FXMLLoader(getClass().getResource("random.fxml"));
                 root1=loader.load();
                  RandomController randomController = loader.
                        getController();
                 randomController.get_data(Pm1,Vm1,Vm2);
                    randomController.titel_classification.setText("Random Classification");
-                   
                    randomController.listAllVMs(tabVms);
                     randomController.get_date2(Pm1,Vm1,Vm2);
                      Tab tabP1=new Tab();
@@ -465,14 +450,10 @@ FileChooser fileChooser = new FileChooser();
                       tabP.getSelectionModel().select(tabP1);
                    
                     tabVms= new String [4][nb_vm];
-                  
     }
-    
     private AnchorPane getTablePane(ActionEvent event)  {
    return (AnchorPane) ((Node) event.getSource()).getScene().getRoot();
-
     }
-
     @FXML
     void mbfd(ActionEvent event) throws IOException {
         
@@ -505,7 +486,6 @@ FileChooser fileChooser = new FileChooser();
               }
               String []percentage_min ={"10%","15%","20%","25%","30%","35%"};
               String []percentage_max ={"65%","70%","80%","85%","90%","95%","97%"};
-              String []percentage_max2 ={"60%","70%","80%","85%"};
               //dialog of threshold 
               
            Dialog<String> dialog = new Dialog<>();
@@ -516,12 +496,15 @@ FileChooser fileChooser = new FileChooser();
            Label label1 = new Label("Min threshold : ");
            Label label2 = new Label("Max threshold : ");
            Label label3 = new Label("SLA threshold : ");
+           ChoiceBox sla = new ChoiceBox();
+           String []percentage_max2 ={"60%","70%","80%","85%"};
+           sla.getItems().addAll(percentage_max2);
            ChoiceBox min = new ChoiceBox();
            ChoiceBox max = new ChoiceBox();
-           ChoiceBox sla = new ChoiceBox();
+          
            min.getItems().addAll(percentage_min);
            max.getItems().addAll(percentage_max);
-           sla.getItems().addAll(percentage_max2);
+          
          
           GridPane grid = new GridPane();
             grid.add(label1, 1, 1);
@@ -668,9 +651,10 @@ FileChooser fileChooser = new FileChooser();
                 int max_threthreshold=Integer.parseInt(num2);
                 randomController.setSlaV(num2);                
                 cpu_thre_max= (Integer.parseInt(allPm[1][i])*max_threthreshold)/100;
-                 
                 
-        
+                 String TSla= sla.getValue().toString();
+                String numSla=TSla.substring(0, TSla.length()-1);
+                 randomController.setSlaThreshold(numSla);
                 Vmcl bestFit_vm = null;
                 if(vm_list.size()>=1) {
                     int Maxx=Integer.parseInt(vm_list.get(0).cpu.toString());
@@ -718,7 +702,6 @@ FileChooser fileChooser = new FileChooser();
                                Vm1[3][i]="0";
                     }
                  }
-            
             // end of MM algo
             // mbfd 2
             // sort Decreasing cpu Utilization
@@ -829,16 +812,12 @@ FileChooser fileChooser = new FileChooser();
                 allPm[6][i]="0";
                 }
                 
-                
-               
-                
                 randomController.setSla1(String.valueOf(SLA));
                    randomController.setAlVm(String.valueOf(old_pm.size()));
                    randomController.titel_classification.setText("MBFD Classification");
                    randomController.listAllVMs(tabVms);
                    randomController.get_data(Pm1,Vm1,Vm2);
                     randomController.get_date2(Pm1,Vm1,Vm2);
-                   
                    Tab tabP1=new Tab();
                      tabP1.setText("MBFD");
                       tabP1.setContent(root1);
@@ -974,26 +953,24 @@ FileChooser fileChooser = new FileChooser();
          void  AG(ActionEvent event) throws IOException{
              String[][] Vm1= new String[5][nb_vm];
             String[][] Pm1= new String[4][nb_pm];
-
               // get % of VM p
               String prce= choice_vmp.getValue();
               // empl: 50% = 50
               String val_p=prce.substring(0,prce.length()-1);
-              
                Dialog<String> dialog = new Dialog<>();
-           dialog.setTitle("genetic algorithm");
+           dialog.setTitle("Genetic Algorithm");
           dialog.setHeaderText(" genetic algorithm parameter");
            dialog.setResizable(true);
            String [] tallieSelc={"30%","50%","60%","70%","80%","100%"};
-           Label label2 = new Label("the crossover size : ");
-            Label label3 = new Label("SLA threshold : ");
+           Label label2 = new Label("Crossover size : ");
+            Label label3 = new Label("consolidation VM : ");
            ChoiceBox selection = new ChoiceBox();
            ChoiceBox sla = new ChoiceBox();
            String []percentage_max ={"65%","70%","80%","85%","90%","95%","97%"};
            String []percentage_max2 ={"60%","70%","80%","85%"};
            Label label0 = new Label("threshold : ");
-           ChoiceBox mutation = new ChoiceBox();
-           mutation.getItems().addAll(percentage_max);
+           ChoiceBox thresholdRepar = new ChoiceBox();
+           thresholdRepar.getItems().addAll(percentage_max);
            sla.getItems().addAll(percentage_max2);
            Label label1 = new Label("population size: ");
            TextField Pop = new TextField();
@@ -1001,10 +978,14 @@ FileChooser fileChooser = new FileChooser();
            RadioButton fit2 = new RadioButton();
            fit1.setText("fitness 1");
            fit2.setText("fitness 2");
+           Label labelMut = new Label("population mutation rate : ");
+           Label labelMut2 = new Label("individual mutation rate : ");
+           TextField mut1 = new TextField();
+           TextField mut2 = new TextField();
            selection.getItems().addAll(tallieSelc);
           GridPane grid = new GridPane();
            grid.add(label0, 1, 2);
-           grid.add(mutation, 2, 2);
+           grid.add(thresholdRepar, 2, 2);
             grid.add(label1, 1, 1);
             grid.add(Pop, 2, 1);
             grid.add(label2, 1, 3);
@@ -1013,13 +994,16 @@ FileChooser fileChooser = new FileChooser();
             grid.add(sla, 2, 4);
             grid.add(fit1, 1, 5);
             grid.add(fit2, 1, 6);
+            grid.add(labelMut, 1, 7);
+            grid.add(mut1, 2, 7);
+            grid.add(labelMut2, 1, 8);
+            grid.add(mut2, 2, 8);
             ToggleGroup grp=new ToggleGroup();
             fit1.setToggleGroup(grp);
             fit2.setToggleGroup(grp);
          dialog.getDialogPane().setContent(grid);
          ButtonType buttonTypeOk = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
          dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
- 
          dialog.setResultConverter(new Callback<ButtonType, String>() {
          @Override
          public String call(ButtonType b) {
@@ -1030,7 +1014,6 @@ FileChooser fileChooser = new FileChooser();
                  } catch (IOException ex) {
                      Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
                  }
-                 
                  AgPageController gc = loader0.getController();
                  if(fit1.isSelected())
                      gc.setFittChoice(1);
@@ -1040,60 +1023,52 @@ FileChooser fileChooser = new FileChooser();
                 String num=Vselection.substring(0, Vselection.length()-1);
                 int Vselec=Integer.parseInt(num);
                 
-                String presThreshold= mutation.getValue().toString();
-                String valThreshold=Vselection.substring(0, presThreshold.length()-1);
+                String presThreshold= thresholdRepar.getValue().toString();
+                String valThreshold=presThreshold.substring(0, presThreshold.length()-1);
                 int intThreshold=Integer.parseInt(valThreshold);
+                   String ssla=sla.getValue().toString().substring(0, sla.getValue().toString().length()-1);
+                   gc.setNumSlal(ssla);
                    gc.setNumberSelect(Vselec);
                    gc.setThreshold(intThreshold);
                    gc.setRandomDegrry(Integer.parseInt(val_p));
                    gc.setTaillePop(Integer.parseInt(Pop.getText().toString()));
+                   gc.setNumberSelectInPop(Integer.parseInt(mut1.getText()));
+                   gc.setNumberSelectInIndividual(Integer.parseInt(mut2.getText()));
+                  
                    gc. InitializationFF(allVm,allPm);
                    gc. InitializationRandom(allVm,allPm);
                    gc.InitializationBFD(allVm, allPm);
-                    
                    Tab tabP1=new Tab();
                      tabP1.setText("AG");
                       tabP1.setContent(root1);
                      tabP.getTabs().add(tabP1);
                       tabP.getSelectionModel().select(tabP1);
-             }
+              }
               return null;
-         }
+            }
          });         
             Optional<String> result = dialog.showAndWait();   
          }
     private String []percentage={"10%","20%","30%","40%","50%","100%"};
-    
-    
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-       
         label_pm.setVisible(false);
         label_vm.setVisible(false);
         choice_vmp.setVisible(false);
         lebel_spnr.setVisible(false);
         lebel_spnr1.setVisible(false);
-        
         choice_vmp.getItems().addAll(percentage);
-        
         idpm.setVisible(false);
         idvm.setVisible(false);
-       // vm_N.setCellValueFactory(new PropertyValueFactory<PmVmCl,String>("vm"));
-        // pm_N.setCellValueFactory(new PropertyValueFactory<PmVmCl,String>("pm"));
         pm_storage.setCellValueFactory(new PropertyValueFactory<pmCl,Integer>("pm_storage"));
           pm.setCellValueFactory(new PropertyValueFactory<pmCl,String>("pm"));
             pm_ram.setCellValueFactory(new PropertyValueFactory<pmCl,Integer>("ram"));
               pm_eng.setCellValueFactory(new PropertyValueFactory<pmCl,Integer>("energy"));
                 pm_cpu.setCellValueFactory(new PropertyValueFactory<pmCl,Integer>("cpu"));
-                                pm_state.setCellValueFactory(new PropertyValueFactory<pmCl,String>("state"));
-                                 vm.setCellValueFactory(new PropertyValueFactory<Vmcl,String>("vm"));
-            vm_ram.setCellValueFactory(new PropertyValueFactory<Vmcl,Integer>("ram"));
-                vm_cpu.setCellValueFactory(new PropertyValueFactory<Vmcl,Integer>("cpu"));
-                vm_storage.setCellValueFactory(new PropertyValueFactory<Vmcl,Integer>("vm_storage"));
-
+                    pm_state.setCellValueFactory(new PropertyValueFactory<pmCl,String>("state"));
+                      vm.setCellValueFactory(new PropertyValueFactory<Vmcl,String>("vm"));
+                      vm_ram.setCellValueFactory(new PropertyValueFactory<Vmcl,Integer>("ram"));
+                      vm_cpu.setCellValueFactory(new PropertyValueFactory<Vmcl,Integer>("cpu"));
+                      vm_storage.setCellValueFactory(new PropertyValueFactory<Vmcl,Integer>("vm_storage"));
     }
-
-  
-
 }
