@@ -4,6 +4,7 @@
  */
 package soutnoce_vm;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -13,16 +14,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 
 /**
  * FXML Controller class
@@ -63,24 +69,10 @@ public class AgPageController implements Initializable {
     private TableColumn<showIdivFit,String> idivid1;
     @FXML
     private TableColumn<showIdivFit,String> nb1;    
-    @FXML
-    private TableView<vmInPm> mut_tab;
-    @FXML
-    private TableColumn<vmInPm, String> nbmut;
-    @FXML
-    private TableColumn<vmInPm, String> newmut;
-    @FXML
-    private TableColumn<vmInPm, String> oldmut;
-     @FXML
-    private TableView<ag_coding> mut_indiv;
-    @FXML
-    private TableColumn<ag_coding, String> vm_mut;
-    @FXML
-    private TableColumn<ag_coding, String> pm_mut;
+    
     @FXML
     private Label cross_seting;
-    @FXML
-    private Label mut_seting;
+    
     public int randomDegrry,TaillePop,fittChoice;
     int numberSelect,threshold; String numSlal;
      int numberSelectInPop ,  numberSelectInIndividual;
@@ -256,12 +248,11 @@ public class AgPageController implements Initializable {
     }
     
     List<List> newPop= new ArrayList<>();
+    
     public void GA (String[][] Pm1,String[][] Vm1){
         //setings 
         cross_seting.setText("Population size :\n"+getTaillePop()+" individual"+
                 "\n The crossover size :\n "+getNumberSelect()+" individual");
-        mut_seting.setText("Population mutation rate :\n "+getNumberSelectInPop()+" individual"+
-                "\n Individual mutation rate :\n "+getNumberSelectInIndividual()+ "gen");
         //initial pop
           for(int i=0;i<initialPop.size();i++){
                       List<individu> individual=new  ArrayList<individu>();
@@ -300,7 +291,10 @@ public class AgPageController implements Initializable {
            // mutation
         mutation(initialPop,Pm1,Vm1,getNumberSelectInPop(),getNumberSelectInIndividual());
          // Repair for threshold
-        // Reparation(initialPop,Pm1);
+         Reparation(initialPop,Pm1);
+         
+         //supp 
+         SuppRep(initialPop);
         
     }
 
@@ -737,9 +731,13 @@ public class AgPageController implements Initializable {
                           String numPm=Pm1[0][j];
                           int pmUtilisation=0;
                           for(int k=0;k<individual.size();k++){
-                              if(individual.get(k).pm_num.equals(numPm)){
+                              if(individual.get(k).pm_num== null) filtre=true;
+                              else if (individual.get(k).pm_num.equals("")) filtre=true;
+                              else if(individual.get(k).pm_num!= null)
+                               if(individual.get(k).pm_num.equals(numPm)){
                                   pmUtilisation=pmUtilisation+Integer.parseInt(individual.get(k).getCpu());
                               }
+                              
                           }
                           int cpuPm=Integer.parseInt(Pm1[1][j]);
                           if(cpuPm<pmUtilisation){
@@ -748,6 +746,7 @@ public class AgPageController implements Initializable {
                               filtre=true;
                               break;
                           }
+                          
                       }
                       if(filtre==false) { newPopFiltred.add(newPop.get(i));
                       }
@@ -759,7 +758,6 @@ public class AgPageController implements Initializable {
     
     public void Reparation(List <List> oldPop,String [][] allPm){
         int thershold= getThreshold();
-        System.out.print(getThreshold());
         for(int pi=0;pi<oldPop.size();pi++){
             List<Vmcl> vm_migrated= new ArrayList<>();
              List<individu> individual=new  ArrayList<>();
@@ -818,43 +816,46 @@ public class AgPageController implements Initializable {
                     vm_list.remove(bestFit_vm);
                   }
                 }
-            }
-            
-            // add VMs by threshold 
-            for(int j=0;j<allPm[1].length;j++){
-                int cpu =0;
-                for(int i=0;i<individual.size();i++){
+            }        
+           for(int x=0;x<vm_migrated.size();x++){
+               for(int j=0;j<allPm[1].length;j++){
+                   int cpu =0;
+                    for(int i=0;i<individual.size();i++){
+                        if(individual.get(i).pm_num!=null)
                      if(individual.get(i).pm_num.equals(allPm[0][j])){
                         cpu=cpu+Integer.parseInt(individual.get(i).getCpu());
-                              } 
+                       } 
+                    }
+                    cpu=cpu+Integer.parseInt(vm_migrated.get(x).getCpu());
+                    cpu_thre_max= (Integer.parseInt(allPm[1][j])*thershold)/100;
+                    if(cpu<=cpu_thre_max){
+                        for(int i=0;i<individual.size();i++){
+                            if(individual.get(i).getVm().equals(vm_migrated.get(x).getVm())){
+                                individual.get(i).pm_num=allPm[0][j];
+                            }
+                        }
+                    }
                 }
-                for(int i=0;i<individual.size();i++){
-                  for(int x=0;x<vm_migrated.size();x++){
-                    if(vm_migrated.get(x).vm.equals(individual.get(i).vm)){
-                        int ii=Integer.parseInt(individual.get(i).pm_num)-1 ;
-                        cpu_thre_max= (Integer.parseInt(allPm[1][ii])*thershold)/100;
-                    
-                    int Cpu = cpu+Integer.parseInt(individual.get(i).getCpu());
-                    if(Cpu<=cpu_thre_max) {individual.get(i).setPm_num(allPm[0][j]);
-                                           break;
-                    }
-                    }
-                    }
-                  }
-                 
-                
-            }
+           }
             oldPop.set(pi, individual);
-            System.out.println(oldPop.get(pi));
         }
     }
-
+    FXMLDocumentController firstController;
+    
+   public void setFirstController(FXMLDocumentController controller) {
+        this.firstController = controller;
+    }
+        List<List> po2=new ArrayList<>();
+       
     public  void mutation(List<List> population,String [][]Pm1,String [][]classment_vm1, int numberSelectInPop, int numberSelectInIndividual) {
         Random rand = new Random();
+         po2.addAll(population);
         int populationSize = population.size();
         for (int i = 0; i < numberSelectInPop; i++) {
+            boolean pop2=false;
             int randomIndex = rand.nextInt(0,populationSize-1);
             List<individu> individual = population.get(randomIndex);
+            List<individu1> indiv = po2.get(randomIndex);
             int individualSize = individual.size();
             for (int j = 0; j < numberSelectInIndividual; j++) {
                int randomGen = rand.nextInt(0,individualSize-1);
@@ -871,29 +872,58 @@ public class AgPageController implements Initializable {
               int Tcpu= Integer.parseInt(in.getCpu())+cpu;
               if(cx==true)
               if(Tcpu<=Integer.parseInt(Pm1[1][p])){
-                  System.out.println(Pm1[1][p]+" Tcpu" +Tcpu);
                   int val=p+1;
-                  vmInPm vp= new vmInPm(String.valueOf(randomIndex+1), individual.get(randomGen).toString(), individual.get(randomGen).getVm()+"("+String.valueOf(val)+")");
-                  mut_tab.getItems().add(vp);
+                  pop2=true;
                   individual.get(randomGen).setPm_num(String.valueOf(val));
+                   population.set(randomIndex, individual);
+                  indiv.get(randomGen).setPm_num(String.valueOf(val+"|"+indiv.get(randomGen).getPm_num()));
+                  po2.set(randomIndex, indiv);
                   break;
                 }  
              }
         }
-            population.set(randomIndex, individual);
+            
+             
     }
+        
+        AnchorPane root1= new AnchorPane();
+        FXMLLoader loader0= new FXMLLoader(getClass().getResource("Mutation1.fxml"));
+                 try {
+                     root1=loader0.load();
+                 } catch (IOException ex) {
+                     Logger.getLogger(AgPageController.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+                 Mutation1Controller mt =loader0.getController();
+                 mt.setDataMut("Population mutation rate :\n "+getNumberSelectInPop()+" individual"+
+                "\n Individual mutation rate :\n "+getNumberSelectInIndividual()+ "gen");
+                 mt.setPopulation2(po2);
+                 mt.mutt();
+        
+        Tab tabP1=new Tab();
+        tabP1.setText("AMutation");
+        tabP1.setContent(root1);
+        firstController.tb(tabP1);
+        
 }
-    @FXML
-     void selectIdiv2(MouseEvent event) {
-        mut_indiv.getItems().clear();
-       int n= Integer.parseInt(mut_tab.getSelectionModel().getSelectedItem().getVm());
-        List<individu> individual=new  ArrayList<>();
-       individual=initialPop.get(n-1);
-       for(int i=0;i<individual.size();i++){
-        ag_coding coding=new ag_coding(individual.get(i).vm.toString(), individual.get(i).pm_num.toString());
-        mut_indiv.getItems().add(coding);
-       }
-    }
+
+     public void SuppRep(List<List> population){
+         int k=0;
+         for(int i=0;i<population.size();i++){
+              List<individu> p1=new  ArrayList<individu>();
+              p1=population.get(i);
+             
+             for(int j=i+1;j<population.size()-1;j++){
+                   List<individu> p2=new  ArrayList<individu>();
+                   p2=population.get(j);
+                 if(p1.toString().equals(p2.toString())){
+                     k++;
+                     population.remove(i);
+                 }
+                 
+             }
+             
+         }
+     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -902,10 +932,6 @@ public class AgPageController implements Initializable {
 
                   pm_RFF.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("pm"));
                   vm_RFF.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("vm"));
-                  
-                  pm_mut.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("pm"));
-                  vm_mut.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("vm"));
-                  
                   pm_RFF1.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("pm"));
                   vm_RFF1.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("vm"));
                   
@@ -918,9 +944,7 @@ public class AgPageController implements Initializable {
                   idivid1.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("indiv"));
                   nb1.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("nb"));
                   
-                  nbmut.setCellValueFactory(new PropertyValueFactory<vmInPm,String>("Vm"));
-                  oldmut.setCellValueFactory(new PropertyValueFactory<vmInPm,String>("Old_pm"));
-                  newmut.setCellValueFactory(new PropertyValueFactory<vmInPm,String>("New_pm"));
+               
                  
     }    
     

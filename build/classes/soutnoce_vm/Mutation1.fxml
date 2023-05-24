@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="790.0" prefWidth="1340.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="soutnoce_vm.Mutation1Controller">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="463.0" layoutY="83.0" prefHeight="49.0" prefWidth="401.0" text="the mutation" textFill="#173dc3">
+         <font>
+            <Font name="System Bold" size="35.0" />
+         </font>
+      </Label>
+      <TableView fx:id="mut_tab" layoutX="255.0" layoutY="164.0" onMouseClicked="#selectIdiv2" prefHeight="535.0" prefWidth="635.0">
+         <columns>
+            <TableColumn fx:id="nbmut" prefWidth="75.0" text="Nb indiv" />
+            <TableColumn fx:id="oldmut" prefWidth="111.0" text="old Vm(Pm)" />
+            <TableColumn fx:id="newmut" prefWidth="125.0" text="new Vm(Pm)" />
+         </columns>
+      </TableView>
+      <TableView fx:id="mut_indiv" layoutX="117.0" layoutY="108.0" prefHeight="681.0" prefWidth="111.0">
+         <columns>
+            <TableColumn fx:id="vm_mut" prefWidth="35.0" text="vm" />
+            <TableColumn fx:id="pm_mut" prefWidth="70.0" text="pm" />
+         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+      <Label fx:id="mut_seting" layoutX="957.0" layoutY="246.0" prefHeight="350.0" prefWidth="325.0" text="Label">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

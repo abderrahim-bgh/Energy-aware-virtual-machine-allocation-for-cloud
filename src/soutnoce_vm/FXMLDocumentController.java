@@ -1034,7 +1034,7 @@ FileChooser fileChooser = new FileChooser();
                    gc.setTaillePop(Integer.parseInt(Pop.getText().toString()));
                    gc.setNumberSelectInPop(Integer.parseInt(mut1.getText()));
                    gc.setNumberSelectInIndividual(Integer.parseInt(mut2.getText()));
-                  
+                   gc.setFirstController(FXMLDocumentController.this);
                    gc. InitializationFF(allVm,allPm);
                    gc. InitializationRandom(allVm,allPm);
                    gc.InitializationBFD(allVm, allPm);
@@ -1049,6 +1049,14 @@ FileChooser fileChooser = new FileChooser();
          });         
             Optional<String> result = dialog.showAndWait();   
          }
+         public void tb( Tab tabP1){
+             if (tabP1 != null) {
+                 tabP.getTabs().add(tabP1);
+             }
+             
+            // tabP.getSelectionModel().select(tabP1);
+         }
+         
     private String []percentage={"10%","20%","30%","40%","50%","100%"};
     @Override
     public void initialize(URL location, ResourceBundle resources) {
