@@ -61,7 +61,7 @@ public class Mutation1Controller implements Initializable {
      void selectIdiv2(MouseEvent event) {
         mut_indiv.getItems().clear();
        int n= Integer.parseInt(mut_tab.getSelectionModel().getSelectedItem().getVm());
-        List<individu1> individual=new  ArrayList<>();
+        List<individu> individual=new  ArrayList<>();
        individual=population2.get(n-1);
        for(int i=0;i<individual.size();i++){
         ag_coding coding=new ag_coding(individual.get(i).vm.toString(), individual.get(i).pm_num.toString());
@@ -73,7 +73,7 @@ public class Mutation1Controller implements Initializable {
          mut_seting.setText(getDataMut());
          System.out.println("mtttt"+population2.get(0).toString());
           for(int i=0;i<population2.size();i++){
-              List<individu1> individual = population2.get(i);
+              List<individu> individual = population2.get(i);
               for(int j=0;j<individual.size();j++){
                    vmInPm vp= new vmInPm(String.valueOf(i+1), individual.get(j).toString(), population2.get(i).toString());
                    mut_tab.getItems().add(vp);

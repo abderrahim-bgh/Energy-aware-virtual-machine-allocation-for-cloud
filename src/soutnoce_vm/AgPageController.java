@@ -248,20 +248,25 @@ public class AgPageController implements Initializable {
     }
     
     List<List> newPop= new ArrayList<>();
-    
+     List<List> ShopInPop= new ArrayList<>();
     public void GA (String[][] Pm1,String[][] Vm1){
         //setings 
         cross_seting.setText("Population size :\n"+getTaillePop()+" individual"+
                 "\n The crossover size :\n "+getNumberSelect()+" individual");
+        ShopInPop.addAll(initialPop);
         //initial pop
+        
           for(int i=0;i<initialPop.size();i++){
                       List<individu> individual=new  ArrayList<individu>();
-                      individual=initialPop.get(i);
-                      
-                      showIdivFit sh=new showIdivFit(String.valueOf(i+1),initialPop.get(i).toString(),String.valueOf(individual.get(1).fit),individual.get(1).sla, individual.get(1).energy);
+                      individual=ShopInPop.get(i);
+                      showIdivFit sh=new showIdivFit(String.valueOf(i+1),ShopInPop.get(i).toString(),String.valueOf(individual.get(1).fit),individual.get(1).sla, individual.get(1).energy);
                       indiv.add(sh);
                       fitt.getItems().add(sh);
                   }
+          Double [] ftG= new Double[10];
+          for(int g=0;g<10;g++){
+              
+          
           //selection
         String [][] sellection =selectionsSize((getNumberSelect()*indiv.size())/100);
         //crossover
@@ -295,7 +300,52 @@ public class AgPageController implements Initializable {
          
          //supp 
          SuppRep(initialPop);
-        
+         
+         // calcule energy and sla 
+         energyGa(Pm1,initialPop);
+        double totalFit=0;
+         for(int f=0;f<initialPop.size();f++){
+              List<individu> individual=new  ArrayList<individu>();
+              individual=initialPop.get(f);
+              
+              for(int i=0;i<individual.size();i++){
+                  individual.get(i).setFit(fitness1(Double.parseDouble(individual.get(i).getSla()),
+                          Double.parseDouble(individual.get(i).getEnergy()),Pm1));
+                  
+              }
+             totalFit=totalFit+  individual.get(0).getFit();
+             System.out.println("totalFit  "+totalFit);
+         }
+         
+          ftG[g]=totalFit;
+         
+         for(int i=0;i<10;i++)
+           System.out.println("ftG  "+ftG[i]);
+          
+         
+           List<List<individu>> CompareList= new ArrayList<>();
+           
+           for(int i=0;i<initialPop.size();i++){
+                List<individu> individualX=new  ArrayList<individu>();
+                individualX=initialPop.get(i);
+                CompareList.add(individualX);
+           }
+           Collections.sort(CompareList,new Comparator<List<individu>>(){
+                    @Override
+                    public int compare( List<individu> o1,  List<individu>  o2) {
+                        return Double.compare(o1.get(0).getFit(), (o2.get(0).getFit()));
+                    }
+                });
+            Collections.reverse(CompareList);
+            initialPop.clear();
+            for(int i=0;i<getTaillePop();i++){
+                List<individu> individualX=new  ArrayList<individu>();
+                individualX=CompareList.get(i);
+                initialPop.add(individualX);
+                System.out.println("ppp {"+initialPop.get(i).toString());
+            }
+        }   
+          
     }
 
     public void InitializationRandom(String [][]Vm1,String[][] Pm1){   
@@ -562,7 +612,7 @@ public class AgPageController implements Initializable {
       
        int n= Integer.parseInt(fitt.getSelectionModel().getSelectedItem().getNb());
         List<individu> individual=new  ArrayList<>();
-       individual=initialPop.get(n-1);
+       individual=ShopInPop.get(n-1);
          ll.setText(individual.get(1).Type_pop);
        for(int i=0;i<individual.size();i++){
         ag_coding coding=new ag_coding(individual.get(i).vm.toString(), individual.get(i).pm_num.toString());
@@ -627,6 +677,60 @@ public class AgPageController implements Initializable {
           energy_total=energy_total+Energy;
         }
           return energy_total;
+    }
+    
+    public void energyGa (String [][]classment_pm1,List <List> Pop){
+        for(int p=0;p<Pop.size();p++){
+            List<individu> individual=new  ArrayList<individu>();
+            individual=Pop.get(p);
+        double energy_total=0;
+        int sla_x=0;
+         ssla=0;
+        int  num_sla =Integer.parseInt(getNumSlal());
+          for(int j=0;j<classment_pm1[0].length;j++){
+             int cpu=0;
+             int ram=0;
+             int z= Integer.parseInt(classment_pm1[0][j]);
+             int z1=Integer.parseInt(classment_pm1[1][j]);
+             sla_x= (z1*num_sla)/100;
+
+           for(int i=0;i<individual.size();i++){
+             if(individual.get(i).getPm_num()!=null)
+             if(individual.get(i).getPm_num().equals(String.valueOf(z))){
+                 cpu=cpu+Integer.parseInt(individual.get(i).getCpu());
+                 ram=ram+Integer.parseInt(individual.get(i).getRam());
+                }  
+            }
+           
+           if(cpu > sla_x){
+                             int cpux=cpu-sla_x;
+                             int tTershold=Integer.parseInt(classment_pm1[1][j]);
+                             int Sla =(cpux*100)/Integer.parseInt(classment_pm1[1][j]);
+                             ssla=ssla+Sla;
+                         }  
+          int num=0;
+          num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
+          double Energy =0;
+          if(cpu==0){
+              Energy =0;
+          }
+          else{
+             double c1=Integer.parseInt(classment_pm1[1][Integer.parseInt(classment_pm1[0][j])-1]);
+             double c=cpu/c1;
+             double k =0.7;
+             double  k1=0.3;
+             double e2=k1*250;
+           Energy = (k*250) + (e2*c);  
+          }
+          
+          energy_total=energy_total+Energy;
+        }
+          for(int i=0;i<individual.size();i++){
+              individual.get(i).setEnergy(String.valueOf(energy_total));
+               individual.get(i).setSla(String.valueOf(ssla));
+              
+          }
+        }
     }
 
     public double fitness1(double sla,double energy,String [][] Pm1){
@@ -846,16 +950,16 @@ public class AgPageController implements Initializable {
         this.firstController = controller;
     }
         List<List> po2=new ArrayList<>();
-       
+        boolean pop2=false;
+         boolean window=false;
     public  void mutation(List<List> population,String [][]Pm1,String [][]classment_vm1, int numberSelectInPop, int numberSelectInIndividual) {
         Random rand = new Random();
-         po2.addAll(population);
+         po2.addAll(initialPop);
         int populationSize = population.size();
         for (int i = 0; i < numberSelectInPop; i++) {
-            boolean pop2=false;
             int randomIndex = rand.nextInt(0,populationSize-1);
             List<individu> individual = population.get(randomIndex);
-            List<individu1> indiv = po2.get(randomIndex);
+            List<individu> indiv = po2.get(randomIndex);
             int individualSize = individual.size();
             for (int j = 0; j < numberSelectInIndividual; j++) {
                int randomGen = rand.nextInt(0,individualSize-1);
@@ -873,11 +977,16 @@ public class AgPageController implements Initializable {
               if(cx==true)
               if(Tcpu<=Integer.parseInt(Pm1[1][p])){
                   int val=p+1;
-                  pop2=true;
+                 
+                  if(!pop2){
+                       pop2=true;
+                      indiv.get(randomGen).setPm_num(String.valueOf(val+"|"+indiv.get(randomGen).getPm_num()));
+                      po2.set(randomIndex, indiv);
+                  }
+                  
                   individual.get(randomGen).setPm_num(String.valueOf(val));
                    population.set(randomIndex, individual);
-                  indiv.get(randomGen).setPm_num(String.valueOf(val+"|"+indiv.get(randomGen).getPm_num()));
-                  po2.set(randomIndex, indiv);
+                  
                   break;
                 }  
              }
@@ -885,8 +994,9 @@ public class AgPageController implements Initializable {
             
              
     }
-        
-        AnchorPane root1= new AnchorPane();
+        if(!window){
+            window=true;
+            AnchorPane root1= new AnchorPane();
         FXMLLoader loader0= new FXMLLoader(getClass().getResource("Mutation1.fxml"));
                  try {
                      root1=loader0.load();
@@ -903,6 +1013,8 @@ public class AgPageController implements Initializable {
         tabP1.setText("AMutation");
         tabP1.setContent(root1);
         firstController.tb(tabP1);
+        }
+        
         
 }
 
