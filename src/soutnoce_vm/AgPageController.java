@@ -258,7 +258,7 @@ public class AgPageController implements Initializable {
         
           for(int i=0;i<initialPop.size();i++){
                       List<individu> individual=new  ArrayList<individu>();
-                      individual=ShopInPop.get(i);
+                      individual=initialPop.get(i);
                       showIdivFit sh=new showIdivFit(String.valueOf(i+1),ShopInPop.get(i).toString(),String.valueOf(individual.get(1).fit),individual.get(1).sla, individual.get(1).energy);
                       indiv.add(sh);
                       fitt.getItems().add(sh);
@@ -303,18 +303,18 @@ public class AgPageController implements Initializable {
          
          // calcule energy and sla 
          energyGa(Pm1,initialPop);
+         
         double totalFit=0;
          for(int f=0;f<initialPop.size();f++){
               List<individu> individual=new  ArrayList<individu>();
               individual=initialPop.get(f);
-              
               for(int i=0;i<individual.size();i++){
                   individual.get(i).setFit(fitness1(Double.parseDouble(individual.get(i).getSla()),
                           Double.parseDouble(individual.get(i).getEnergy()),Pm1));
-                  
               }
-             totalFit=totalFit+  individual.get(0).getFit();
-             System.out.println("totalFit  "+totalFit);
+              System.out.println("enrgy"+individual.get(1).getEnergy()+"sla "+individual.get(1).getSla());
+             totalFit=totalFit+  individual.get(1).getFit();
+             System.out.println("totalFit  "+totalFit+","+ individual.get(1).fit);
          }
          
           ftG[g]=totalFit;
@@ -340,11 +340,35 @@ public class AgPageController implements Initializable {
             initialPop.clear();
             for(int i=0;i<getTaillePop();i++){
                 List<individu> individualX=new  ArrayList<individu>();
-                individualX=CompareList.get(i);
+                try{
+                     individualX=CompareList.get(i);
                 initialPop.add(individualX);
-                System.out.println("ppp {"+initialPop.get(i).toString());
+                } catch(IndexOutOfBoundsException e){
+                    
+                }
+               
             }
-        }   
+        }  
+          boolean window0=false;
+          if(!window0){
+            window0=true;
+            AnchorPane root1= new AnchorPane();
+        FXMLLoader loader0= new FXMLLoader(getClass().getResource("resultAG.fxml"));
+                 try {
+                     root1=loader0.load();
+                 } catch (IOException ex) {
+                     Logger.getLogger(AgPageController.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+                 ResultAGController RG =loader0.getController();
+                 List<individu> ResultList= new ArrayList<>();
+                 ResultList=initialPop.get(0);
+                 RG.BestPop(ResultList, Pm1);
+                 RG.chartFit(ftG);
+        Tab tabP1=new Tab();
+        tabP1.setText("Result");
+        tabP1.setContent(root1);
+        firstController.tb(tabP1);
+        }
           
     }
 
@@ -685,7 +709,7 @@ public class AgPageController implements Initializable {
             individual=Pop.get(p);
         double energy_total=0;
         int sla_x=0;
-         ssla=0;
+        int ssl=0;
         int  num_sla =Integer.parseInt(getNumSlal());
           for(int j=0;j<classment_pm1[0].length;j++){
              int cpu=0;
@@ -704,9 +728,9 @@ public class AgPageController implements Initializable {
            
            if(cpu > sla_x){
                              int cpux=cpu-sla_x;
-                             int tTershold=Integer.parseInt(classment_pm1[1][j]);
-                             int Sla =(cpux*100)/Integer.parseInt(classment_pm1[1][j]);
-                             ssla=ssla+Sla;
+                             
+                             int Sla =(cpux*100)/z1;
+                             ssl=ssl+Sla;
                          }  
           int num=0;
           num= Integer.parseInt(classment_pm1[2][Integer.parseInt(classment_pm1[0][j])-1])*1024 ;
@@ -725,9 +749,10 @@ public class AgPageController implements Initializable {
           
           energy_total=energy_total+Energy;
         }
+             double sss= (ssl/(classment_pm1[0].length));
           for(int i=0;i<individual.size();i++){
               individual.get(i).setEnergy(String.valueOf(energy_total));
-               individual.get(i).setSla(String.valueOf(ssla));
+               individual.get(i).setSla(String.valueOf(sss));
               
           }
         }
@@ -737,7 +762,6 @@ public class AgPageController implements Initializable {
        double alpha = (energy - (175*Pm1[0].length)) / ((250*Pm1[0].length) -( 175*Pm1[0].length)) ;
        double beta = sla/100;  
        double Fitness= (1-alpha)*(1-beta);
-       
        return Fitness;
     }
 
