@@ -69,7 +69,10 @@ public class AgPageController implements Initializable {
     private TableColumn<showIdivFit,String> idivid1;
     @FXML
     private TableColumn<showIdivFit,String> nb1;    
-    
+    @FXML
+    private TableColumn<showIdivFit,String> p1;   
+    @FXML
+    private TableColumn<showIdivFit,String> p2;   
     @FXML
     private Label cross_seting;
     
@@ -128,6 +131,7 @@ public class AgPageController implements Initializable {
     
     List<List> initialPop= new ArrayList<>();         
     List<showIdivFit> indiv= new ArrayList<>();  
+    List<showIdivFit> indiv1= new ArrayList<>(); 
     public void InitializationBFD(String [][]Vm1,String[][] Pm1){
         for(int p=0;p<getTaillePop()/3;p++){
          List<individu> individual=new  ArrayList<>();
@@ -248,19 +252,22 @@ public class AgPageController implements Initializable {
     }
     
     List<List> newPop= new ArrayList<>();
+    List<List> newPopShow= new ArrayList<>();
      List<List> ShopInPop= new ArrayList<>();
     public void GA (String[][] Pm1,String[][] Vm1){
         //setings 
-        cross_seting.setText("Population size :\n"+getTaillePop()+" individual"+
-                "\n The crossover size :\n "+getNumberSelect()+" individual");
-        ShopInPop.addAll(initialPop);
+        cross_seting.setText("1- Population size :"+getTaillePop()+" individual"+
+                "\n2- The crossover size : "+getNumberSelect()+" %"
+                 +"\n3- the consolidation the VM threshold:"+getNumSlal()+"%"
+                  );
         //initial pop
         
           for(int i=0;i<initialPop.size();i++){
                       List<individu> individual=new  ArrayList<individu>();
                       individual=initialPop.get(i);
-                      showIdivFit sh=new showIdivFit(String.valueOf(i+1),ShopInPop.get(i).toString(),String.valueOf(individual.get(1).fit),individual.get(1).sla, individual.get(1).energy);
+                      showIdivFit sh=new showIdivFit(String.valueOf(i+1),initialPop.get(i).toString(),String.valueOf(individual.get(1).fit),individual.get(1).sla, individual.get(1).energy);
                       indiv.add(sh);
+                      ShopInPop.add(individual);
                       fitt.getItems().add(sh);
                   }
           Double [] ftG= new Double[10];
@@ -268,7 +275,7 @@ public class AgPageController implements Initializable {
               
           
           //selection
-        String [][] sellection =selectionsSize((getNumberSelect()*indiv.size())/100);
+        String [][] sellection =selectionsSize((getNumberSelect()*initialPop.size())/100);
         //crossover
          
         for(int i=0;i<sellection[0].length;i++){
@@ -282,25 +289,34 @@ public class AgPageController implements Initializable {
         }
         
         FitrageNewPop(newPop,Pm1);
-         for(int i=0;i<newPop.size();i++){
+        if(g<1){
+           for(int i=0;i<newPop.size();i++){
                       List<individu> individual=new  ArrayList<individu>();
                       individual=newPop.get(i);
-                     
-                      showIdivFit sh=new showIdivFit(String.valueOf(i+1),newPop.get(i).toString(),"0","0", "0");
-                     // indiv.add(sh);
-                      fitt1.getItems().add(sh);
+                       showIdivFit sh=new showIdivFit(String.valueOf(i+1),newPop.get(i).toString(),
+                               sellection[0][i],sellection[1][i], "0");
+                       // indiv.add(sh);
+                       fitt1.getItems().add(sh);  
+                       newPopShow.add(individual);
+                     }
+                      
                   }
            //for have one population
-          
            initialPop.addAll(newPop);
            // mutation
-        mutation(initialPop,Pm1,Vm1,getNumberSelectInPop(),getNumberSelectInIndividual());
+           int muNb=(getNumberSelectInIndividual()*initialPop.get(0).size())/100;
+            int muNb1=(getNumberSelectInPop()*initialPop.size())/100;
+        mutation(initialPop,Pm1,Vm1,muNb1,muNb);
          // Repair for threshold
          Reparation(initialPop,Pm1);
          
          //supp 
          SuppRep(initialPop);
          
+         if(g<1){
+             int redand = (getTaillePop()+newPop.size())-initialPop.size();
+             cross_seting.setText(cross_seting.getText().toString()+"\n4- The number of redandance individuals deleted :\n"+redand);
+         }
          // calcule energy and sla 
          energyGa(Pm1,initialPop);
          
@@ -348,7 +364,15 @@ public class AgPageController implements Initializable {
                 }
                
             }
+            indiv.clear();
+             for(int i=0;i<initialPop.size();i++){
+                      List<individu> individual=new  ArrayList<individu>();
+                      individual=initialPop.get(i);
+                      showIdivFit sh=new showIdivFit(String.valueOf(i+1),initialPop.get(i).toString(),String.valueOf(individual.get(1).fit),individual.get(1).sla, individual.get(1).energy);
+                      indiv.add(sh);
+                  }
         }  
+           FitragePop(initialPop,Pm1);
           boolean window0=false;
           if(!window0){
             window0=true;
@@ -633,9 +657,9 @@ public class AgPageController implements Initializable {
     @FXML
     void selectIdiv(MouseEvent event) {
         rff.getItems().clear();
-      
        int n= Integer.parseInt(fitt.getSelectionModel().getSelectedItem().getNb());
-        List<individu> individual=new  ArrayList<>();
+      
+       List<individu> individual=new  ArrayList<>();
        individual=ShopInPop.get(n-1);
          ll.setText(individual.get(1).Type_pop);
        for(int i=0;i<individual.size();i++){
@@ -648,10 +672,11 @@ public class AgPageController implements Initializable {
         new_indiv.getItems().clear();
 
        int n= Integer.parseInt(fitt1.getSelectionModel().getSelectedItem().getNb());
-        List<individu> individual=new  ArrayList<>();
-       individual=newPop.get(n-1);
-       for(int i=0;i<individual.size();i++){
-        ag_coding coding=new ag_coding(individual.get(i).vm.toString(), individual.get(i).pm_num.toString());
+        List<individu> individual2=new  ArrayList<>();
+       individual2=newPopShow.get(n-1);
+           System.out.println("indv"+individual2.toString());
+       for(int i=0;i<individual2.size();i++){
+        ag_coding coding=new ag_coding(individual2.get(i).vm.toString(), individual2.get(i).pm_num.toString());
                                       new_indiv.getItems().add(coding);
        }
     }
@@ -772,8 +797,6 @@ public class AgPageController implements Initializable {
      for (showIdivFit individual : population) {
         totalFitness += Double.parseDouble(individual.getFit());
     }
-    
-    
     // Calculate the size of each segment in the roulette wheel
     double segmentSize = totalFitness / numSelections;
     
@@ -883,10 +906,37 @@ public class AgPageController implements Initializable {
         newPop.addAll(newPopFiltred);
         
     }
-    
+        public void FitragePop(List<List> newPop,String[][] Pm1){
+        List<List> newPopFiltred=new ArrayList<List>();
+        
+        for(int i=0;i<newPop.size();i++){
+                      boolean filtre=false;
+                      List<individu> individual=new  ArrayList<individu>();
+                      individual=newPop.get(i);
+                      for(int j=0;j<Pm1[0].length;j++){
+                          String numPm=Pm1[0][j];
+                          int pmUtilisation=0;
+                          for(int k=0;k<individual.size();k++){
+                              if(individual.get(k).pm_num== null) filtre=true;
+                              
+                              else if (individual.get(k).pm_num.equals("")) filtre=true;
+
+                          }
+                          int cpuPm=Integer.parseInt(Pm1[1][j]);
+                      }
+                      if(filtre==false) { newPopFiltred.add(newPop.get(i));
+                      }
+        }
+        newPop.clear();
+        newPop.addAll(newPopFiltred);
+        
+    }
+
+        int RepSize=0;
     public void Reparation(List <List> oldPop,String [][] allPm){
         int thershold= getThreshold();
         for(int pi=0;pi<oldPop.size();pi++){
+            boolean RepSizeBoll=false;
             List<Vmcl> vm_migrated= new ArrayList<>();
              List<individu> individual=new  ArrayList<>();
            individual =oldPop.get(pi);
@@ -960,13 +1010,19 @@ public class AgPageController implements Initializable {
                         for(int i=0;i<individual.size();i++){
                             if(individual.get(i).getVm().equals(vm_migrated.get(x).getVm())){
                                 individual.get(i).pm_num=allPm[0][j];
+                                RepSizeBoll=true;
                             }
                         }
                     }
                 }
            }
             oldPop.set(pi, individual);
+            if(RepSizeBoll==true){
+                RepSize++;
+            }
         }
+        Mutation1Controller mt= new Mutation1Controller();
+        mt.setRepSize(String.valueOf(RepSize));
     }
     FXMLDocumentController firstController;
     
@@ -983,7 +1039,7 @@ public class AgPageController implements Initializable {
         for (int i = 0; i < numberSelectInPop; i++) {
             int randomIndex = rand.nextInt(0,populationSize-1);
             List<individu> individual = population.get(randomIndex);
-            List<individu> indiv = po2.get(randomIndex);
+            List<individu> indivi = po2.get(randomIndex);
             int individualSize = individual.size();
             for (int j = 0; j < numberSelectInIndividual; j++) {
                int randomGen = rand.nextInt(0,individualSize-1);
@@ -1003,9 +1059,9 @@ public class AgPageController implements Initializable {
                   int val=p+1;
                  
                   if(!pop2){
-                       pop2=true;
-                      indiv.get(randomGen).setPm_num(String.valueOf(val+"|"+indiv.get(randomGen).getPm_num()));
-                      po2.set(randomIndex, indiv);
+                       
+                      indivi.get(randomGen).setPm_num(String.valueOf(val+"|"+indivi.get(randomGen).getPm_num()));
+                      po2.set(randomIndex, indivi);
                   }
                   
                   individual.get(randomGen).setPm_num(String.valueOf(val));
@@ -1014,8 +1070,9 @@ public class AgPageController implements Initializable {
                   break;
                 }  
              }
+             
         }
-            
+           pop2=true; 
              
     }
         if(!window){
@@ -1028,13 +1085,16 @@ public class AgPageController implements Initializable {
                      Logger.getLogger(AgPageController.class.getName()).log(Level.SEVERE, null, ex);
                  }
                  Mutation1Controller mt =loader0.getController();
-                 mt.setDataMut("Population mutation rate :\n "+getNumberSelectInPop()+" individual"+
-                "\n Individual mutation rate :\n "+getNumberSelectInIndividual()+ "gen");
+                int RepSizePers= RepSize*100/getTaillePop();
+                 mt.setDataMut("1- Population mutation rate :\n "+numberSelectInPop+" individual"+
+                "\n2-  Individual mutation rate :\n "+numberSelectInIndividual+ "gen"
+                 +"\n3- threshold max :"+getThreshold()+"%"
+                 +"\n4- Population Reparation rate 100$");
                  mt.setPopulation2(po2);
                  mt.mutt();
         
         Tab tabP1=new Tab();
-        tabP1.setText("AMutation");
+        tabP1.setText("Mutation");
         tabP1.setContent(root1);
         firstController.tb(tabP1);
         }
@@ -1079,6 +1139,8 @@ public class AgPageController implements Initializable {
                   
                   idivid1.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("indiv"));
                   nb1.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("nb"));
+                  p1.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("fit"));
+                  p2.setCellValueFactory(new PropertyValueFactory<showIdivFit,String>("sla"));
                   
                
                  

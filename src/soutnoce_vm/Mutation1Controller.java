@@ -30,17 +30,18 @@ public class Mutation1Controller implements Initializable {
     @FXML
     private TableColumn<vmInPm, String> nbmut;
     @FXML
-    private TableColumn<vmInPm, String> newmut;
-    @FXML
     private TableColumn<vmInPm, String> oldmut;
-     @FXML
-    private TableView<ag_coding> mut_indiv;
-    @FXML
-    private TableColumn<ag_coding, String> vm_mut;
-    @FXML
-    private TableColumn<ag_coding, String> pm_mut;
-    String dataMut;
+    
+    String dataMut,RepSize;
     List<List> population2=new ArrayList<>();
+
+    public String getRepSize() {
+        return RepSize;
+    }
+
+    public void setRepSize(String RepSize) {
+        this.RepSize = RepSize;
+    }
 
     public List<List> getPopulation2() {
         return population2;
@@ -57,28 +58,15 @@ public class Mutation1Controller implements Initializable {
     public void setDataMut(String dataMut) {
         this.dataMut = dataMut;
     }
-        @FXML
-     void selectIdiv2(MouseEvent event) {
-        mut_indiv.getItems().clear();
-       int n= Integer.parseInt(mut_tab.getSelectionModel().getSelectedItem().getVm());
-        List<individu> individual=new  ArrayList<>();
-       individual=population2.get(n-1);
-       for(int i=0;i<individual.size();i++){
-        ag_coding coding=new ag_coding(individual.get(i).vm.toString(), individual.get(i).pm_num.toString());
-        mut_indiv.getItems().add(coding);
-       }
-    }
+
      public void mutt(){
      
          mut_seting.setText(getDataMut());
-         System.out.println("mtttt"+population2.get(0).toString());
           for(int i=0;i<population2.size();i++){
               List<individu> individual = population2.get(i);
-              for(int j=0;j<individual.size();j++){
-                   vmInPm vp= new vmInPm(String.valueOf(i+1), individual.get(j).toString(), population2.get(i).toString());
+             
+                   vmInPm vp= new vmInPm(String.valueOf(i+1), population2.get(i).toString(), population2.get(i).toString());
                    mut_tab.getItems().add(vp);
-              }
-            
              
          }
      }
@@ -86,11 +74,8 @@ public class Mutation1Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-           pm_mut.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("pm"));
-           vm_mut.setCellValueFactory(new PropertyValueFactory<ag_coding,String>("vm"));        
-           nbmut.setCellValueFactory(new PropertyValueFactory<vmInPm,String>("Vm"));
+          nbmut.setCellValueFactory(new PropertyValueFactory<vmInPm,String>("Vm"));
            oldmut.setCellValueFactory(new PropertyValueFactory<vmInPm,String>("Old_pm"));
-            newmut.setCellValueFactory(new PropertyValueFactory<vmInPm,String>("New_pm"));
    
         
     }    

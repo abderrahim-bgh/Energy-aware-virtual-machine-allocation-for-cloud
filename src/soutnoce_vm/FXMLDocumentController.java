@@ -103,8 +103,6 @@ public class FXMLDocumentController implements Initializable {
       
     @FXML
     private TableColumn<PmVmCl, String> pm_N;
-    @FXML
-    private Spinner<String> spnr_pourcentage;
      @FXML
     private Label label_pm;
 

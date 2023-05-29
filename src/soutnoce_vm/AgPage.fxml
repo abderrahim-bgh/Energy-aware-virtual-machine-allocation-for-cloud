@@ -34,13 +34,15 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <TableView fx:id="fitt1" layoutX="770.0" layoutY="76.0" onMouseClicked="#selectIdiv1" prefHeight="430.0" prefWidth="407.0" AnchorPane.rightAnchor="163.0">
+      <TableView fx:id="fitt1" layoutX="759.0" layoutY="76.0" onMouseClicked="#selectIdiv1" prefHeight="430.0" prefWidth="516.0" AnchorPane.rightAnchor="65.0">
          <columns>
             <TableColumn fx:id="nb1" prefWidth="70.0" text="Nb" />
-            <TableColumn fx:id="idivid1" prefWidth="336.0" text="idividual VM(PM)" />
+            <TableColumn fx:id="idivid1" prefWidth="278.0" text="idividual VM(PM)" />
+            <TableColumn fx:id="p1" prefWidth="85.0" text="Nb" />
+            <TableColumn fx:id="p2" prefWidth="82.0" text="Nb" />
          </columns>
       </TableView>
-      <TableView fx:id="new_indiv" layoutX="670.0" layoutY="76.0" prefHeight="430.0" prefWidth="95.0" AnchorPane.rightAnchor="575.0">
+      <TableView fx:id="new_indiv" layoutX="663.0" layoutY="76.0" prefHeight="430.0" prefWidth="95.0" AnchorPane.rightAnchor="582.0">
          <columns>
             <TableColumn fx:id="vm_RFF1" prefWidth="35.0" text="vm" />
             <TableColumn fx:id="pm_RFF1" prefWidth="70.0" text="pm" />
@@ -59,9 +61,9 @@
             <Font name="System Bold" size="35.0" />
          </font>
       </Label>
-      <Label fx:id="cross_seting" layoutX="525.0" layoutY="537.0" prefHeight="208.0" prefWidth="530.0" text="Label" AnchorPane.rightAnchor="285.0">
+      <Label fx:id="cross_seting" layoutX="421.0" layoutY="540.0" prefHeight="208.0" prefWidth="606.0" text="Label" AnchorPane.rightAnchor="313.0">
          <font>
-            <Font size="17.0" />
+            <Font name="System Bold Italic" size="19.0" />
          </font>
       </Label>
    </children>
