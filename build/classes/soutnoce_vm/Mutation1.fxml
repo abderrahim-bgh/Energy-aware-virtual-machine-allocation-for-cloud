@@ -8,18 +8,18 @@
 
 <AnchorPane id="AnchorPane" prefHeight="790.0" prefWidth="1340.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="soutnoce_vm.Mutation1Controller">
    <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="433.0" layoutY="47.0" prefHeight="49.0" prefWidth="401.0" text="the mutation" textFill="#173dc3">
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="333.0" layoutY="45.0" prefHeight="61.0" prefWidth="551.0" text="the mutation" textFill="#173dc3" AnchorPane.leftAnchor="333.0" AnchorPane.rightAnchor="456.0" AnchorPane.topAnchor="45.0">
          <font>
             <Font name="System Bold" size="51.0" />
          </font>
       </Label>
-      <TableView fx:id="mut_tab" layoutX="38.0" layoutY="154.0" prefHeight="535.0" prefWidth="820.0">
+      <TableView fx:id="mut_tab" layoutX="38.0" layoutY="154.0" prefHeight="535.0" prefWidth="820.0" AnchorPane.bottomAnchor="101.0" AnchorPane.leftAnchor="38.0" AnchorPane.rightAnchor="482.0" AnchorPane.topAnchor="154.0">
          <columns>
             <TableColumn fx:id="nbmut" prefWidth="75.0" text="Nb indiv" />
-            <TableColumn fx:id="oldmut" prefWidth="744.0" text=" Vm(Pm)" />
+            <TableColumn fx:id="oldmut" maxWidth="1.7976931348623157E308" prefWidth="744.0" sortType="DESCENDING" text=" Vm(Pm)" />
          </columns>
       </TableView>
-      <Label fx:id="mut_seting" layoutX="878.0" layoutY="197.0" prefHeight="350.0" prefWidth="370.0" text="Label">
+      <Label fx:id="mut_seting" layoutX="876.0" layoutY="231.0" prefHeight="350.0" prefWidth="447.0" text="Label" AnchorPane.bottomAnchor="209.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="231.0">
          <font>
             <Font size="19.0" />
          </font>
