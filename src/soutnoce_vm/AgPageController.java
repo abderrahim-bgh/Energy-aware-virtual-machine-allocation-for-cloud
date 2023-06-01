@@ -241,10 +241,10 @@ public class AgPageController implements Initializable {
                                          double sss= (ssla/(Pm1[0].length));
                                          DecimalFormat df = new DecimalFormat("#.##");
                                          String ss= df.format(sss);
-                                         double f;
-                                         if(getFittChoice()==1)
-                                         f=fitness1(Double.parseDouble(ss),energy(Pm1,Vm1),Pm1);
-                                         else  f=0;
+                                         double f=0;
+                                         if(getFittChoice()==1)f=fitness1(Double.parseDouble(ss),Double.parseDouble(eng),Pm1);
+                                         else if(getFittChoice()==2) f=fitness2(Double.parseDouble(eng),Pm1);
+                                         else if(getFittChoice()==3) f=fitness3(Double.parseDouble(ss),Pm1);
                                       individu e= new individu(vm_migrated.get(i).vm.toString(), vm_migrated.get(i).cpu.toString(),
                                               vm_migrated.get(i).ram.toString(), Vm1[4][j], Vm1[3][j],"Random Best-fit decreasing",eng,ss+"%",f);
                                       individual.add(e);
@@ -348,12 +348,15 @@ public class AgPageController implements Initializable {
               List<individu> individual=new  ArrayList<individu>();
               individual=initialPop.get(f);
               for(int i=0;i<individual.size();i++){
-                  individual.get(i).setFit(fitness1(Double.parseDouble(individual.get(i).getSla()),
+                  
+                  if(getFittChoice()==1)        
+                    individual.get(i).setFit(fitness1(Double.parseDouble(individual.get(i).getSla()),
                           Double.parseDouble(individual.get(i).getEnergy()),Pm1));
+                  else if(getFittChoice()==2)  individual.get(i).setFit(fitness2(
+                          Double.parseDouble(individual.get(i).getEnergy()),Pm1));
+                  else if(getFittChoice()==3)  individual.get(i).setFit(fitness3(Double.parseDouble(individual.get(i).getSla()),Pm1));
               }
-              System.out.println("enrgy"+individual.get(1).getEnergy()+"sla "+individual.get(1).getSla());
              totalFit=totalFit+  individual.get(1).getFit();
-             System.out.println("totalFit  "+totalFit+","+ individual.get(1).fit);
          }
          
           ftG[g]=totalFit;
@@ -503,10 +506,11 @@ public class AgPageController implements Initializable {
                                          DecimalFormat df = new DecimalFormat("#.##");
                                          String ss= df.format(sss);
                                           String eng = String.valueOf(energy(Pm1,Vm1));
-                                          double f;
-                                         if(getFittChoice()==1)
-                                         f=fitness1(Double.parseDouble(ss),energy(Pm1,Vm1),Pm1);
-                                         else  f=0;                   individu e=new individu(Vm1[0][i], Vm1[1][i], Vm1[2][i], Vm1[4][i], Vm1[3][i],"Random",eng,ss+"%",f);
+                                         double f=0;
+                                         if(getFittChoice()==1)f=fitness1(Double.parseDouble(ss),Double.parseDouble(eng),Pm1);
+                                         else if(getFittChoice()==2) f=fitness2(Double.parseDouble(eng),Pm1);
+                                         else if(getFittChoice()==3) f=fitness3(Double.parseDouble(ss),Pm1);                  
+                                         individu e=new individu(Vm1[0][i], Vm1[1][i], Vm1[2][i], Vm1[4][i], Vm1[3][i],"Random",eng,ss+"%",f);
                    individual.add(e);
                }
                initialPop.add(individual);
@@ -657,10 +661,10 @@ public class AgPageController implements Initializable {
             DecimalFormat df = new DecimalFormat("#.##");
             String ss= df.format(sss);
              String eng = String.valueOf(energy(Pm1,Vm1));
-             double f;
-             if(getFittChoice()==1)
-                f=fitness1(Double.parseDouble(ss),energy(Pm1,Vm1),Pm1);
-             else  f=0;
+             double f=0;
+             if(getFittChoice()==1)f=fitness1(Double.parseDouble(ss),Double.parseDouble(eng),Pm1);
+             else if(getFittChoice()==2) f=fitness2(Double.parseDouble(eng),Pm1);
+             else if(getFittChoice()==3) f=fitness3(Double.parseDouble(ss),Pm1);
              individu e=new individu(Vm1[0][i], Vm1[1][i], Vm1[2][i], Vm1[4][i], Vm1[3][i],"Random First Fit",eng,ss+"%",f);
               individual.add(e);
              ag_coding coding=new ag_coding(String.valueOf(i+1), String.valueOf(Vm1[3][i]));
@@ -696,7 +700,6 @@ public class AgPageController implements Initializable {
        int n= Integer.parseInt(fitt1.getSelectionModel().getSelectedItem().getNb());
         List<individu> individual2=new  ArrayList<>();
        individual2=newPopShow.get(n-1);
-           System.out.println("indv"+individual2.toString());
        for(int i=0;i<individual2.size();i++){
         ag_coding coding=new ag_coding(individual2.get(i).vm.toString(), individual2.get(i).pm_num.toString());
                                       new_indiv.getItems().add(coding);
@@ -726,7 +729,7 @@ public class AgPageController implements Initializable {
            if(cpu > sla_x){
                              int cpux=cpu-sla_x;
                              int tTershold=Integer.parseInt(classment_pm1[1][j]);
-                             int Sla =(cpux*100)/Integer.parseInt(classment_pm1[1][j]);
+                             int Sla =(cpux*100)/tTershold;
                              ssla=ssla+Sla;
                          }  
           int num=0;
@@ -804,6 +807,12 @@ public class AgPageController implements Initializable {
         }
     }
 
+      public double fitness2(double energy,String [][] Pm1){
+       double alpha = (energy - (175*Pm1[0].length)) / ((250*Pm1[0].length) -( 175*Pm1[0].length)) ;
+       double Fitness= (1-alpha);
+       
+       return Fitness;
+    }
     public double fitness1(double sla,double energy,String [][] Pm1){
        double alpha = (energy - (175*Pm1[0].length)) / ((250*Pm1[0].length) -( 175*Pm1[0].length)) ;
        double beta = sla/100;  
@@ -811,6 +820,11 @@ public class AgPageController implements Initializable {
        return Fitness;
     }
 
+    public double fitness3(double sla,String [][] Pm1){
+       double beta = sla/100;  
+       double Fitness= (1-beta);
+       return Fitness;
+    }
  public static List<showIdivFit> stochasticUniversalSampling(List<showIdivFit> population) {
     double totalFitness = 0;
     int numSelections=2;

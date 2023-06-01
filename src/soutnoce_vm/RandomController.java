@@ -930,7 +930,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                          if(cpu > sla_x){
                              int cpux=cpu-sla_x;
                              int tTershold=Integer.parseInt(classment_pm1[1][j]);
-                             int Sla =(cpux*100)/cpu_thre_max;
+                             int Sla =(cpux*100)/tTershold;
                              ssla=ssla+Sla;
                          }  
                        int num=0; double Energy =0;
@@ -956,7 +956,7 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                             + "\n\n  2- The total energy\n consumption:"+
                                energy_total+" W"+"\n\n  3- Vms that we did not find \na place in Pm:"+SLA+"/"+old_pm.size()+" VMs"
                                +"\n\nNB Vms megrated : "+old_pm.size()+" VMs"
-                                +"\n\n  4- SLA violations: "+ss+" %"
+                                +"\n\n  4- SLA violations: "+sss+" %"
                                  ); 
                            
                                           pm_clik(classment_pm1,VmAll3);
