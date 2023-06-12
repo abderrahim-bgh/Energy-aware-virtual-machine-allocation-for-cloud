@@ -581,6 +581,7 @@ public class RandomController implements Initializable {
            Dialog<String> dialog = new Dialog<>();
            dialog.setTitle("energy threshold");
           dialog.setHeaderText("Modified Best Fit Decreasing");
+          alocation.setText("the second allocation");
            dialog.setResizable(true);
           
            Label label1 = new Label("Min threshold : ");

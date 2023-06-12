@@ -330,6 +330,8 @@ public class AgPageController implements Initializable {
            int muNb=(getNumberSelectInIndividual()*initialPop.get(0).size())/100;
             int muNb1=(getNumberSelectInPop()*initialPop.size())/100;
         mutation(initialPop,Pm1,Vm1,muNb1,muNb);
+        //supp
+        SuppRep(initialPop);
          // Repair for threshold
          Reparation(initialPop,Pm1);
          
@@ -1108,9 +1110,6 @@ public class AgPageController implements Initializable {
                           
                       }
                        
-                      
-                     // indivi.get(randomGen).setPm_num(String.valueOf(val+"|"+indivi.get(randomGen).getPm_num()));
-                      
                           
                   }
                   individual.get(randomGen).setPm_num(String.valueOf(val));

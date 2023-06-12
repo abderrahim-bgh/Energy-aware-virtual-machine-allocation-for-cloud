@@ -46,20 +46,12 @@
                                     <Insets left="6.0" top="12.0" />
                                  </VBox.margin>
                               </ImageView>
-                              <ImageView fitHeight="46.0" fitWidth="49.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@icons/stat.png" />
-                                 </image>
-                                 <VBox.margin>
-                                    <Insets left="6.0" top="17.0" />
-                                 </VBox.margin>
-                              </ImageView>
                               <ImageView fx:id="github1" fitHeight="46.0" fitWidth="49.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@icons/github%20.png" />
                                  </image>
                                  <VBox.margin>
-                                    <Insets left="6.0" top="450.0" />
+                                    <Insets left="6.0" top="550.0" />
                                  </VBox.margin>
                               </ImageView>
                            </children>
