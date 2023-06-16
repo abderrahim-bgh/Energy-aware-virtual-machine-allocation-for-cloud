@@ -79,6 +79,7 @@ public class AgPageController implements Initializable {
     public int randomDegrry,TaillePop,fittChoice;
     int numberSelect,threshold; String numSlal;
      int numberSelectInPop ,  numberSelectInIndividual;
+     
     public int getNumberSelectInPop() {
         return numberSelectInPop;
     }
@@ -135,6 +136,15 @@ public class AgPageController implements Initializable {
 
     public void setItteration(int itteration) {
         this.itteration = itteration;
+    }
+    int cr;
+
+    public int getCr() {
+        return cr;
+    }
+
+    public void setCr(int cr) {
+        this.cr = cr;
     }
     
     int ssla=0;
@@ -258,12 +268,185 @@ public class AgPageController implements Initializable {
                        Pm1[6][z1]="0";
                    }
         }
-        GA (Pm1,Vm1);
+        if(getCr()==1)
+            GA2 (Pm1,Vm1);
+        else GA (Pm1,Vm1);
     }
     
     List<List> newPop= new ArrayList<>();
     List<List> newPopShow= new ArrayList<>();
      List<List> ShopInPop= new ArrayList<>();
+     public void GA2 (String[][] Pm1,String[][] Vm1){
+         boolean one=false;
+        //setings 
+        cross_seting.setText("1- Population size :"+getTaillePop()+" individual"+
+                "\n2- The crossover size : "+getNumberSelect()+" %"
+                 +"\n3- the consolidation the VM threshold:"+getNumSlal()+"%"
+                  );
+        //initial pop
+        
+          for(int i=0;i<initialPop.size();i++){
+                      List<individu> individual=new  ArrayList<individu>();
+                      List<individu> individual2=new  ArrayList<individu>();
+                      individual=initialPop.get(i);
+                      for(int j=0;j<individual.size();j++){
+                            individu id= new individu(individual.get(j).vm, individual.get(j).cpu, individual.get(j).ram, individual.get(j).vm_storage, individual.get(j).pm_num, individual.get(j).Type_pop, individual.get(j).energy, individual.get(j).sla, individual.get(j).fit);
+                            individual2.add(id);
+                      }
+                      showIdivFit sh=new showIdivFit(String.valueOf(i+1),initialPop.get(i).toString(),String.valueOf(individual.get(1).fit),individual.get(1).sla, individual.get(1).energy);
+                      indiv.add(sh);
+                      ShopInPop.add(individual2);
+                      fitt.getItems().add(sh);
+                  }
+          List<Double> listFit= new ArrayList<Double>();
+          double b=1;
+          double avB=0;
+          while(b>avB){
+                   System.out.println("b "+b+" avb "+avB);    
+          for(int g=0;g<getItteration();g++){
+              
+          
+          //selection
+        String [][] sellection =selectionsSize((getNumberSelect()*initialPop.size())/100);
+        //crossover
+         
+        for(int i=0;i<sellection[0].length;i++){
+            int Npr1=Integer.parseInt(sellection[0][i]);
+             int Npr2=Integer.parseInt(sellection[1][i]);
+             List<individu> individual=new  ArrayList<individu>();
+             List<individu> individual2=new  ArrayList<individu>();
+               individual = initialPop.get(Npr1-1);
+               individual2 = initialPop.get(Npr2-1);
+           newPop.addAll(onePointCrossover(individual,individual2));
+        }
+        
+        FitrageNewPop(newPop,Pm1);
+        
+        if(!one){
+           for(int i=0;i<newPop.size();i++){
+                      List<individu> individual=new  ArrayList<individu>();
+                      List<individu> individual2=new  ArrayList<individu>();
+                      individual=newPop.get(i);
+                      for(int j=0;j<individual.size();j++){
+                            individu id= new individu(individual.get(j).vm, individual.get(j).cpu, individual.get(j).ram, individual.get(j).vm_storage, individual.get(j).pm_num, individual.get(j).Type_pop, individual.get(j).energy, individual.get(j).sla, individual.get(j).fit);
+                            individual2.add(id);
+                      }
+                       newPopShow.add(individual2);
+                       showIdivFit sh=new showIdivFit(String.valueOf(i+1),newPop.get(i).toString(),
+                               sellection[0][i],sellection[1][i], "0");
+                       // indiv.add(sh);
+                       fitt1.getItems().add(sh);  
+                      
+                     }
+                      
+                  }
+       
+           //for have one population
+           initialPop.addAll(newPop);
+           
+            FitragePop(initialPop,Pm1);
+           // mutation
+           int muNb=(getNumberSelectInIndividual()*initialPop.get(0).size())/100;
+            int muNb1=(getNumberSelectInPop()*initialPop.size())/100;
+        mutation(initialPop,Pm1,Vm1,muNb1,muNb);
+        //supp
+        SuppRep(initialPop);
+         // Repair for threshold
+         Reparation(initialPop,Pm1);
+         
+         //supp 
+         SuppRep(initialPop);
+         
+         if(!one){
+             int redand = (getTaillePop()+newPop.size())-initialPop.size();
+             cross_seting.setText(cross_seting.getText().toString()+"\n4- The number of redandance individuals deleted :"+redand+" Individual");
+         }
+          one=true;
+         // calcule energy and sla 
+         energyGa(Pm1,initialPop);
+         
+        double totalFit=0;
+         for(int f=0;f<initialPop.size();f++){
+              List<individu> individual=new  ArrayList<individu>();
+              individual=initialPop.get(f);
+              for(int i=0;i<individual.size();i++){
+                  
+                  if(getFittChoice()==1)        
+                    individual.get(i).setFit(fitness1(Double.parseDouble(individual.get(i).getSla()),
+                          Double.parseDouble(individual.get(i).getEnergy()),Pm1));
+                  else if(getFittChoice()==2)  individual.get(i).setFit(fitness2(
+                          Double.parseDouble(individual.get(i).getEnergy()),Pm1));
+                  else if(getFittChoice()==3)  individual.get(i).setFit(fitness3(Double.parseDouble(individual.get(i).getSla()),Pm1));
+              }
+             totalFit=totalFit+  individual.get(1).getFit();
+         }
+         
+         listFit.add(totalFit);
+         if(g<1)avB=totalFit;
+         
+         //for(int i=0;i<getItteration();i++)
+         //  System.out.println("ftG  "+listFit.get(i));
+          
+         
+           List<List<individu>> CompareList= new ArrayList<>();
+           
+           for(int i=0;i<initialPop.size();i++){
+                List<individu> individualX=new  ArrayList<individu>();
+                individualX=initialPop.get(i);
+                CompareList.add(individualX);
+           }
+           Collections.sort(CompareList,new Comparator<List<individu>>(){
+                    @Override
+                    public int compare( List<individu> o1,  List<individu>  o2) {
+                        return Double.compare(o1.get(0).getFit(), (o2.get(0).getFit()));
+                    }
+                });
+            Collections.reverse(CompareList);
+            initialPop.clear();
+            for(int i=0;i<getTaillePop();i++){
+                List<individu> individualX=new  ArrayList<individu>();
+                try{
+                     individualX=CompareList.get(i);
+                initialPop.add(individualX);
+                } catch(IndexOutOfBoundsException e){
+                    
+                }
+               
+            }
+            indiv.clear();
+             for(int i=0;i<initialPop.size();i++){
+                      List<individu> individual=new  ArrayList<individu>();
+                      individual=initialPop.get(i);
+                      showIdivFit sh=new showIdivFit(String.valueOf(i+1),initialPop.get(i).toString(),String.valueOf(individual.get(1).fit),individual.get(1).sla, individual.get(1).energy);
+                      indiv.add(sh);
+                  }
+        }  
+           b=listFit.get(listFit.size()-1);
+       }   
+          boolean window0=false;
+          if(!window0){
+            window0=true;
+            AnchorPane root1= new AnchorPane();
+        FXMLLoader loader0= new FXMLLoader(getClass().getResource("resultAG.fxml"));
+                 try {
+                     root1=loader0.load();
+                 } catch (IOException ex) {
+                     Logger.getLogger(AgPageController.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+                 ResultAGController RG =loader0.getController();
+                 List<individu> ResultList= new ArrayList<>();
+                 ResultList=initialPop.get(0);
+                 RG.BestPop(ResultList, Pm1);
+                           Double [] ftG= new Double[listFit.size()];
+                           for(int i=0;i<listFit.size();i++) ftG[i]=listFit.get(i);
+                 RG.chartFit(ftG);
+        Tab tabP1=new Tab();
+        tabP1.setText("Result");
+        tabP1.setContent(root1);
+        firstController.tb(tabP1);
+        }
+          
+    }
     public void GA (String[][] Pm1,String[][] Vm1){
         //setings 
         cross_seting.setText("1- Population size :"+getTaillePop()+" individual"+
@@ -414,8 +597,13 @@ public class AgPageController implements Initializable {
                  ResultAGController RG =loader0.getController();
                  List<individu> ResultList= new ArrayList<>();
                  ResultList=initialPop.get(0);
+                 int meg=0;
+                 meg= MegrationEnergy(getVmMeg(),ResultList);
+                 System.err.println("meg  " +meg);
+                 RG.setEnergyMeg(meg);
                  RG.BestPop(ResultList, Pm1);
                  RG.chartFit(ftG);
+                 
         Tab tabP1=new Tab();
         tabP1.setText("Result");
         tabP1.setContent(root1);
@@ -423,7 +611,27 @@ public class AgPageController implements Initializable {
         }
           
     }
+     String[][] VmMeg;
 
+    public String[][] getVmMeg() {
+        return VmMeg;
+    }
+
+    public void setVmMeg(String[][] VmMeg) {
+        this.VmMeg = VmMeg;
+    }
+     
+
+    public int MegrationEnergy(String[][] Vm,List<individu> ResultList){
+        int x=0;
+            for(int j=0;j<Vm[0].length;j++){
+                if(!ResultList.get(j).pm_num.equals(Vm[3][j])){
+                    System.out.println(">>>>>>>>. true >>>>>>>>>>>>>>>>>>>>>>");
+                    x=x+2;
+                }
+            }
+        return x;
+    }
     public void InitializationRandom(String [][]Vm1,String[][] Pm1){   
                  for(int pp=0;pp<getTaillePop()/3;pp++){
                    
@@ -821,12 +1029,12 @@ public class AgPageController implements Initializable {
        double Fitness= (1-alpha)*(1-beta);
        return Fitness;
     }
-
     public double fitness3(double sla,String [][] Pm1){
        double beta = sla/100;  
        double Fitness= (1-beta);
        return Fitness;
     }
+    
  public static List<showIdivFit> stochasticUniversalSampling(List<showIdivFit> population) {
     double totalFitness = 0;
     int numSelections=2;

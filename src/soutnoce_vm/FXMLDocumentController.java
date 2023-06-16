@@ -32,6 +32,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
@@ -215,9 +216,7 @@ FileChooser fileChooser = new FileChooser();
                       allPm[4][i]=pmm[5][i];
                       allPm[7][i]=pmm[1][i];
                       
-                        vi++;
-                 
-            
+                        vi++;            
             }
         }
         
@@ -338,6 +337,7 @@ FileChooser fileChooser = new FileChooser();
               // number of vms no utilized
                int num2=nb_vm-num_max;    
                String Vm2[][]=new String[6][num2];
+           
               int i3 =0;
               // add vm no used in array
               String []T_vm_return= new String[num_max];
@@ -393,7 +393,7 @@ FileChooser fileChooser = new FileChooser();
                                 allPm[6][nbP]=String.valueOf(N_vm_ram);
                                  N_vm_cpu=0;
                                  N_vm_ram=0;
-                               Vm1[0][i]="vm"+allVm[0][i];
+                               Vm1[0][i]=allVm[0][i];
                                tabVms[0][i]="vm"+allVm[0][i];
                                //vm placed in pm number
                                Vm1[3][i]=String.valueOf(nbP+1);
@@ -438,6 +438,9 @@ FileChooser fileChooser = new FileChooser();
                  RandomController randomController = loader.
                        getController();
                 randomController.get_data(Pm1,Vm1,Vm2);
+                randomController.setFirstController(this);
+                
+                   randomController.AG1(allPm,allVm,Vm1);
                    randomController.titel_classification.setText("Random Classification");
                    randomController.listAllVMs(tabVms);
                     randomController.get_date2(Pm1,Vm1,Vm2);
@@ -982,6 +985,8 @@ FileChooser fileChooser = new FileChooser();
            TextField mut1 = new TextField();
            TextField mut2 = new TextField();
            Label labelIt = new Label("Numberr of iteration : ");
+           CheckBox ch = new CheckBox();
+           ch.setText("Add a stop criteria");
            TextField It = new TextField();
            selection.getItems().addAll(tallieSelc);
           GridPane grid = new GridPane();
@@ -1000,8 +1005,9 @@ FileChooser fileChooser = new FileChooser();
             grid.add(mut1, 2, 8);
             grid.add(labelMut2, 1, 9);
             grid.add(mut2, 2, 9);
-            grid.add(labelIt, 1, 10);
-            grid.add(It, 2, 10);
+             grid.add(ch, 1, 10);
+            grid.add(labelIt, 1, 11);
+            grid.add(It, 2, 11);
             ToggleGroup grp=new ToggleGroup();
             fit1.setToggleGroup(grp);
             fit2.setToggleGroup(grp);
@@ -1042,6 +1048,8 @@ FileChooser fileChooser = new FileChooser();
                    gc.setItteration(Integer.parseInt(It.getText().toString()));
                    gc.setNumberSelectInPop(Integer.parseInt(mut1.getText()));
                    gc.setNumberSelectInIndividual(Integer.parseInt(mut2.getText()));
+                   if(ch.isSelected())
+                   gc.setCr(1);
                    gc.setFirstController(FXMLDocumentController.this);
                    gc. InitializationFF(allVm,allPm);
                    gc. InitializationRandom(allVm,allPm);

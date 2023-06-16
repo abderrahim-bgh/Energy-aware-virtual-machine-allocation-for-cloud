@@ -56,7 +56,17 @@ public class ResultAGController implements Initializable {
     @FXML
     private CategoryAxis chartdown;
      @FXML
-    private LineChart<?, ?> chatFit;   
+    private LineChart<?, ?> chatFit;  
+     int energyMeg;
+
+    public int getEnergyMeg() {
+        return energyMeg;
+    }
+
+    public void setEnergyMeg(int energyMeg) {
+        this.energyMeg = energyMeg;
+    }
+     
         
         public void BestPop( List<individu> ResultList,String [][]Pm){
             for(int i=0;i<Pm[0].length;i++){
@@ -111,13 +121,15 @@ public class ResultAGController implements Initializable {
                   "Mips \n - RAM utilisation :"+ram+"MB /"+num+"MB"
                           + "\n - Total of vm placed in this "+click+" is: "+vm_p
                            + "\n - Total storage in "+click+"is :"+storage+" G / "+Pm[4][Integer.parseInt(clk)-1]+" G"
-                            + "\n - Energy: "+Energy+" W");
+                            + "\n - Energy: "+Energy+" W"
+                              );
           }
        });
        resultLab.setText( " 1- The total energy consumption:"+
                                ResultList.get(0).getEnergy()+" W"
                                +"\n\n 2- SLA Violation :"+ ResultList.get(0).getSla()+"%"
-                               +"\n\n 3- fitness :"+ ResultList.get(0).getFit()
+                               +"\n\n 3- Migration energy: "+getEnergyMeg()
+                               +"\n\n 4- fitness :"+ ResultList.get(0).getFit()
                                );
         }
         public void chartFit(Double [] fit){

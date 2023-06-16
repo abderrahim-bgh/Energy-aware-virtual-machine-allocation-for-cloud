@@ -29,6 +29,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Dialog;
@@ -90,6 +91,8 @@ public class RandomController implements Initializable {
     private Button place_vm;
     @FXML
     private Button random;
+    @FXML
+    private Button AG;
     @FXML
     private Button MBFD;
     @FXML
@@ -990,7 +993,141 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
 
     @FXML
     ImageView back;
-        
+        FXMLDocumentController firstController;
+    
+   public void setFirstController(FXMLDocumentController controller) {
+        this.firstController = controller;
+    }
+
+    public FXMLDocumentController getFirstController() {
+        return firstController;
+    }
+
+        public void  AG1( String[][] allPm, String[][] allVm,String [][]vmMegration){
+            AG.setOnMouseClicked(new EventHandler<MouseEvent>(){
+          @Override
+          public void handle(MouseEvent event) {
+                   // String[][] Vm1= new String[5][nb_vm];
+                   // String[][] Pm1= new String[4][nb_pm];
+              String val_p="20";
+               Dialog<String> dialog = new Dialog<>();
+           dialog.setTitle("Genetic Algorithm");
+          dialog.setHeaderText(" genetic algorithm parameter");
+           dialog.setResizable(true);
+           String [] tallieSelc={"30%","50%","60%","70%","80%","100%"};
+           Label label2 = new Label("Crossover size : ");
+            Label label3 = new Label("Consolidation VM threshold : ");
+           ChoiceBox selection = new ChoiceBox();
+           ChoiceBox sla = new ChoiceBox();
+           String []percentage_max ={"65%","70%","80%","85%","90%","95%","97%"};
+           String []percentage_max2 ={"60%","70%","80%","85%"};
+           Label label0 = new Label("threshold Max : ");
+           ChoiceBox thresholdRepar = new ChoiceBox();
+           thresholdRepar.getItems().addAll(percentage_max);
+           sla.getItems().addAll(percentage_max2);
+           Label label1 = new Label("population size: ");
+           TextField Pop = new TextField();
+           RadioButton fit1 = new RadioButton();
+           RadioButton fit2 = new RadioButton();
+           RadioButton fit3 = new RadioButton();
+           fit1.setText("fitness 1");
+           fit2.setText("fitness 2");
+           fit3.setText("fitness 3");
+           Label labelMut = new Label("population mutation rate : ");
+           Label labelMut2 = new Label("individual mutation rate : ");
+           TextField mut1 = new TextField();
+           TextField mut2 = new TextField();
+           Label labelIt = new Label("Numberr of iteration : ");
+           CheckBox ch = new CheckBox();
+            CheckBox chEnergy = new CheckBox();
+           ch.setText("Add a stop criteria");
+           chEnergy.setText(" add the energy of migration ");
+           TextField It = new TextField();
+           selection.getItems().addAll(tallieSelc);
+          GridPane grid = new GridPane();
+           grid.add(label0, 1, 2);
+           grid.add(thresholdRepar, 2, 2);
+            grid.add(label1, 1, 1);
+            grid.add(Pop, 2, 1);
+            grid.add(label2, 1, 3);
+            grid.add(selection, 2, 3);
+            grid.add(label3, 1, 4);
+            grid.add(sla, 2, 4);
+            grid.add(fit1, 1, 5);
+            grid.add(fit2, 1, 6);
+            grid.add(fit3, 1, 7);
+            grid.add(labelMut, 1, 8);
+            grid.add(mut1, 2, 8);
+            grid.add(labelMut2, 1, 9);
+            grid.add(mut2, 2, 9);
+            grid.add(ch, 1, 10);
+            grid.add(chEnergy, 1, 11);
+            grid.add(labelIt, 1, 12);
+            grid.add(It, 2, 12);
+            
+            ToggleGroup grp=new ToggleGroup();
+            fit1.setToggleGroup(grp);
+            fit2.setToggleGroup(grp);
+            fit3.setToggleGroup(grp);
+            
+         dialog.getDialogPane().setContent(grid);
+         ButtonType buttonTypeOk = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+         dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+         
+         dialog.setResultConverter(new Callback<ButtonType, String>() {
+         @Override
+         public String call(ButtonType b) {
+             if (b == buttonTypeOk) {
+                             AnchorPane root1= new AnchorPane();
+                 FXMLLoader loader0= new FXMLLoader(getClass().getResource("AgPage.fxml"));
+                 try {
+                     root1=loader0.load();
+                 } catch (IOException ex) {
+                     Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+                 AgPageController gc = loader0.getController();
+                 if(fit1.isSelected())
+                     gc.setFittChoice(1);
+                 else if(fit2.isSelected())
+                     gc.setFittChoice(2);
+                 else if(fit3.isSelected())
+                     gc.setFittChoice(3);
+                  String Vselection= selection.getValue().toString();
+                String num=Vselection.substring(0, Vselection.length()-1);
+                int Vselec=Integer.parseInt(num);
+                
+                String presThreshold= thresholdRepar.getValue().toString();
+                String valThreshold=presThreshold.substring(0, presThreshold.length()-1);
+                int intThreshold=Integer.parseInt(valThreshold);
+                   String ssla=sla.getValue().toString().substring(0, sla.getValue().toString().length()-1);
+                   gc.setNumSlal(ssla);
+                   gc.setNumberSelect(Vselec);
+                   gc.setThreshold(intThreshold);
+                   gc.setRandomDegrry(Integer.parseInt(val_p));
+                   gc.setTaillePop(Integer.parseInt(Pop.getText().toString()));
+                   gc.setItteration(Integer.parseInt(It.getText().toString()));
+                   gc.setNumberSelectInPop(Integer.parseInt(mut1.getText()));
+                   gc.setNumberSelectInIndividual(Integer.parseInt(mut2.getText()));
+                   if(ch.isSelected())
+                   gc.setCr(1);
+                   gc.setVmMeg(vmMegration);
+                   gc.setFirstController(getFirstController());
+                   gc. InitializationFF(allVm,allPm);
+                   gc. InitializationRandom(allVm,allPm);
+                   gc.InitializationBFD(allVm, allPm);
+                   Tab tabP1=new Tab();
+                     tabP1.setText("AG");
+                     tabP1.setContent(root1);
+                     firstController.tb(tabP1);
+              }
+              return null;
+            }
+         });         
+            Optional<String> result = dialog.showAndWait();  
+                    }
+            });
+         }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         back.setOnMouseClicked(event->{
