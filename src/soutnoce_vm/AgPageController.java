@@ -332,10 +332,12 @@ public class AgPageController implements Initializable {
                             individual2.add(id);
                       }
                        newPopShow.add(individual2);
+                         if(sellection[0].length>i){
                        showIdivFit sh=new showIdivFit(String.valueOf(i+1),newPop.get(i).toString(),
                                sellection[0][i],sellection[1][i], "0");
                        // indiv.add(sh);
                        fitt1.getItems().add(sh);  
+                         }
                       
                      }
                       
@@ -436,6 +438,11 @@ public class AgPageController implements Initializable {
                  ResultAGController RG =loader0.getController();
                  List<individu> ResultList= new ArrayList<>();
                  ResultList=initialPop.get(0);
+                  int meg=0;
+                 if(getEnMeg().equals("1"))
+                     meg= MegrationEnergy(getVmMeg(),ResultList);
+                 
+                 RG.setEnergyMeg(meg);
                  RG.BestPop(ResultList, Pm1);
                            Double [] ftG= new Double[listFit.size()];
                            for(int i=0;i<listFit.size();i++) ftG[i]=listFit.get(i);
@@ -497,10 +504,12 @@ public class AgPageController implements Initializable {
                             individual2.add(id);
                       }
                        newPopShow.add(individual2);
-                       showIdivFit sh=new showIdivFit(String.valueOf(i+1),newPop.get(i).toString(),
+                       if(sellection[0].length>i){
+                           showIdivFit sh=new showIdivFit(String.valueOf(i+1),newPop.get(i).toString(),
                                sellection[0][i],sellection[1][i], "0");
                        // indiv.add(sh);
                        fitt1.getItems().add(sh);  
+                       }
                       
                      }
                       
@@ -598,8 +607,9 @@ public class AgPageController implements Initializable {
                  List<individu> ResultList= new ArrayList<>();
                  ResultList=initialPop.get(0);
                  int meg=0;
-                 meg= MegrationEnergy(getVmMeg(),ResultList);
-                 System.err.println("meg  " +meg);
+                 if(getEnMeg().equals("1"))
+                     meg= MegrationEnergy(getVmMeg(),ResultList);
+                 
                  RG.setEnergyMeg(meg);
                  RG.BestPop(ResultList, Pm1);
                  RG.chartFit(ftG);
@@ -612,6 +622,15 @@ public class AgPageController implements Initializable {
           
     }
      String[][] VmMeg;
+     String EnMeg;
+
+    public String getEnMeg() {
+        return EnMeg;
+    }
+
+    public void setEnMeg(String EnMeg) {
+        this.EnMeg = EnMeg;
+    }
 
     public String[][] getVmMeg() {
         return VmMeg;
@@ -626,7 +645,6 @@ public class AgPageController implements Initializable {
         int x=0;
             for(int j=0;j<Vm[0].length;j++){
                 if(!ResultList.get(j).pm_num.equals(Vm[3][j])){
-                    System.out.println(">>>>>>>>. true >>>>>>>>>>>>>>>>>>>>>>");
                     x=x+2;
                 }
             }

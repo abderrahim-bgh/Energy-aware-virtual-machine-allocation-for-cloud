@@ -125,12 +125,24 @@ public class ResultAGController implements Initializable {
                               );
           }
        });
+       
+       if(getEnergyMeg()>0){
+           double Ex=Double.parseDouble( ResultList.get(0).getEnergy())+getEnergyMeg();
+            resultLab.setText( " 1-  Energy consumption:"+
+                               ResultList.get(0).getEnergy()+" W"
+                               +"\n\n 2- SLA Violation :"+ ResultList.get(0).getSla()+"%"
+                               +"\n\n 3- Migration energy: "+getEnergyMeg()+" W"
+                               +"\n\n 4- Total Energy :"+Ex+" W"
+                               +"\n\n 4- fitness :"+ ResultList.get(0).getFit()
+                               );
+       }
+       else{
        resultLab.setText( " 1- The total energy consumption:"+
                                ResultList.get(0).getEnergy()+" W"
                                +"\n\n 2- SLA Violation :"+ ResultList.get(0).getSla()+"%"
-                               +"\n\n 3- Migration energy: "+getEnergyMeg()
-                               +"\n\n 4- fitness :"+ ResultList.get(0).getFit()
+                               +"\n\n 3- fitness :"+ ResultList.get(0).getFit()
                                );
+       }
         }
         public void chartFit(Double [] fit){
             XYChart.Series xy = new XYChart.Series();

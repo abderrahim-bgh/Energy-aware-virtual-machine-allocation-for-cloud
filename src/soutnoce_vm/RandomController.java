@@ -1092,6 +1092,8 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                      gc.setFittChoice(2);
                  else if(fit3.isSelected())
                      gc.setFittChoice(3);
+                 else
+                     gc.setFittChoice(0);
                   String Vselection= selection.getValue().toString();
                 String num=Vselection.substring(0, Vselection.length()-1);
                 int Vselec=Integer.parseInt(num);
@@ -1103,13 +1105,20 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                    gc.setNumSlal(ssla);
                    gc.setNumberSelect(Vselec);
                    gc.setThreshold(intThreshold);
+                   if(chEnergy.isSelected())
+                         gc.setEnMeg("1");
+                   else 
+                         gc.setEnMeg("0");
                    gc.setRandomDegrry(Integer.parseInt(val_p));
                    gc.setTaillePop(Integer.parseInt(Pop.getText().toString()));
                    gc.setItteration(Integer.parseInt(It.getText().toString()));
                    gc.setNumberSelectInPop(Integer.parseInt(mut1.getText()));
                    gc.setNumberSelectInIndividual(Integer.parseInt(mut2.getText()));
                    if(ch.isSelected())
-                   gc.setCr(1);
+                       gc.setCr(1);
+                   else
+                       gc.setCr(0);
+                   
                    gc.setVmMeg(vmMegration);
                    gc.setFirstController(getFirstController());
                    gc. InitializationFF(allVm,allPm);

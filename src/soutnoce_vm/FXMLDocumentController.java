@@ -815,6 +815,8 @@ FileChooser fileChooser = new FileChooser();
                 randomController.setSla1(String.valueOf(SLA));
                    randomController.setAlVm(String.valueOf(old_pm.size()));
                    randomController.titel_classification.setText("MBFD Classification");
+                   randomController.setFirstController(FXMLDocumentController.this);
+                   randomController.AG1(allPm,allVm,Vm1);
                    randomController.listAllVMs(tabVms);
                    randomController.get_data(Pm1,Vm1,Vm2);
                     randomController.get_date2(Pm1,Vm1,Vm2);
@@ -936,6 +938,8 @@ FileChooser fileChooser = new FileChooser();
                        getController();
                
                 randomController.get_data(Pm1, Vm1,Vm2);
+                randomController.setFirstController(this);
+                randomController.AG1(allPm,allVm,Vm1);
                 randomController.get_date2(Pm1,Vm1,Vm2);
                 randomController.titel_classification.setText("first fit Classification");
                 randomController.listAllVMs(tabVms);
@@ -1050,6 +1054,7 @@ FileChooser fileChooser = new FileChooser();
                    gc.setNumberSelectInIndividual(Integer.parseInt(mut2.getText()));
                    if(ch.isSelected())
                    gc.setCr(1);
+                    gc.setEnMeg("0");
                    gc.setFirstController(FXMLDocumentController.this);
                    gc. InitializationFF(allVm,allPm);
                    gc. InitializationRandom(allVm,allPm);
