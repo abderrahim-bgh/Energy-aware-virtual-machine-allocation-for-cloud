@@ -11,6 +11,8 @@ new individuals and to ensure their feasibility. The proposed algorithm has been
 implemented in a simulator to evaluate its performance. The results obtained showed the
 efficiency of the proposed algorithm compared to existing techniques.
 this is the architecture of my simulator
+
+
 ![](Screenshot%20from%202023-06-27%2022-02-52.png)
 
 In our work, we propose an adapted genetic algorithm to address the issues of virtual machine
