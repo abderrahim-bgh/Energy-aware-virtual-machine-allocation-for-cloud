@@ -22,6 +22,5 @@ explore the solution space and identify optimal placement configurations.
 The flowchart presented in the figure III.4 illustrates the functioning of the proposed algorithm;
 Below we explain the proposed algorithm.
 
-file:///home/abderrahim/Documents/genetic%20(1).png
-
+![](genetic20%(1).png)
 
