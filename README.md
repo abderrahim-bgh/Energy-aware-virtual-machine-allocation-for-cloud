@@ -11,8 +11,7 @@ new individuals and to ensure their feasibility. The proposed algorithm has been
 implemented in a simulator to evaluate its performance. The results obtained showed the
 efficiency of the proposed algorithm compared to existing techniques.
 this is the architecture of my simulator
-file:///home/abderrahim/Pictures/Screenshots/Screenshot%20from%202023-06-27%2022-02-52.png
-
+![](Screenshot%20from%202023-06-27%2022-02-52.png)
 
 In our work, we propose an adapted genetic algorithm to address the issues of virtual machine
 (VM) placement in data centers, with a particular emphasis on minimizing SLA violations and
@@ -22,5 +21,5 @@ explore the solution space and identify optimal placement configurations.
 The flowchart presented in the figure III.4 illustrates the functioning of the proposed algorithm;
 Below we explain the proposed algorithm.
 
-![](genetic20%(1).png)
+![](genetic%20(1).png)
 
