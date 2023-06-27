@@ -294,6 +294,7 @@ public class RandomController implements Initializable {
           } 
          
                  double sss= (ssla/(classment_pm1[0].length));
+                // double sss1= (1-(energy_total/(classment_pm1[0].length*250)))*100;
          // double sss= (1-(energy_total/(classment_pm1[0].length*250)))*100;
                    DecimalFormat df = new DecimalFormat("#.##");
                    String ss= df.format(sss);
@@ -591,7 +592,8 @@ public class RandomController implements Initializable {
           dialog.setHeaderText("Modified Best Fit Decreasing");
           alocation.setText("the second allocation");
            dialog.setResizable(true);
-          
+           CheckBox chEnergy = new CheckBox();
+           chEnergy.setText(" add the energy of migration ");
            Label label1 = new Label("Min threshold : ");
            Label label2 = new Label("Max threshold : ");
            ChoiceBox min = new ChoiceBox();
@@ -604,12 +606,13 @@ public class RandomController implements Initializable {
            max.getItems().addAll(percentage_max);
          
           GridPane grid = new GridPane();
-            grid.add(label1, 1, 1);
-            grid.add(min, 2, 1);
-            grid.add(label2, 1, 2);
-            grid.add(max, 2, 2);
-             grid.add(label3, 1, 3);
-            grid.add(sla, 2, 3);
+            grid.add(chEnergy, 1, 1);
+            grid.add(label1, 1, 2);
+            grid.add(min, 2, 2);
+            grid.add(label2, 1, 3);
+            grid.add(max, 2, 3);
+             grid.add(label3, 1, 4);
+            grid.add(sla, 2, 4);
          dialog.getDialogPane().setContent(grid);
          
 ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
@@ -960,13 +963,31 @@ dialog.setResultConverter(new Callback<ButtonType, String>() {
                    double sss= (ssla/(classment_pm1[0].length));
                    DecimalFormat df = new DecimalFormat("#.##");
                    String ss= df.format(sss);
-                   total_label.setText("1- Total of vm placed "
+                  //  double sss1= (1-(energy_total/(classment_pm1[0].length*250)))*100;
+                   int VmPlacced= old_pm.size()-SLA;
+                  int mG= VmPlacced*2;
+                  double Teng= mG+energy_total;
+                   if(chEnergy.isSelected()){
+                         total_label.setText("1- Total of vm placed "
                            + "\n is: "+String.valueOf(nb_vm)+"/"+(VmAll[0].length)
-                            + "\n\n  2- The total energy\n consumption:"+
-                               energy_total+" W"+"\n\n  3- Vms that we did not find \na place in Pm:"+SLA+"/"+old_pm.size()+" VMs"
-                               +"\n\nNB Vms megrated : "+old_pm.size()+" VMs"
+                            + "\n\n  2- Energy\n consumption:"+
+                               energy_total+" W"+"\n\n  3-The Vms not placed:"+SLA+"/"+old_pm.size()+" VMs"
+                               +"\n\nNB Vms migrated : "+VmPlacced+" VMs"
+                                +"\n\n 4- migration Energy : "+ mG+" W"    
+                                 +"\n\n 5- Energy total:"+Teng+" W"     
+                                +"\n\n  6- SLA violations: "+sss+" %"
+                                 ); 
+                   }
+                   else {
+                         total_label.setText("1- Total of vm placed "
+                           + "\n is: "+String.valueOf(nb_vm)+"/"+(VmAll[0].length)
+                            + "\n\n  2- Energy\n consumption:"+
+                               energy_total+" W"+"\n\n  3-The Vms not placed:"+SLA+"/"+old_pm.size()+"VMs"
+                               +"\n\nNB Vms migrated : "+VmPlacced+" VMs"
                                 +"\n\n  4- SLA violations: "+sss+" %"
                                  ); 
+                   }
+                 
                            
                                           pm_clik(classment_pm1,VmAll3);
                                           tabVms = new String [4][VmAll[0].length];

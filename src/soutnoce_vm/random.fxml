@@ -10,14 +10,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="751.0" prefWidth="1291.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="soutnoce_vm.RandomController">
+<AnchorPane id="AnchorPane" prefHeight="751.0" prefWidth="1316.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="soutnoce_vm.RandomController">
    <children>
       <Label fx:id="titel_classification" alignment="CENTER_RIGHT" contentDisplay="CENTER" prefHeight="72.0" prefWidth="1323.0" style="-fx-background-color: #9DABE0;" text="Random Classification " textAlignment="CENTER" textFill="#4db976" textOverrun="CENTER_ELLIPSIS" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <font>
             <Font name="DejaVuMathTeXGyre-Regular" size="44.0" />
          </font>
       </Label>
-      <TableView fx:id="vm_in_pm" layoutX="432.0" layoutY="190.0" prefHeight="259.0" prefWidth="454.0" AnchorPane.bottomAnchor="302.0" AnchorPane.leftAnchor="432.0" AnchorPane.rightAnchor="405.0" AnchorPane.topAnchor="190.0">
+      <TableView fx:id="vm_in_pm" layoutX="432.0" layoutY="190.0" prefHeight="259.0" prefWidth="422.0" AnchorPane.bottomAnchor="302.0" AnchorPane.leftAnchor="432.0" AnchorPane.rightAnchor="437.0" AnchorPane.topAnchor="190.0">
         <columns>
           <TableColumn fx:id="vm_N" prefWidth="75.0" text="vm" />
           <TableColumn fx:id="vp_cpu" prefWidth="75.0" text="CPU" />
@@ -33,14 +33,14 @@
             <Font name="System Bold Italic" size="40.0" />
          </font>
       </Label>
-      <Label fx:id="calcule_label" layoutX="432.0" layoutY="503.0" prefHeight="210.0" prefWidth="454.0" style="-fx-background-color: #ffffff;" text="Label" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="432.0" AnchorPane.rightAnchor="405.0" />
-      <Label fx:id="total_label" layoutX="947.0" layoutY="190.0" prefHeight="357.0" prefWidth="352.0" style="-fx-background-color: #ffffff; -fx-alignment: center;" text="Label" AnchorPane.bottomAnchor="204.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="190.0">
+      <Label fx:id="calcule_label" layoutX="432.0" layoutY="503.0" prefHeight="210.0" prefWidth="422.0" style="-fx-background-color: #ffffff;" text="Label" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="432.0" AnchorPane.rightAnchor="437.0" />
+      <Label fx:id="total_label" layoutX="947.0" layoutY="181.0" prefHeight="534.0" prefWidth="420.0" style="-fx-background-color: #ffffff; -fx-alignment: center;" text="Label" AnchorPane.bottomAnchor="36.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="181.0">
          <font>
             <Font size="24.0" />
          </font></Label>
-      <Label fx:id="lb1" layoutX="431.0" layoutY="143.0" prefHeight="36.0" prefWidth="481.0" text="Virtual Machines Placement" textFill="#173dc3" AnchorPane.leftAnchor="431.0" AnchorPane.rightAnchor="379.0">
+      <Label fx:id="lb1" layoutX="431.0" layoutY="143.0" prefHeight="36.0" prefWidth="436.0" text="Virtual Machines Placement" textFill="#173dc3" AnchorPane.leftAnchor="431.0" AnchorPane.rightAnchor="424.0">
          <font>
-            <Font name="System Bold Italic" size="28.0" />
+            <Font name="System Bold Italic" size="26.0" />
          </font>
       </Label>
       <Label fx:id="lb2" layoutX="432.0" layoutY="456.0" text="Energy and info of PM" textFill="#173dc3" AnchorPane.bottomAnchor="259.0" AnchorPane.leftAnchor="432.0" AnchorPane.rightAnchor="391.0">
@@ -53,7 +53,7 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Button>
-      <Label fx:id="alocation" layoutX="952.0" layoutY="149.0" text="The first allocation" textAlignment="CENTER" textFill="#4db976" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="149.0">
+      <Label fx:id="alocation" layoutX="953.0" layoutY="145.0" text="The first allocation" textAlignment="CENTER" textFill="#4db976" AnchorPane.rightAnchor="71.0" AnchorPane.topAnchor="145.0">
          <font>
             <Font name="System Bold" size="25.0" />
          </font>
@@ -73,7 +73,7 @@
             <Image url="@icons/arrow-small-left.png" />
          </image>
       </ImageView>
-      <TableView fx:id="tab_vms" layoutX="424.0" layoutY="118.0" prefHeight="592.0" prefWidth="454.0" AnchorPane.bottomAnchor="41.0" AnchorPane.leftAnchor="424.0" AnchorPane.rightAnchor="413.0" AnchorPane.topAnchor="118.0">
+      <TableView fx:id="tab_vms" layoutX="424.0" layoutY="118.0" prefHeight="592.0" prefWidth="422.0" AnchorPane.bottomAnchor="41.0" AnchorPane.leftAnchor="424.0" AnchorPane.rightAnchor="445.0" AnchorPane.topAnchor="118.0">
          <columns>
             <TableColumn fx:id="vm_Name" prefWidth="75.0" text="Vm" />
             <TableColumn fx:id="old_pm" prefWidth="75.0" text="Vm place " />

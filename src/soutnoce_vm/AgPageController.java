@@ -248,7 +248,8 @@ public class AgPageController implements Initializable {
                                }
                                          String eng = String.valueOf(energy(Pm1,Vm1));
                                         // double sss= (1-(energy(Pm1,Vm1)/(Pm1[0].length*250)))*100;
-                                         double sss= (ssla/(Pm1[0].length));
+                                        double sss= (ssla/(Pm1[0].length));
+                                         // double sss= (1-(Double.parseDouble(eng)/(Pm1[0].length*250)))*100;
                                          DecimalFormat df = new DecimalFormat("#.##");
                                          String ss= df.format(sss);
                                          double f=0;
@@ -1027,6 +1028,8 @@ public class AgPageController implements Initializable {
           energy_total=energy_total+Energy;
         }
              double sss= (ssl/(classment_pm1[0].length));
+           //  double sss= (1-(energy_total/(classment_pm1[0].length*250)))*100;
+
           for(int i=0;i<individual.size();i++){
               individual.get(i).setEnergy(String.valueOf(energy_total));
                individual.get(i).setSla(String.valueOf(sss));
