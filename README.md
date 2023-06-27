@@ -10,6 +10,8 @@ diversification. It also incorporates a directed crossover and mutation for the 
 new individuals and to ensure their feasibility. The proposed algorithm has been
 implemented in a simulator to evaluate its performance. The results obtained showed the
 efficiency of the proposed algorithm compared to existing techniques.
+
+
 this is the architecture of my simulator
 
 
